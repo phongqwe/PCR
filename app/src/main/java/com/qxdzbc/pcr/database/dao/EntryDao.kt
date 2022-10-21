@@ -4,15 +4,21 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import com.qxdzbc.pcr.model.Entry
+import com.qxdzbc.pcr.model.EntryWithTags
 
 @Dao
 interface EntryDao{
-    @Query("SELECT * FROM entry")
+    @Transaction
+    @Query("SELECT * FROM Entry")
+    fun getEntryWithTag():List<EntryWithTags>
+
+    @Query("SELECT * FROM Entry")
     fun getAll():List<Entry>
 
     @Insert
-    fun insertAll(vararg entries: Entry)
+    fun insert(vararg entries: Entry)
 
     @Delete
     fun delete(entry: Entry)

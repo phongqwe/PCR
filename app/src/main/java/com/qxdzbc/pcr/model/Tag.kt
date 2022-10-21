@@ -4,10 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "tag")
+@Entity
 data class Tag(
-    @PrimaryKey
-    val uid:Int,
-    @ColumnInfo(name="name")
+    @PrimaryKey(autoGenerate = true)
+    val id:Long=0,
     val name:String
 )
