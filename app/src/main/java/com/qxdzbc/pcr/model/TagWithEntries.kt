@@ -8,8 +8,8 @@ data class TagWithEntries(
     @Embedded
     val tag:Tag,
     @Relation(
-        parentColumn = "id", // tag id
-        entityColumn = "id", // entry id
+        parentColumn = Tag.idCol, // tag id
+        entityColumn = Entry.idCol, // entry id
         associateBy = Junction(TagAssignment::class,
             parentColumn = "tagId",
             entityColumn = "entryId"

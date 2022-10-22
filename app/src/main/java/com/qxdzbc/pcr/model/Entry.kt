@@ -15,11 +15,22 @@ import java.util.Date
 @Entity
 data class Entry(
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = idCol)
     val id:Long = 0,
+    @ColumnInfo(name = moneyCol)
     val money: Double,
+    @ColumnInfo(name = detailCol)
     val detail:String,
+    @ColumnInfo(name = dateTimeCol)
     val dateTime:Long,
 ) {
     @Ignore
     val dateTimeObj:Date = Date(dateTime)
+
+    companion object{
+        const val idCol = "id"
+        const val moneyCol ="money"
+        const val detailCol ="detail"
+        const val dateTimeCol = "dateTime"
+    }
 }
