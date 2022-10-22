@@ -5,8 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import com.qxdzbc.pcr.model.Entry
-import com.qxdzbc.pcr.model.EntryWithTags
+import com.qxdzbc.pcr.database.model.Entry
+import com.qxdzbc.pcr.database.model.EntryWithTags
 
 @Dao
 interface EntryDao{

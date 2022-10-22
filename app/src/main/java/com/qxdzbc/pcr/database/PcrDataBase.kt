@@ -5,12 +5,12 @@ import androidx.room.RoomDatabase
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
-import com.qxdzbc.pcr.model.Entry
-import com.qxdzbc.pcr.model.Tag
-import com.qxdzbc.pcr.model.TagAssignment
+import com.qxdzbc.pcr.database.model.Entry
+import com.qxdzbc.pcr.database.model.Tag
+import com.qxdzbc.pcr.database.model.TagAssignment
 
 @Database(
-    entities = [Entry::class, Tag::class,TagAssignment::class],
+    entities = [Entry::class, Tag::class, TagAssignment::class],
     version =  1
 )
 abstract class PcrDataBase : RoomDatabase(){

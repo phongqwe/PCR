@@ -5,8 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import com.qxdzbc.pcr.model.Tag
-import com.qxdzbc.pcr.model.TagWithEntries
+import com.qxdzbc.pcr.database.model.Tag
+import com.qxdzbc.pcr.database.model.TagWithEntries
 
 @Dao
 interface TagDao {
@@ -18,8 +18,8 @@ interface TagDao {
     fun getAll():List<Tag>
 
     @Insert
-    fun insert(vararg tags:Tag)
+    fun insert(vararg tags: Tag)
 
     @Delete
-    fun delete(tag:Tag)
+    fun delete(tag: Tag)
 }

@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
-import com.qxdzbc.pcr.model.*
+import com.qxdzbc.pcr.database.model.*
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before

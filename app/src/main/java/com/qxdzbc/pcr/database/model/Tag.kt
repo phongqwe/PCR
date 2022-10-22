@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.model
+package com.qxdzbc.pcr.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

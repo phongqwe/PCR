@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.qxdzbc.pcr.model.TagAssignment
+import com.qxdzbc.pcr.database.model.TagAssignment
 
 @Dao
 interface TagAssignmentDao{

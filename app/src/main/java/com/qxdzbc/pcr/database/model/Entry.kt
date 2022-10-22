@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.model
+package com.qxdzbc.pcr.database.model
 
 import android.text.style.TtsSpan.DateBuilder
 import androidx.room.ColumnInfo
@@ -20,12 +20,12 @@ data class Entry(
     @ColumnInfo(name = moneyCol)
     val money: Double,
     @ColumnInfo(name = detailCol)
-    val detail:String,
+    val detail:String?,
     @ColumnInfo(name = dateTimeCol)
     val dateTime:Long,
 ) {
     @Ignore
-    val dateTimeObj:Date = Date(dateTime)
+    val dateTimeObj:Date? = dateTime?.let{Date(it)}
 
     companion object{
         const val idCol = "id"
