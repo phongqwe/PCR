@@ -6,7 +6,7 @@ import com.qxdzbc.pcr.database.model.Entry
 import com.qxdzbc.pcr.err.ErrorReport
 
 interface EntryContainer : Map<String, Entry> {
-    val allEntries: Collection<Entry>
+    val allEntries: List<Entry>
 
     fun loadFromDb(entryDao:EntryDao):EntryContainer
     suspend fun susLoadFromDb(entryDao:EntryDao):EntryContainer

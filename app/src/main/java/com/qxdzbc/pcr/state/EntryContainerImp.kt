@@ -17,33 +17,34 @@ data class EntryContainerImp @Inject constructor(
     private val m: Map<String, Entry>,
 ) : EntryContainer, Map<String, Entry> by m {
 
-    companion object{
+    companion object {
         val empty = EntryContainerImp(emptyMap())
     }
 
-    override val allEntries: Collection<Entry> get() = m.values
+    override val allEntries: List<Entry> get() = m.values.toList()
     override fun loadFromDb(entryDao: EntryDao): EntryContainer {
         val nm = entryDao.getAll().associateBy { it.id }
         return this.copy(m = nm)
     }
 
     override suspend fun susLoadFromDb(entryDao: EntryDao): EntryContainer {
-        return withContext(Dispatchers.Default){
+        return withContext(Dispatchers.Default) {
             loadFromDb(entryDao)
         }
     }
 
     override fun writeToDb(entryDao: EntryDao): Rs<Unit, ErrorReport> {
-        try{
+        try {
             entryDao.insert()
             return Unit.toOk()
-        }catch (e:Exception){
-             return DbErrors.UnableToWriteEntryToDb.report().toErr()
+        } catch (e: Exception) {
+            val msg = "Unable to write entries in entry container into the db"
+            return DbErrors.UnableToWriteEntryToDb.report(msg).toErr()
         }
     }
 
     override suspend fun susWriteToDb(entryDao: EntryDao): Rs<Unit, ErrorReport> {
-        return withContext(Dispatchers.Default){
+        return withContext(Dispatchers.Default) {
             writeToDb(entryDao)
         }
     }

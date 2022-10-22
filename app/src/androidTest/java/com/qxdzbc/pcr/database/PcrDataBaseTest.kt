@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.qxdzbc.pcr.common.TestSample
+import com.qxdzbc.test.TestSample
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
@@ -44,17 +44,23 @@ class PcrDataBaseTest {
         db.close()
     }
 
-    fun createInitDataObj() {
+    private fun createInitDataObj() {
         entries = ts.entries
         tags = ts.tags
         tagAsignments = ts.tagAsignments
     }
 
-    fun insertTestData() {
+    private fun insertTestData() {
         tagDao.insert(*tags.toTypedArray())
         entryDao.insert(*entries.toTypedArray())
         tagAssDao.insert(*tagAsignments.toTypedArray())
     }
+
+//    @Test
+//    fun qwe(){
+//        entryDao.insert(entries[0])
+//        entryDao.insert(entries[0])
+//    }
 
     @Test
     fun getAll() {

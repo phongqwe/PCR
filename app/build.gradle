@@ -6,7 +6,15 @@ plugins {
 }
 
 
+android.sourceSets {
+    test {
+        main.java.srcDirs += "$projectDir/src/commonTest"
+    }
 
+    androidTest {
+        main.java.srcDirs += "$projectDir/src/commonTest"
+    }
+}
 android {
     namespace 'com.qxdzbc.pcr'
     compileSdk 32
@@ -51,7 +59,10 @@ android {
 }
 
 dependencies {
-
+    def mockitoVersion = "4.5.1"
+    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+    testImplementation("org.mockito:mockito-inline:${mockitoVersion}")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     implementation("com.michael-bull.kotlin-result:kotlin-result:1.1.16")
 
     implementation 'androidx.core:core-ktx:1.7.0'

@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.common
+package com.qxdzbc.test
 
 import com.qxdzbc.pcr.database.model.Entry
 import com.qxdzbc.pcr.database.model.Tag
