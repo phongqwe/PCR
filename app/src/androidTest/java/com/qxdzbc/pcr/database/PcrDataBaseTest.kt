@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.qxdzbc.pcr.TestSample
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
@@ -13,30 +14,27 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.Long.max
-import java.util.Calendar
-import kotlin.math.exp
-import kotlin.random.Random
-import kotlin.random.nextInt
 
 @RunWith(AndroidJUnit4::class)
 class PcrDataBaseTest {
 
-    lateinit var db: PcrDataBase
+    lateinit var db: AbsPcrDataBase
     lateinit var entryDao: EntryDao
     lateinit var tagDao: TagDao
     lateinit var tagAssDao: TagAssignmentDao
     lateinit var entries: List<Entry>
     lateinit var tagAsignments: List<TagAssignment>
     lateinit var tags: List<Tag>
+    lateinit var ts: TestSample
 
     @Before
     fun b() {
+        ts = TestSample()
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, PcrDataBase::class.java).build()
-        entryDao = db.entryDao()
-        tagDao = db.tagDao()
-        tagAssDao = db.tagAssignmentDao()
+        db = Room.inMemoryDatabaseBuilder(context, AbsPcrDataBase::class.java).build()
+        entryDao = db.entryDao
+        tagDao = db.tagDao
+        tagAssDao = db.tagAssignmentDao
         createInitDataObj()
         insertTestData()
     }
@@ -47,23 +45,9 @@ class PcrDataBaseTest {
     }
 
     fun createInitDataObj() {
-        entries = (1..10).map {
-            Entry(
-                id = it.toLong(),
-                money = Random.nextInt(100..200).toDouble(),
-                detail = "entry $it",
-                dateTime = Calendar.Builder().setDate(1453, 5, it).build().timeInMillis
-            )
-        }
-        tags = (1..5).map {
-            Tag(id = it.toLong(), name = "Tag $it")
-        }
-        tagAsignments = (1..10).map {
-            TagAssignment(
-                entryId = it.toLong(),
-                tagId = max(it.toLong() / 2, 1L)
-            )
-        }
+        entries = ts.entries
+        tags = ts.tags
+        tagAsignments = ts.tagAsignments
     }
 
     fun insertTestData() {
@@ -87,7 +71,7 @@ class PcrDataBaseTest {
                 EntryWithTags(
                     e,
                     tags.filter {
-                        max(e.id / 2, 1) == it.id
+                        maxOf(e.id / 2, 1) == it.id
                     }
                 )
             }, q
@@ -101,7 +85,7 @@ class PcrDataBaseTest {
             TagWithEntries(
                 tag =  t,
                 entries = entries.filter { e->
-                    max(e.id/2,1) == t.id
+                    maxOf(e.id/2,1) == t.id
                 }
             )
         }

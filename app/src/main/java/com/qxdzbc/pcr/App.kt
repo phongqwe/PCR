@@ -1,19 +1,13 @@
 package com.qxdzbc.pcr
 
 import android.app.Application
-import androidx.room.Room
-import com.qxdzbc.pcr.database.PcrDataBase
+import com.qxdzbc.pcr.database.AbsPcrDataBase
+import com.qxdzbc.pcr.database.PcrDatabase
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
 class App : Application(){
-    lateinit var _pcrDb:PcrDataBase
+    @Inject lateinit var _pcrDb:PcrDatabase
     val pcrDb get() = _pcrDb
-
-    override fun onCreate() {
-        super.onCreate()
-        _pcrDb = Room.databaseBuilder(this,PcrDataBase::class.java,PcrDataBase.dbName)
-            .createFromAsset("initDb")
-            .build()
-    }
 }
