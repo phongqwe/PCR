@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.qxdzbc.pcr.TestSample
+import com.qxdzbc.pcr.common.TestSample
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
@@ -71,7 +71,7 @@ class PcrDataBaseTest {
                 EntryWithTags(
                     e,
                     tags.filter {
-                        maxOf(e.id / 2, 1) == it.id
+                        maxOf(e.id.toLong() / 2, 1).toString() == it.id
                     }
                 )
             }, q
@@ -85,7 +85,7 @@ class PcrDataBaseTest {
             TagWithEntries(
                 tag =  t,
                 entries = entries.filter { e->
-                    maxOf(e.id/2,1) == t.id
+                    maxOf(e.id.toLong()/2,1).toString() == t.id
                 }
             )
         }

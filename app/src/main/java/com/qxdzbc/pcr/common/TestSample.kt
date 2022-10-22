@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr
+package com.qxdzbc.pcr.common
 
 import com.qxdzbc.pcr.database.model.Entry
 import com.qxdzbc.pcr.database.model.Tag
@@ -10,19 +10,19 @@ import kotlin.random.nextInt
 class TestSample {
     val entries = (1..10).map {
         Entry(
-            id = it.toLong(),
+            id = it.toString(),
             money = Random.nextInt(100..200).toDouble(),
             detail = "entry $it",
-            dateTime = Calendar.Builder().setDate(1453, 5, it).build().timeInMillis
+            dateTime = Date().time
         )
     }
     val tags = (1..5).map {
-        Tag(id = it.toLong(), name = "Tag $it")
+        Tag(id = it.toString(), name = "Tag $it")
     }
     val tagAsignments = (1..10).map {
         TagAssignment(
-            entryId = it.toLong(),
-            tagId = maxOf(it.toLong() / 2, 1L)
+            entryId = it.toString(),
+            tagId = maxOf(it.toLong() / 2, 1L).toString()
         )
     }
 }

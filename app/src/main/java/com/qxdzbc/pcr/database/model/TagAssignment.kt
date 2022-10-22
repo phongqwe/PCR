@@ -23,9 +23,9 @@ foreignKeys = [
 ])
 data class TagAssignment(
     @ColumnInfo(name = entryIdCol)
-    val entryId:Long,
+    val entryId:String,
     @ColumnInfo(name = tagIdCol)
-    val tagId:Long,
+    val tagId:String,
 ){
     companion object{
         const val tagIdCol = "tagId"

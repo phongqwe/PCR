@@ -14,9 +14,9 @@ import java.util.Date
 
 @Entity
 data class Entry(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = idCol)
-    val id:Long = 0,
+    val id:String,
     @ColumnInfo(name = moneyCol)
     val money: Double,
     @ColumnInfo(name = detailCol)
@@ -25,7 +25,7 @@ data class Entry(
     val dateTime:Long,
 ) {
     @Ignore
-    val dateTimeObj:Date? = dateTime?.let{Date(it)}
+    val dateTimeObj:Date = Date(dateTime)
 
     companion object{
         const val idCol = "id"
