@@ -6,12 +6,14 @@ import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.database.model.Tag
+import com.qxdzbc.pcr.di.DefaultTagMap
 import com.qxdzbc.pcr.err.ErrorReport
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-data class TagContainerImp constructor(
+data class TagContainerImp @Inject constructor(
+    @DefaultTagMap
     private val m: Map<String, Tag>,
     private val dao: TagDao,
 ) : TagContainer, Map<String, Tag> by m {

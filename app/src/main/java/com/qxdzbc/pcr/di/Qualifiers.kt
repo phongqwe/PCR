@@ -10,3 +10,7 @@ import javax.inject.Qualifier
 @Qualifier
 @Retention
 annotation class DefaultEntryMap
+
+@Qualifier
+@Retention
+annotation class DefaultTagMap
