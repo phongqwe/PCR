@@ -3,9 +3,10 @@ package com.qxdzbc.pcr.state
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.err.ErrorReport
+import com.qxdzbc.pcr.state.entry.Tag
 
-interface TagContainer: Map<String, DbTag> {
-    val allTags:List<DbTag>
+interface TagContainer: Map<String, Tag> {
+    val allTags:List<Tag>
 
     fun loadFromDbAndOverwrite():TagContainer
     suspend fun susLoadFromDbAndOverWrite():TagContainer

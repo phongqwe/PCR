@@ -10,10 +10,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doThrow
-import org.mockito.kotlin.spy
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 
 class EntryContainerImpTest {
     lateinit var ts: TestSample
@@ -47,7 +44,9 @@ class EntryContainerImpTest {
             assertTrue(c1.susWriteToDb() is Ok)
         }
         // fail call
-        whenever(spyEntryDao.insert(any<DbEntry>())) doThrow Exception()
+        whenever(spyEntryDao.insert(any())) doAnswer {
+            throw Exception()
+        }
         assertTrue(c1.writeToDb() is Err)
         runBlocking {
             assertTrue(c1.susWriteToDb() is Err)

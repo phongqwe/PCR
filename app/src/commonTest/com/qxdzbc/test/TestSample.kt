@@ -17,7 +17,7 @@ class TestSample {
             dateTime = Date().time
         )
     }
-    val tags = (1..5).map {
+    val tags = (1..10).map {
         DbTag(id = it.toString(), name = "Tag $it")
     }
     val tagAsignments = (1..10).map {

@@ -5,20 +5,20 @@ import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.dao.TagDao
-import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.di.DefaultTagMap
 import com.qxdzbc.pcr.err.ErrorReport
+import com.qxdzbc.pcr.state.entry.Tag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class TagContainerImp @Inject constructor(
     @DefaultTagMap
-    private val m: Map<String, DbTag>,
+    private val m: Map<String, Tag>,
     private val dao: TagDao,
-) : TagContainer, Map<String, DbTag> by m {
+) : TagContainer, Map<String, Tag> by m {
 
-    override val allTags: List<DbTag>
+    override val allTags: List<Tag>
         get() = m.values.toList()
 
     override fun loadFromDbAndOverwrite(): TagContainer {
@@ -33,7 +33,7 @@ data class TagContainerImp @Inject constructor(
 
     override fun writeToDb(): Rs<Unit, ErrorReport> {
         try {
-            dao.insert(*this.values.toTypedArray())
+            dao.insertOrUpdate(this.allTags.map { it.toDbModel() })
             return Ok(Unit)
         } catch (e: Throwable) {
             val msg = "Unable to write tag in TagContainer into db"

@@ -5,8 +5,8 @@ import com.qxdzbc.pcr.common.ResultUtils.toOk
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.dao.EntryDao
-import com.qxdzbc.pcr.database.model.DbEntry
-import com.qxdzbc.pcr.database.model.DbEntryWithTags
+import com.qxdzbc.pcr.database.dao.TagAssignmentDao
+import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.DefaultEntryMap
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.entry.Entry
@@ -21,11 +21,14 @@ import javax.inject.Inject
 data class EntryContainerImp @Inject constructor(
     @DefaultEntryMap
     private val m: Map<String, Entry>,
-    private val entryDao:EntryDao,
+    private val entryDao: EntryDao,
+    private val tagDao: TagDao,
+    private val tagAssignmentDao: TagAssignmentDao,
 ) : EntryContainer, Map<String, Entry> by m {
 
     companion object {
-        fun empty(entryDao: EntryDao) = EntryContainerImp(emptyMap(),entryDao)
+        fun empty(entryDao: EntryDao, tagDao: TagDao, tagAssignmentDao: TagAssignmentDao) =
+            EntryContainerImp(emptyMap(), entryDao, tagDao,tagAssignmentDao)
     }
 
     override val allEntries: List<Entry> get() = m.values.toList()
@@ -42,7 +45,10 @@ data class EntryContainerImp @Inject constructor(
 
     override fun writeToDb(): Rs<Unit, ErrorReport> {
         try {
-            entryDao.insert()
+            entryDao.insertOrUpdate(this.allEntries.map { it.toDbEntry() })
+            tagDao.insertOrUpdate(
+                this.allEntries.flatMap { it.tags }.distinct().map { it.toDbModel() })
+            tagAssignmentDao.insertOrDelete(this.allEntries.flatMap { it.toDbTagAssignments() })
             return Unit.toOk()
         } catch (e: Throwable) {
             val msg = "Unable to write entries in entry container into the db"

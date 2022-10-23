@@ -8,7 +8,7 @@ import java.util.*
 
 data class DbEntryWithTags(
     @Embedded
-    val entry: DbEntry,
+    private val entry: DbEntry,
     @Relation(
         parentColumn = "id", // entry id
         entityColumn = "id", // tag id
@@ -27,5 +27,18 @@ data class DbEntryWithTags(
         get() = entry.detail
     override val dateTime: Date
         get() = Date(entry.dateTime)
+
+    override fun toDbEntry(): DbEntry {
+        return this.entry
+    }
+
+    override fun toDbTagAssignments(): List<DbTagAssignment> {
+        return this.tags.map {
+            DbTagAssignment(
+                entryId = id,
+                tagId=it.id
+            )
+        }
+    }
 
 }

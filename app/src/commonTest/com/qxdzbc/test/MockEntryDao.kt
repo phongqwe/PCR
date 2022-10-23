@@ -15,12 +15,17 @@ class MockEntryDao(
     override fun getAll(): List<DbEntry> {
         return entries
     }
-    @Throws(Exception::class)
     override fun insert(vararg entries: DbEntry) {
         // do nothing
     }
 
+    override fun insert(entries: List<DbEntry>) {
+    }
+
     override fun delete(entry: DbEntry) {
         // do nothing
+    }
+
+    override fun update(entries: List<DbEntry>) {
     }
 }

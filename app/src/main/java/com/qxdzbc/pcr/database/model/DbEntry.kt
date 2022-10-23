@@ -12,11 +12,11 @@ data class DbEntry(
     @ColumnInfo(name = idCol)
     val id:String,
     @ColumnInfo(name = moneyCol)
-    val money: Double,
+    val money: Double = 0.0,
     @ColumnInfo(name = detailCol)
-    val detail:String?,
+    val detail:String? = null,
     @ColumnInfo(name = dateTimeCol)
-    val dateTime:Long,
+    val dateTime:Long = 0,
 ) {
     companion object{
         const val idCol = "id"

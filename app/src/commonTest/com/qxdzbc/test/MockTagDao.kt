@@ -4,7 +4,7 @@ import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.database.model.DbTagWithEntries
 
-class MockTagDao(
+open class MockTagDao(
     val tags: List<DbTag> = emptyList(),
     val tweList: List<DbTagWithEntries> = emptyList(),
 ) : TagDao {
@@ -21,6 +21,21 @@ class MockTagDao(
 
     }
 
+    override fun insert(tags: List<DbTag>) {
+
+    }
+
     override fun delete(tag: DbTag) {
+    }
+
+    override fun updateTag(tag: DbTag) {
+    }
+
+    override fun updateTags(tag: List<DbTag>) {
+
+    }
+    @Throws(Exception::class)
+    open override fun insertOrUpdate(tags: List<DbTag>) {
+        super.insertOrUpdate(tags)
     }
 }
