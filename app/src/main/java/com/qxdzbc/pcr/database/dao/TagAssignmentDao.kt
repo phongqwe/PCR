@@ -4,16 +4,16 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.qxdzbc.pcr.database.model.TagAssignment
+import com.qxdzbc.pcr.database.model.DbTagAssignment
 
 @Dao
 interface TagAssignmentDao{
     @Insert
-    fun insert(vararg tagAssignment: TagAssignment)
+    fun insert(vararg tagAssignment: DbTagAssignment)
 
     @Delete
-    fun delete(tagAssignment: TagAssignment)
+    fun delete(tagAssignment: DbTagAssignment)
 
-    @Query("SELECT * FROM TagAssignment")
-    fun getAll():List<TagAssignment>
+    @Query("SELECT * FROM ${DbTagAssignment.tableName}")
+    fun getAll():List<DbTagAssignment>
 }

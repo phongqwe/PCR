@@ -5,7 +5,7 @@ import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.dao.TagDao
-import com.qxdzbc.pcr.database.model.Tag
+import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.di.DefaultTagMap
 import com.qxdzbc.pcr.err.ErrorReport
 import kotlinx.coroutines.Dispatchers
@@ -14,11 +14,11 @@ import javax.inject.Inject
 
 data class TagContainerImp @Inject constructor(
     @DefaultTagMap
-    private val m: Map<String, Tag>,
+    private val m: Map<String, DbTag>,
     private val dao: TagDao,
-) : TagContainer, Map<String, Tag> by m {
+) : TagContainer, Map<String, DbTag> by m {
 
-    override val allTags: List<Tag>
+    override val allTags: List<DbTag>
         get() = m.values.toList()
 
     override fun loadFromDbAndOverwrite(): TagContainer {

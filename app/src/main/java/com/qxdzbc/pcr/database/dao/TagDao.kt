@@ -5,22 +5,22 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import com.qxdzbc.pcr.database.model.Tag
-import com.qxdzbc.pcr.database.model.TagWithEntries
+import com.qxdzbc.pcr.database.model.DbTag
+import com.qxdzbc.pcr.database.model.DbTagWithEntries
 
 @Dao
 interface TagDao {
-    @Query("SELECT * FROM Tag")
+    @Query("SELECT * FROM ${DbTag.tableName}")
     @Transaction
-    fun getTagWithEntries():List<TagWithEntries>
+    fun getTagWithEntries():List<DbTagWithEntries>
 
-    @Query("SELECT * FROM Tag")
-    fun getAll():List<Tag>
+    @Query("SELECT * FROM ${DbTag.tableName}")
+    fun getAll():List<DbTag>
 
     @Insert
     @Throws(Exception::class)
-    fun insert(vararg tags: Tag)
+    fun insert(vararg tags: DbTag)
 
     @Delete
-    fun delete(tag: Tag)
+    fun delete(tag: DbTag)
 }

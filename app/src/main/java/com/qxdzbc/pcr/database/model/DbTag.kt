@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-data class Tag(
+@Entity(tableName =DbTag.tableName)
+data class DbTag(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = idCol)
     val id:String,
@@ -15,5 +15,6 @@ data class Tag(
     companion object{
         const val idCol="id"
         const val nameCol ="name"
+        const val tableName="Tag"
     }
 }

@@ -1,15 +1,16 @@
 package com.qxdzbc.test
 
-import com.qxdzbc.pcr.database.model.Entry
-import com.qxdzbc.pcr.database.model.Tag
-import com.qxdzbc.pcr.database.model.TagAssignment
+import com.qxdzbc.pcr.database.model.DbEntry
+import com.qxdzbc.pcr.database.model.DbEntryWithTags
+import com.qxdzbc.pcr.database.model.DbTag
+import com.qxdzbc.pcr.database.model.DbTagAssignment
 import java.util.*
 import kotlin.random.Random
 import kotlin.random.nextInt
 
 class TestSample {
     val entries = (1..10).map {
-        Entry(
+        DbEntry(
             id = it.toString(),
             money = Random.nextInt(100..200).toDouble(),
             detail = "entry $it",
@@ -17,12 +18,23 @@ class TestSample {
         )
     }
     val tags = (1..5).map {
-        Tag(id = it.toString(), name = "Tag $it")
+        DbTag(id = it.toString(), name = "Tag $it")
     }
     val tagAsignments = (1..10).map {
-        TagAssignment(
+        DbTagAssignment(
             entryId = it.toString(),
             tagId = maxOf(it.toLong() / 2, 1L).toString()
         )
+    }
+    val entriesWithTag:List<DbEntryWithTags> = run{
+        val m=tagAsignments.groupBy { it.entryId }.map { (entryId,tagList)->
+            DbEntryWithTags(
+                entry = entries.first { it.id == entryId },
+                tags = tagList.map { ta->
+                    tags.first{it.id == ta.tagId}
+                }
+            )
+        }
+        m
     }
 }

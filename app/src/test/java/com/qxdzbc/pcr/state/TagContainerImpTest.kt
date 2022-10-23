@@ -2,8 +2,7 @@ package com.qxdzbc.pcr.state
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
-import com.qxdzbc.pcr.database.model.Tag
-import com.qxdzbc.test.MockEntryDao
+import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.test.MockTagDao
 import com.qxdzbc.test.TestSample
 import kotlinx.coroutines.runBlocking
@@ -44,7 +43,7 @@ class TagContainerImpTest{
             assertTrue(c1.susWriteToDb() is Ok)
         }
 
-        whenever(spDao.insert(any<Tag>())) doThrow (Exception())
+        whenever(spDao.insert(any<DbTag>())) doThrow (Exception())
         assertTrue(c1.writeToDb() is Err)
         runBlocking {
             assertTrue(c1.susWriteToDb() is Err)

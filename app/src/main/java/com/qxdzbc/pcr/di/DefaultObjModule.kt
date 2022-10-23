@@ -1,7 +1,7 @@
 package com.qxdzbc.pcr.di
 
-import com.qxdzbc.pcr.database.model.Entry
-import com.qxdzbc.pcr.database.model.Tag
+import com.qxdzbc.pcr.database.model.DbEntry
+import com.qxdzbc.pcr.database.model.DbTag
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,11 +13,11 @@ interface DefaultObjModule {
     companion object{
         @DefaultEntryMap
         @Provides
-        fun DefaultEntryMap():Map<String,Entry> {
+        fun DefaultEntryMap():Map<String,DbEntry> {
             return emptyMap()
         }
         @DefaultTagMap
-        fun DefaultTagMap():Map<String,Tag> {
+        fun DefaultTagMap():Map<String,DbTag> {
             return emptyMap()
         }
     }

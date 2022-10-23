@@ -22,9 +22,9 @@ class PcrDataBaseTest {
     lateinit var entryDao: EntryDao
     lateinit var tagDao: TagDao
     lateinit var tagAssDao: TagAssignmentDao
-    lateinit var entries: List<Entry>
-    lateinit var tagAsignments: List<TagAssignment>
-    lateinit var tags: List<Tag>
+    lateinit var entries: List<DbEntry>
+    lateinit var tagAsignments: List<DbTagAssignment>
+    lateinit var tags: List<DbTag>
     lateinit var ts: TestSample
 
     @Before
@@ -74,7 +74,7 @@ class PcrDataBaseTest {
         val q = entryDao.getEntryWithTag()
         assertEquals(
             entries.map { e ->
-                EntryWithTags(
+                DbEntryWithTags(
                     e,
                     tags.filter {
                         maxOf(e.id.toLong() / 2, 1).toString() == it.id
@@ -88,7 +88,7 @@ class PcrDataBaseTest {
     fun getTagWithEntries(){
         val q = tagDao.getTagWithEntries()
         val expect = tags.map { t->
-            TagWithEntries(
+            DbTagWithEntries(
                 tag =  t,
                 entries = entries.filter { e->
                     maxOf(e.id.toLong()/2,1).toString() == t.id

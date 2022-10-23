@@ -5,9 +5,11 @@ import com.qxdzbc.pcr.common.ResultUtils.toOk
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.dao.EntryDao
-import com.qxdzbc.pcr.database.model.Entry
+import com.qxdzbc.pcr.database.model.DbEntry
+import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.di.DefaultEntryMap
 import com.qxdzbc.pcr.err.ErrorReport
+import com.qxdzbc.pcr.state.entry.Entry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,7 +30,7 @@ data class EntryContainerImp @Inject constructor(
 
     override val allEntries: List<Entry> get() = m.values.toList()
     override fun loadFromDbAndOverwrite(): EntryContainer {
-        val nm = entryDao.getAll().associateBy { it.id }
+        val nm = entryDao.getEntryWithTag().associateBy { it.id }
         return this.copy(m = nm)
     }
 
