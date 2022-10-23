@@ -33,17 +33,20 @@ interface TagDao {
     @Update
     fun updateTags(tag:List<DbTag>)
 
+    /**
+     * Process a list of [DbTag]. Insert the new tag, and update the old tag having the same id as the new ones.
+     */
     @Transaction
     fun insertOrUpdate(tags:List<DbTag>){
         if(tags.isNotEmpty()){
-            val oldTagMap = getAll().associateBy { it.id }
+            val oldTagMap = getAll().associateBy { it.tagId }
 
-            val insertTargets = tags.filter { it.id !in oldTagMap.keys }
+            val insertTargets = tags.filter { it.tagId !in oldTagMap.keys }
 
             val updateTargets = run{
                 val ids = oldTagMap.map { it.key }.toSet()
                 tags.filter {
-                    it.id in ids && it.name!= oldTagMap[it.id]?.name
+                    it.tagId in ids && it.name!= oldTagMap[it.tagId]?.name
                 }
             }
             updateTags(updateTargets.map { it.toDbModel() })

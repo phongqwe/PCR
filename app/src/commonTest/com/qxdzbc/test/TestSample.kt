@@ -31,7 +31,7 @@ class TestSample {
             DbEntryWithTags(
                 entry = entries.first { it.id == entryId },
                 tags = tagList.map { ta->
-                    tags.first{it.id == ta.tagId}
+                    tags.first{tag->tag.id == ta.tagId}
                 }
             )
         }

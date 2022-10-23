@@ -1,16 +1,9 @@
 package com.qxdzbc.pcr.database.dao
 
-import android.content.Context
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.qxdzbc.pcr.database.AbsPcrDataBase
 import com.qxdzbc.pcr.database.BasePcrDataBaseTest
-import com.qxdzbc.test.TestSample
 import com.qxdzbc.pcr.database.model.*
-import org.junit.After
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -27,8 +20,8 @@ class TagDaoTest :BasePcrDataBaseTest() {
             DbTag("200","newTag")
         )
 
-        assertTrue(oldAll.map { it.id }.containsAll(
-            updates.map { it.id }
+        assertTrue(oldAll.map { it.tagId }.containsAll(
+            updates.map { it.tagId }
         ))
         assertFalse(oldAll.containsAll(updates))
         assertFalse(oldAll.containsAll(inserts))

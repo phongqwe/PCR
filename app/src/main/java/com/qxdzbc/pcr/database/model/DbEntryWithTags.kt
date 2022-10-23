@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.EntryId
 import java.util.*
 
 data class DbEntryWithTags(
@@ -15,28 +16,25 @@ data class DbEntryWithTags(
         associateBy = Junction(
             DbTagAssignment::class,
             parentColumn = "entryId",
-            entityColumn = "tagId")
+            entityColumn = "tagId"
+        )
     )
-    override val tags:List<DbTag>
-): Entry {
-    override val id: String
-        get() = entry.id
-    override val money: Double
-        get() = entry.money
-    override val detail: String?
-        get() = entry.detail
-    override val dateTime: Date
-        get() = Date(entry.dateTime)
+    override val tags: List<DbTag>
+) : Entry {
+    override val id: EntryId get()= EntryId(entry.id)
+    override val money: Double get()= entry.money
+    override val detail: String? get()= entry.detail
+    override val dateTime: Date get()= Date(entry.dateTime)
 
     override fun toDbEntry(): DbEntry {
         return this.entry
     }
 
     override fun toDbTagAssignments(): List<DbTagAssignment> {
-        return this.tags.map {
+        return this.tags.map {dbTag->
             DbTagAssignment(
-                entryId = id,
-                tagId=it.id
+                entryId = id.i,
+                tagId = dbTag.id
             )
         }
     }

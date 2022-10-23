@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.qxdzbc.pcr.state.model.EntryId
 import java.util.Date
 
 @Entity(tableName = DbEntry.tableName)

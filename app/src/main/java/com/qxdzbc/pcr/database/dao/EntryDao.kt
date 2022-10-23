@@ -28,6 +28,9 @@ interface EntryDao{
     @Update
     fun update(entries: List<DbEntry>)
 
+    /**
+     * Process a list of [DbEntry]. Insert the new entries, and update the old entries having the same id as the new ones.
+     */
     @Transaction
     fun insertOrUpdate(i: List<DbEntry>) {
         val allEntries = getAll().associateBy { it.id }
