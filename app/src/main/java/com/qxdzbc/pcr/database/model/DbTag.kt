@@ -23,7 +23,7 @@ data class DbTag(
     override val tagId: TagId
         get() = TagId(id)
 
-    override fun toDbModel(): DbTag {
+    override fun toDbTag(): DbTag {
         return this
     }
 }

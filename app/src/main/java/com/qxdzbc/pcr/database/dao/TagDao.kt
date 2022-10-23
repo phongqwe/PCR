@@ -49,8 +49,8 @@ interface TagDao {
                     it.tagId in ids && it.name!= oldTagMap[it.tagId]?.name
                 }
             }
-            updateTags(updateTargets.map { it.toDbModel() })
-            insert(insertTargets.map { it.toDbModel() })
+            updateTags(updateTargets.map { it.toDbTag() })
+            insert(insertTargets.map { it.toDbTag() })
         }
     }
 }

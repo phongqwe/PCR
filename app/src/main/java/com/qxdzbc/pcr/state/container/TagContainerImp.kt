@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.state.containe
+package com.qxdzbc.pcr.state.container
 
 import com.github.michaelbull.result.Ok
 import com.qxdzbc.pcr.common.ResultUtils.toErr
@@ -33,7 +33,7 @@ data class TagContainerImp @Inject constructor(
 
     override fun writeToDb(): Rs<Unit, ErrorReport> {
         try {
-            dao.insertOrUpdate(this.allTags.map { it.toDbModel() })
+            dao.insertOrUpdate(this.allTags.map { it.toDbTag() })
             return Ok(Unit)
         } catch (e: Throwable) {
             val msg = "Unable to write tag in TagContainer into db"

@@ -3,7 +3,7 @@ package com.qxdzbc.pcr.state
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.qxdzbc.pcr.database.dao.EntryDao
-import com.qxdzbc.pcr.state.containe.EntryContainerImp
+import com.qxdzbc.pcr.state.container.EntryContainerImp
 import com.qxdzbc.test.MockEntryDao
 import com.qxdzbc.test.MockTagAssignmentDao
 import com.qxdzbc.test.MockTagDao
