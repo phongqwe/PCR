@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.state
+package com.qxdzbc.pcr.state.containe
 
 import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.common.ResultUtils.toOk
@@ -9,7 +9,7 @@ import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.DefaultEntryMap
 import com.qxdzbc.pcr.err.ErrorReport
-import com.qxdzbc.pcr.state.entry.Entry
+import com.qxdzbc.pcr.state.model.Entry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -48,7 +48,7 @@ data class EntryContainerImp @Inject constructor(
             entryDao.insertOrUpdate(this.allEntries.map { it.toDbEntry() })
             tagDao.insertOrUpdate(
                 this.allEntries.flatMap { it.tags }.distinct().map { it.toDbModel() })
-            tagAssignmentDao.insertOrDelete(this.allEntries.flatMap { it.toDbTagAssignments() })
+            tagAssignmentDao.insertAndDeleteByEntryId(this.allEntries.flatMap { it.toDbTagAssignments() })
             return Unit.toOk()
         } catch (e: Throwable) {
             val msg = "Unable to write entries in entry container into the db"

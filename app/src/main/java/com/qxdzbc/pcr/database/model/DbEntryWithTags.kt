@@ -3,7 +3,7 @@ package com.qxdzbc.pcr.database.model
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.qxdzbc.pcr.state.entry.Entry
+import com.qxdzbc.pcr.state.model.Entry
 import java.util.*
 
 data class DbEntryWithTags(

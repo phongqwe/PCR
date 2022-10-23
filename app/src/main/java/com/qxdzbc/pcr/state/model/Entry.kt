@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.state.entry
+package com.qxdzbc.pcr.state.model
 
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbTagAssignment

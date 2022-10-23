@@ -35,7 +35,7 @@ class TagAssignmentDaoTest : BasePcrDataBaseTest() {
         assertTrue(oldAll.map { it.entryId }.containsAll(updates.map { it.entryId }))
         assertFalse(oldAll.containsAll(inserts))
 
-        tagAssDao.insertOrDelete(updates+inserts)
+        tagAssDao.insertAndDeleteByEntryId(updates+inserts)
         val newAll = tagAssDao.getAll()
         assertTrue(newAll.containsAll(updates+inserts))
         assertFalse(newAll.containsAll(oldAssigAtEntry))

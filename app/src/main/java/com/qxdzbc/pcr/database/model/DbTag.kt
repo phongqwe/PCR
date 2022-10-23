@@ -3,7 +3,7 @@ package com.qxdzbc.pcr.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.qxdzbc.pcr.state.entry.Tag
+import com.qxdzbc.pcr.state.model.Tag
 
 @Entity(tableName =DbTag.tableName)
 data class DbTag(

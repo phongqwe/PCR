@@ -28,8 +28,11 @@ interface TagAssignmentDao{
     @Update
     fun update(tagAssignments: List<DbTagAssignment>)
 
+    /**
+     * process a list of [DbTagAssignment]. Insert new assignments, and delete all old assignments that have the same entryIds as the new new one.
+     */
     @Transaction
-    fun insertOrDelete(l: List<DbTagAssignment>) {
+    fun insertAndDeleteByEntryId(l: List<DbTagAssignment>) {
         val newAssignmentsByEntryId = l.groupBy { it.entryId }
         val currentAssignments= getAll()
         val currentAssignmentsByEntryId = currentAssignments.groupBy { it.entryId }
