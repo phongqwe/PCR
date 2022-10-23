@@ -12,40 +12,45 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * keep a ref of dao make the functions neater to call, easier to look at, but make the container harder to create.
+ * passing dao to function make that function only usable in place where an entry dao is available => more hassle than wiring the entry dao into the container
+ */
 data class EntryContainerImp @Inject constructor(
     @DefaultEntryMap
     private val m: Map<String, Entry>,
+    private val entryDao:EntryDao,
 ) : EntryContainer, Map<String, Entry> by m {
 
     companion object {
-        val empty = EntryContainerImp(emptyMap())
+        fun empty(entryDao: EntryDao) = EntryContainerImp(emptyMap(),entryDao)
     }
 
     override val allEntries: List<Entry> get() = m.values.toList()
-    override fun loadFromDb(entryDao: EntryDao): EntryContainer {
+    override fun loadFromDbAndOverwrite(): EntryContainer {
         val nm = entryDao.getAll().associateBy { it.id }
         return this.copy(m = nm)
     }
 
-    override suspend fun susLoadFromDb(entryDao: EntryDao): EntryContainer {
+    override suspend fun susLoadFromDbAndOverWrite(): EntryContainer {
         return withContext(Dispatchers.Default) {
-            loadFromDb(entryDao)
+            loadFromDbAndOverwrite()
         }
     }
 
-    override fun writeToDb(entryDao: EntryDao): Rs<Unit, ErrorReport> {
+    override fun writeToDb(): Rs<Unit, ErrorReport> {
         try {
             entryDao.insert()
             return Unit.toOk()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             val msg = "Unable to write entries in entry container into the db"
             return DbErrors.UnableToWriteEntryToDb.report(msg).toErr()
         }
     }
 
-    override suspend fun susWriteToDb(entryDao: EntryDao): Rs<Unit, ErrorReport> {
+    override suspend fun susWriteToDb(): Rs<Unit, ErrorReport> {
         return withContext(Dispatchers.Default) {
-            writeToDb(entryDao)
+            writeToDb()
         }
     }
 }

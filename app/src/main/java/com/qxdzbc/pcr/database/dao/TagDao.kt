@@ -18,6 +18,7 @@ interface TagDao {
     fun getAll():List<Tag>
 
     @Insert
+    @Throws(Exception::class)
     fun insert(vararg tags: Tag)
 
     @Delete

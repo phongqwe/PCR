@@ -8,10 +8,10 @@ import com.qxdzbc.pcr.err.ErrorReport
 interface EntryContainer : Map<String, Entry> {
     val allEntries: List<Entry>
 
-    fun loadFromDb(entryDao:EntryDao):EntryContainer
-    suspend fun susLoadFromDb(entryDao:EntryDao):EntryContainer
+    fun loadFromDbAndOverwrite():EntryContainer
+    suspend fun susLoadFromDbAndOverWrite():EntryContainer
 
-    fun writeToDb(entryDao: EntryDao):Rs<Unit,ErrorReport>
-    suspend fun susWriteToDb(entryDao: EntryDao):Rs<Unit,ErrorReport>
+    fun writeToDb():Rs<Unit,ErrorReport>
+    suspend fun susWriteToDb():Rs<Unit,ErrorReport>
 }
 

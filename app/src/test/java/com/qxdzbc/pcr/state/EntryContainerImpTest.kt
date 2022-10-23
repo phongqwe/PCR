@@ -18,40 +18,38 @@ import org.mockito.kotlin.whenever
 class EntryContainerImpTest {
     lateinit var ts: TestSample
     lateinit var cont:EntryContainerImp
+    lateinit var entryDao:MockEntryDao
     @Before
     fun bf(){
         ts = TestSample()
-        cont = EntryContainerImp(ts.entries.associateBy { it.id })
+        entryDao = MockEntryDao(
+            entries = ts.entries
+        )
+        cont = EntryContainerImp(ts.entries.associateBy { it.id },entryDao)
     }
 
     @Test
     fun loadFromDb(){
-        val c0=EntryContainerImp.empty
-        val entryDao = MockEntryDao(
-            entries = ts.entries
-        )
+        val c0=EntryContainerImp.empty(entryDao)
         assertTrue(c0.isEmpty())
-        val c1 = c0.loadFromDb(entryDao)
+        val c1 = c0.loadFromDbAndOverwrite()
         assertEquals(entryDao.entries, c1.allEntries)
     }
 
     @Test
     fun writeToDb(){
-        val entryDao = spy(MockEntryDao())
+        val spyEntryDao = spy(MockEntryDao())
         // success call
-       assertTrue(cont.writeToDb(entryDao) is Ok)
+        val c1 = cont.copy(entryDao = spyEntryDao)
+       assertTrue(c1.writeToDb() is Ok)
         runBlocking {
-            assertTrue(cont.susWriteToDb(entryDao) is Ok)
+            assertTrue(c1.susWriteToDb() is Ok)
         }
         // fail call
-        whenever(entryDao.insert(any<Entry>())) doThrow Exception()
-        assertTrue(cont.writeToDb(entryDao) is Err)
+        whenever(spyEntryDao.insert(any<Entry>())) doThrow Exception()
+        assertTrue(c1.writeToDb() is Err)
         runBlocking {
-            assertTrue(cont.susWriteToDb(entryDao) is Err)
+            assertTrue(c1.susWriteToDb() is Err)
         }
     }
-
-
-
-
 }
