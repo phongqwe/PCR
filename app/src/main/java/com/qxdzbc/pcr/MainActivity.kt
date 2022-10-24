@@ -1,24 +1,33 @@
 package com.qxdzbc.pcr
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.lifecycleScope
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.qxdzbc.pcr.action.Action1
+import com.qxdzbc.pcr.common.Ms
+import com.qxdzbc.pcr.common.St
 import com.qxdzbc.pcr.database.dao.TagDao
+import com.qxdzbc.pcr.di.state.AppStateMs
+import com.qxdzbc.pcr.screen.front_screen.FrontScreen
+import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
+import com.qxdzbc.pcr.screen.front_screen.frontScreenNavTag
+import com.qxdzbc.pcr.screen.main_screen.MainScreen
+import com.qxdzbc.pcr.screen.main_screen.mainScreenNavTag
+import com.qxdzbc.pcr.state.AppState
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -27,45 +36,51 @@ class MainActivity : ComponentActivity() {
     lateinit var action1: Action1
     @Inject
     lateinit var tagDao: TagDao
+
+    @Inject
+    @AppStateMs
+    lateinit var appStateMs:Ms<AppState>
+
+    @Inject
+    lateinit var frontAction:FrontScreenAction
+
+    val appState get()=appStateMs.value
+
+    lateinit var navController:NavHostController
+    private val signInLauncher = registerForActivityResult(
+        FirebaseAuthUIActivityResultContract()
+    ) { res ->
+        when(res.resultCode){
+
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launch(Dispatchers.Default) {
-            val ts = tagDao.getAll()
-            for(t in ts){
-                Log.d("Phong",t.name)
-            }
-        }
-
-
-
         setContent {
-            PCRTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        Button(onClick = { action1.doWork() }) {
-                            Text("Action1")
-                        }
+            PCRTheme(darkTheme = appState.isDarkThemeMs.value) {
+                val sysUiController = rememberSystemUiController()
+                sysUiController.setSystemBarsColor(
+                    color=MaterialTheme.colors.primaryVariant,
+                    darkIcons = !appState.isDarkThemeMs.value
+                )
+                navController = rememberNavController()
+                val fsTag = frontScreenNavTag
+                val msTag = mainScreenNavTag
+                NavHost(navController, startDestination = fsTag) {
+                    composable(fsTag) {
+                        FrontScreen(
+                            action = frontAction,
+                            state=appState.frontScreenStateMs.value,
+                            login = {}
+                            )
+                    }
+                    composable(msTag) {
+                        MainScreen()
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    PCRTheme {
-        Greeting("Android")
     }
 }

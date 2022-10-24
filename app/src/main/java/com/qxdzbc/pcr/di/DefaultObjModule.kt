@@ -11,6 +11,12 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface DefaultObjModule {
     companion object{
+        @Provides
+        @False
+        fun False():Boolean {
+            return false
+        }
+
         @DefaultEntryMap
         @Provides
         fun DefaultEntryMap():Map<String,DbEntry> {
