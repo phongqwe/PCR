@@ -5,19 +5,16 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavController
+import com.qxdzbc.pcr.screen.ErrDisplay
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenState
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenStateImp
-import com.qxdzbc.pcr.screen.main_screen.mainScreenNavTag
 import com.qxdzbc.pcr.ui.theme.PCRTheme
-
-const val frontScreenNavTag = "FrontScreen_NavTag"
 
 @Composable
 fun FrontScreen(
@@ -29,7 +26,19 @@ fun FrontScreen(
         ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
         ) {
-            val (title, subTitle, loginBut, switch) = createRefs()
+            val (title, subTitle, loginBut, switch,errDialog) = createRefs()
+
+            ErrDisplay(
+                errorList =state.errorContainerSt.value,
+                removeErr = {action.removeErr(it)},
+                modifier=Modifier.constrainAs(errDialog){
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }.testTag(FrontScreenState.frontScreenErrDialogTag)
+            )
+
             Text(
                 text = "PCR",
                 fontSize = 60.sp,
@@ -89,7 +98,6 @@ fun FrontScreen(
                     ),
                 )
             }
-
         }
     }
 }

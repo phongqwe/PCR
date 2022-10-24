@@ -7,7 +7,9 @@
 <!--    <item name="android:navigationBarColor">-->
 <!--        @android:color/transparent-->
 <!--    </item>-->
-    <style name="Theme.PCR" parent="android:Theme.Material.Light.NoActionBar">
+<!--    <style name="Theme.PCR" parent="android:Theme.Material.Light.NoActionBar">-->
+
+    <style name="Theme.PCR" parent="Theme.MaterialComponents.Light.NoActionBar">
 
 
         <!-- Optional: set to transparent if your app is drawing behind the status bar. -->

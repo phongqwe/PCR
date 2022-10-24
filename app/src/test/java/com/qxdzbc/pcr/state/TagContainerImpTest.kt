@@ -49,7 +49,7 @@ class TagContainerImpTest {
                 throw Exception()
             }
         }
-        val c2 = cont.copy(dao = mockDao)
+        val c2 = cont.copy(tagDao = mockDao)
         assertTrue(c2.writeToDb() is Err)
         runBlocking {
             assertTrue(c2.susWriteToDb() is Err)

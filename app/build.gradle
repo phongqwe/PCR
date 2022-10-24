@@ -60,6 +60,9 @@ android {
 }
 
 dependencies {
+
+
+
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.23.1"
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
@@ -77,6 +80,11 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:${mockitoVersion}")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     implementation("com.michael-bull.kotlin-result:kotlin-result:1.1.16")
+
+    // Test rules and transitive dependencies:
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
+// Needed for createComposeRule, but not createAndroidComposeRule:
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
