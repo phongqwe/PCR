@@ -13,7 +13,7 @@ import com.qxdzbc.pcr.database.model.DbTagAssignment
 abstract class AbsPcrDataBase : RoomDatabase(),PcrDatabase{
 
     companion object{
-        val dbName = "PcrDatabase"
+        const val dbName = "PcrDatabase"
     }
 }
 
