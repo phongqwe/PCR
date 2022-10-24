@@ -10,6 +10,9 @@ interface EntryContainer : Map<String, Entry> {
     fun loadFromDbAndOverwrite(): EntryContainer
     suspend fun susLoadFromDbAndOverWrite(): EntryContainer
 
+    /**
+     * Update the content of all entries in this container so that the db reflects them. This includes update the Tag table and TagAssignment table.
+     */
     fun writeToDb():Rs<Unit,ErrorReport>
     suspend fun susWriteToDb():Rs<Unit,ErrorReport>
 }

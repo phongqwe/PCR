@@ -10,6 +10,9 @@ interface TagContainer: Map<String, Tag> {
     fun loadFromDbAndOverwrite(): TagContainer
     suspend fun susLoadFromDbAndOverWrite(): TagContainer
 
+    /**
+     * Update tag table so that it reflects the tags in this container
+     */
     fun writeToDb():Rs<Unit, ErrorReport>
     suspend fun susWriteToDb():Rs<Unit, ErrorReport>
 }

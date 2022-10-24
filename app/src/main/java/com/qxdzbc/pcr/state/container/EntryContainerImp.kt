@@ -41,10 +41,18 @@ data class EntryContainerImp @Inject constructor(
 
     override fun writeToDb(): Rs<Unit, ErrorReport> {
         try {
-            entryDao.insertOrUpdate(this.allEntries.map { it.toDbEntry() })
+            entryDao.insertOrUpdate(
+                this.allEntries.map { it.toDbEntry() }
+            )
             tagDao.insertOrUpdate(
-                this.allEntries.flatMap { it.tags }.distinct().map { it.toDbTag() })
-            tagAssignmentDao.insertAndDeleteByEntryId(this.allEntries.flatMap { it.toDbTagAssignments() })
+                this.allEntries
+                    .flatMap { it.tags }
+                    .distinct()
+                    .map { it.toDbTag() }
+            )
+            tagAssignmentDao.insertAndDeleteByEntryId(
+                this.allEntries.flatMap { it.toDbTagAssignments() }
+            )
             return Unit.toOk()
         } catch (e: Throwable) {
             val msg = "Unable to write entries in entry container into the db"

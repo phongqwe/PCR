@@ -15,14 +15,14 @@ import javax.inject.Inject
 data class TagContainerImp @Inject constructor(
     @DefaultTagMap
     private val m: Map<String, Tag>,
-    private val dao: TagDao,
+    private val tagDao: TagDao,
 ) : TagContainer, Map<String, Tag> by m {
 
     override val allTags: List<Tag>
         get() = m.values.toList()
 
     override fun loadFromDbAndOverwrite(): TagContainer {
-        return this.copy(m = dao.getAll().associateBy { it.id })
+        return this.copy(m = tagDao.getAll().associateBy { it.id })
     }
 
     override suspend fun susLoadFromDbAndOverWrite(): TagContainer {
@@ -33,7 +33,7 @@ data class TagContainerImp @Inject constructor(
 
     override fun writeToDb(): Rs<Unit, ErrorReport> {
         try {
-            dao.insertOrUpdate(this.allTags.map { it.toDbTag() })
+            tagDao.insertOrUpdate(this.allTags.map { it.toDbTag() })
             return Ok(Unit)
         } catch (e: Throwable) {
             val msg = "Unable to write tag in TagContainer into db"
