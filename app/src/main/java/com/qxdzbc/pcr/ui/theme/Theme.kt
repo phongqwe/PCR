@@ -14,23 +14,33 @@ private val DarkColorPalette = darkColors(
 //    primaryVariant = Purple700,
 //    secondary = Teal200,
     //==
-    primary =  Color(0xff277fa4),
+    primary =  PcrBlue2,
+    primaryVariant = PcrBlue2,
     onPrimary= Color.White,
 
-    onSurface = Color.White,
     surface = DarkSurface,
+    onSurface = Color.White,
 
-    secondary = Color(0xff343a46)
+    secondary = Color(0xff343a46),
+    secondaryVariant = Color(0xff343a46),
 )
 
+@SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
 //    primary = Purple500,
 //    primaryVariant = Purple700,
 //    secondary = Teal200
+    //====
     primary =  PcrBlue2,
+    onPrimary= Color.White,
     primaryVariant = PcrBlue2,
-    secondary = PcrWhite,
+
+    secondary = Color(0xffe6f7fe),
+    secondaryVariant = Color(0xffe6f7fe),
+    onSecondary = Color(0xff277fa7),
+
     surface = PcrWhite,
+    onSurface = Color(0xff23272f),
 
     /* Other default colors to override
     background = Color.White,

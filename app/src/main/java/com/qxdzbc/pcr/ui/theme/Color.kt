@@ -9,7 +9,7 @@ val Teal200 = Color(0xFF03DAC5)
 
 
 val PcrBlue1 = Color(0xFF7FC3F0)
-val PcrBlue2 = Color(0xff4AA2DB)
+val PcrBlue2 = Color(0xff277fa4)
 val PcrBlue3 = Color(0xff3193D3)
 
 val PcrDarkGray1 = Color(0xff505254)

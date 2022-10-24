@@ -65,7 +65,7 @@ fun FrontScreen() {
 @Preview(showBackground = true)
 @Composable
 fun FrontScreenPreview() {
-    PCRTheme(darkTheme = true) {
+    PCRTheme(darkTheme = false) {
         FrontScreen()
     }
 }
