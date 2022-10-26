@@ -2,7 +2,7 @@ package com.qxdzbc.pcr.state.app
 
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.common.StateUtils.ms
-import com.qxdzbc.pcr.di.DefaultUserMs
+import com.qxdzbc.pcr.di.UserMs
 import com.qxdzbc.pcr.di.state.FrontScreeStateMs
 import com.qxdzbc.pcr.di.state.IsDarkThemeMs
 import com.qxdzbc.pcr.di.state.MainScreenStateMs
@@ -19,7 +19,7 @@ data class AppStateImp @Inject constructor(
     override val errorReporter: ErrorRouter,
     @IsDarkThemeMs
     override val isDarkThemeMs: Ms<Boolean>,
-    @DefaultUserMs
+    @UserMs
     override val userMs:Ms<FirebaseUserWrapper?> = ms(null),
 ) : AppState {
 }

@@ -24,8 +24,8 @@ import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenState.Companion.frontScreenNavTag
 import com.qxdzbc.pcr.screen.main_screen.MainScreen
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
-import com.qxdzbc.pcr.screen.main_screen.mainScreenNavTag
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
+import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState.Companion.mainScreenNavTag
 import com.qxdzbc.pcr.state.app.AppState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper.Companion.toWrapper
 import com.qxdzbc.pcr.ui.theme.PCRTheme

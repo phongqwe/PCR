@@ -17,10 +17,12 @@ import androidx.compose.ui.graphics.ColorFilter.Companion.tint
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 
 @Composable
 fun UserInfo(
+    user:FirebaseUserWrapper,
     modifier: Modifier = Modifier
 ) {
     Column {
@@ -34,8 +36,8 @@ fun UserInfo(
                 colorFilter = tint(MaterialTheme.colors.onSurface)
             )
             Column {
-                Text("user name")
-                Text("user@email.com")
+                Text(user.displayName?:"")
+                Text(user.email?:"")
             }
         }
         Divider(modifier=Modifier.background(MaterialTheme.colors.onSurface))
@@ -48,7 +50,7 @@ fun UserInfo(
 fun previewUserInfo(){
     PCRTheme(darkTheme = true) {
         Surface {
-            UserInfo()
+            UserInfo(FirebaseUserWrapper.forPreview)
         }
     }
 }

@@ -1,6 +1,11 @@
 package com.qxdzbc.pcr.di.state
 
 import javax.inject.Qualifier
+
+@Qualifier
+@Retention
+annotation class UserSt
+
 @Qualifier
 @Retention
 annotation class IsDarkThemeSt

@@ -12,10 +12,10 @@ import com.qxdzbc.pcr.screen.common.CommonTopAppBar
 import com.qxdzbc.pcr.screen.common.ThemeSwitcher
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
+import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import kotlinx.coroutines.launch
 
-const val mainScreenNavTag = "MainScreen_NavTag"
 
 @Composable
 fun MainScreen(
@@ -56,7 +56,7 @@ fun MainScreen(
             }
         },
         drawerContent = {
-            UserInfo()
+            UserInfo(state.userSt.value ?: FirebaseUserWrapper.forPreview)
             ClickableDrawerItem("TODO: Manage tag") {}
             DrawerItem{
                 ThemeSwitcher(isDark = state.isDark, switchTheme = {
@@ -79,8 +79,8 @@ fun MainScreen(
 fun previewMainScreen() {
     PCRTheme(darkTheme = true) {
         MainScreen(
-            state = MainScreenState.forPreview(),
-            action =  MainScreenAction.forPreview()
+            state = MainScreenState.forPreview,
+            action =  MainScreenAction.forPreview
         )
     }
 }

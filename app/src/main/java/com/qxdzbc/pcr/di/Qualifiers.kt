@@ -8,7 +8,7 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention
-annotation class DefaultUserMs
+annotation class UserMs
 
 @Qualifier
 @Retention
