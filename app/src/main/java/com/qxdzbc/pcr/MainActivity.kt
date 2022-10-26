@@ -13,7 +13,7 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.auth.FirebaseAuth
-import com.qxdzbc.pcr.action.UpdateUserAction
+import com.qxdzbc.pcr.action.update_user.UpdateUserAction
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.state.AppStateMs
@@ -23,6 +23,7 @@ import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenState.Companion.frontScreenNavTag
 import com.qxdzbc.pcr.screen.main_screen.MainScreen
 import com.qxdzbc.pcr.screen.main_screen.mainScreenNavTag
+import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
 import com.qxdzbc.pcr.state.app.AppState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper.Companion.toWrapper
 import com.qxdzbc.pcr.ui.theme.PCRTheme
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
     lateinit var frontAction: FrontScreenAction
 
     @Inject
-    lateinit var updateUserAction:UpdateUserAction
+    lateinit var updateUserAction: UpdateUserAction
 
     @Inject
     lateinit var errorRouter: ErrorRouter
@@ -82,7 +83,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(mainScreenNavTag) {
-                        MainScreen()
+                        MainScreen(state= MainScreenState.preview())
                         BackHandler(true) {
                             if(hasUser()){
                                 /*

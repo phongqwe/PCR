@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.action
+package com.qxdzbc.pcr.action.remove_err
 
 import com.qxdzbc.pcr.err.ErrorReport
 

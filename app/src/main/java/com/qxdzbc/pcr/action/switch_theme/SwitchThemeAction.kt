@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.action
+package com.qxdzbc.pcr.action.switch_theme
 
 interface SwitchThemeAction {
     fun switchTheme(isDark:Boolean)

@@ -1,6 +1,12 @@
 package com.qxdzbc.pcr.di.action
 
-import com.qxdzbc.pcr.action.*
+import com.qxdzbc.pcr.action.remove_err.RemoveErr
+import com.qxdzbc.pcr.action.remove_err.RemoveErrFromFrontScreen
+import com.qxdzbc.pcr.action.remove_err.RemoveErrFromMainScreen
+import com.qxdzbc.pcr.action.switch_theme.SwitchThemeAction
+import com.qxdzbc.pcr.action.switch_theme.SwitchThemeActionImp
+import com.qxdzbc.pcr.action.update_user.UpdateUserAction
+import com.qxdzbc.pcr.action.update_user.UpdateUserActionImp
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenActionImp
 import dagger.Binds
@@ -14,17 +20,17 @@ import javax.inject.Singleton
 interface ActionModule {
     @Binds
     @Singleton
-    fun UpdateUserAction(i:UpdateUserActionImp):UpdateUserAction
+    fun UpdateUserAction(i: UpdateUserActionImp): UpdateUserAction
 
     @Binds
     @Singleton
     @RemoveErrFromFrontScreenQ
-    fun RemoveErrInFrontAct(i:RemoveErrFromFrontScreen):RemoveErr
+    fun RemoveErrInFrontAct(i: RemoveErrFromFrontScreen): RemoveErr
 
     @Binds
     @Singleton
     @RemoveErrFromMainScreenQ
-    fun RemoveErrInMainAct(i:RemoveErrFromMainScreen):RemoveErr
+    fun RemoveErrInMainAct(i: RemoveErrFromMainScreen): RemoveErr
 
     @Binds
     @Singleton
@@ -32,5 +38,5 @@ interface ActionModule {
 
     @Binds
     @Singleton
-    fun switchThemeAct(i:SwitchThemeActionImp): SwitchThemeAction
+    fun switchThemeAct(i: SwitchThemeActionImp): SwitchThemeAction
 }

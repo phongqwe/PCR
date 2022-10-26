@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.action
+package com.qxdzbc.pcr.action.update_user
 
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 

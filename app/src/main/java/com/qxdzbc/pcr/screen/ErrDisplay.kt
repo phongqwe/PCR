@@ -12,6 +12,9 @@ import androidx.compose.ui.unit.dp
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.err.OtherErrors
 
+/**
+ * Display multiple errors dialog. When the dialog is discarded, remove the err from the state.
+ */
 @Composable
 fun ErrDisplay(
     errorList:List<ErrorReport>,
