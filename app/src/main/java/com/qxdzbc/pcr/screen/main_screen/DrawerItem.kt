@@ -9,40 +9,43 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.qxdzbc.pcr.ui.theme.Shapes
-
-
 @Composable
 fun DrawerItem(
+    modifier: Modifier = Modifier,
     content: @Composable ()->Unit,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
-
     Box(
         modifier = modifier
             .background(Color.Transparent)
-            .clickable {
-                onClick()
-            }
             .fillMaxWidth()
             .padding(start = 30.dp, top = 15.dp, bottom = 15.dp)
     ){
         content()
     }
+}
 
+@Composable
+fun ClickableDrawerItem(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable ()->Unit,
+) {
+    DrawerItem(modifier = modifier.clickable { onClick() }){
+
+            content()
+
+    }
 }
 @Composable
-fun DrawerItem(
+fun ClickableDrawerItem(
     name: String,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
-    DrawerItem(content = {
+    ClickableDrawerItem(content = {
         Text(name, fontSize = 17.sp)
     } , onClick = onClick, modifier = modifier)
 }
@@ -51,6 +54,6 @@ fun DrawerItem(
 @Composable
 fun PreviewDrawerItem() {
     Surface() {
-        DrawerItem(name = "item", onClick = {})
+        ClickableDrawerItem(name = "item", onClick = {})
     }
 }

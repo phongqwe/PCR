@@ -15,7 +15,7 @@ private val DarkColorPalette = darkColors(
 //    secondary = Teal200,
     //==
     primary =  PcrBlue2,
-    primaryVariant = PcrBlue2,
+    primaryVariant = PcrBlue3,
     onPrimary= Color.White,
 
     surface = DarkSurface,
@@ -32,8 +32,8 @@ private val LightColorPalette = lightColors(
 //    secondary = Teal200
     //====
     primary =  PcrBlue2,
+    primaryVariant = PcrBlue3,
     onPrimary= Color.White,
-    primaryVariant = PcrBlue2,
 
     secondary = Color(0xffe6f7fe),
     secondaryVariant = Color(0xffe6f7fe),

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,11 +17,13 @@ import com.qxdzbc.pcr.action.update_user.UpdateUserAction
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.state.AppStateMs
+import com.qxdzbc.pcr.di.state.MainScreenStateMs
 import com.qxdzbc.pcr.err.ErrorRouter
 import com.qxdzbc.pcr.screen.front_screen.FrontScreen
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenState.Companion.frontScreenNavTag
 import com.qxdzbc.pcr.screen.main_screen.MainScreen
+import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
 import com.qxdzbc.pcr.screen.main_screen.mainScreenNavTag
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
 import com.qxdzbc.pcr.state.app.AppState
@@ -47,6 +49,9 @@ class MainActivity : ComponentActivity() {
     lateinit var updateUserAction: UpdateUserAction
 
     @Inject
+    lateinit var mainAction:MainScreenAction
+
+    @Inject
     lateinit var errorRouter: ErrorRouter
 
     val appState get() = appStateMs.value
@@ -65,7 +70,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             PCRTheme(darkTheme = appState.isDarkThemeMs.value) {
                 val sysUiController = rememberSystemUiController()
@@ -83,15 +87,18 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(mainScreenNavTag) {
-                        MainScreen(state= MainScreenState.preview())
+                        MainScreen(
+                            state = appState.mainScreenStateMs.value,
+                            action = mainAction
+                        )
                         BackHandler(true) {
-                            if(hasUser()){
+                            if (hasUser()) {
                                 /*
                                  do nothing, prevent user from
                                  going back to front screen once
                                  they have login
                                  */
-                            }else{
+                            } else {
                                 onBackPressed()
                             }
                         }
@@ -119,7 +126,7 @@ class MainActivity : ComponentActivity() {
     /**
      * skip front screen and go straight to main screen if the user has already signed in.
      */
-    private fun toMainIfPossible(){
+    private fun toMainIfPossible() {
         if (FirebaseAuth.getInstance().currentUser != null) {
             navController.navigate(mainScreenNavTag)
         }

@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.qxdzbc.pcr.screen.ErrDisplay
+import com.qxdzbc.pcr.screen.common.ThemeSwitcher
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenState
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenStateImp
 import com.qxdzbc.pcr.ui.theme.PCRTheme
@@ -26,23 +27,24 @@ fun FrontScreen(
         ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
         ) {
-            val (title, subTitle, loginBut, switch,errDialog) = createRefs()
+            val (title, subTitle, loginBut, switch, errDialog) = createRefs()
 
             ErrDisplay(
-                errorList =state.errorContainerSt.value,
-                removeErr = {action.removeErr(it)},
-                modifier=Modifier.constrainAs(errDialog){
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }.testTag(FrontScreenState.frontScreenErrDialogTag)
+                errorList = state.errorContainerSt.value,
+                removeErr = { action.removeErr(it) },
+                modifier = Modifier
+                    .constrainAs(errDialog) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .testTag(FrontScreenState.frontScreenErrDialogTag)
             )
 
             Text(
                 text = "PCR",
                 fontSize = 60.sp,
-//                color = MaterialTheme.colors.onSurface,
                 fontWeight = FontWeight.W900,
                 modifier = Modifier.constrainAs(title) {
                     top.linkTo(parent.top)
@@ -76,28 +78,15 @@ fun FrontScreen(
             ) {
                 Text("Login")
             }
-            Row(
+
+            ThemeSwitcher(
+                isDark = state.isDark,
                 modifier = Modifier.constrainAs(switch) {
                     bottom.linkTo(parent.bottom)
                     end.linkTo(parent.end)
                 },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = if (state.isDark) "dark" else "light",
-//                    color = MaterialTheme.colors.onSurface
-                )
-                Switch(
-                    checked = state.isDark,
-                    onCheckedChange = { newValue ->
-                        action.switchTheme(newValue)
-                    },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colors.onSurface,
-//                        uncheckedThumbColor = MaterialTheme.colors.onSurface,
-                    ),
-                )
-            }
+                switchTheme = action::switchTheme,
+            )
         }
     }
 }

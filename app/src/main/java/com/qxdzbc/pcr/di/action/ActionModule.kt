@@ -9,6 +9,8 @@ import com.qxdzbc.pcr.action.update_user.UpdateUserAction
 import com.qxdzbc.pcr.action.update_user.UpdateUserActionImp
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenActionImp
+import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
+import com.qxdzbc.pcr.screen.main_screen.action.MainScreenActionImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,6 +20,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface ActionModule {
+    @Binds
+    @Singleton
+    fun MainScreenAction(i:MainScreenActionImp): MainScreenAction
+
     @Binds
     @Singleton
     fun UpdateUserAction(i: UpdateUserActionImp): UpdateUserAction

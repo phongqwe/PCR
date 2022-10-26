@@ -3,73 +3,84 @@ package com.qxdzbc.pcr.screen.main_screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.qxdzbc.pcr.common.StateUtils.ms
+import com.qxdzbc.pcr.screen.common.CommonTopAppBar
+import com.qxdzbc.pcr.screen.common.ThemeSwitcher
+import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
 import com.qxdzbc.pcr.ui.theme.PCRTheme
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 const val mainScreenNavTag = "MainScreen_NavTag"
-@Composable
-fun MainScreen (
-    state:MainScreenState
-){
-    Surface(modifier= Modifier.fillMaxSize()) {
-        val drawerState = rememberDrawerState(DrawerValue.Closed)
-        val crScope = rememberCoroutineScope()
-        ModalDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                UserInfo()
-                DrawerItem("TODO: Manage tag",{})
-                DrawerItem("TODO: switch theme",{})
-                DrawerItem("TODO: logout",{})
-            },
 
-        ) {
-            Column(modifier= Modifier.fillMaxSize()){
-                Row(modifier=Modifier.fillMaxWidth()){
-                    ConstraintLayout(modifier =Modifier.fillMaxWidth()) {
-                        val (menuRef)=createRefs()
-                        IconButton(
-                            onClick = {
-                                crScope.launch {
-                                    drawerState.open()
+@Composable
+fun MainScreen(
+    state: MainScreenState,
+    action: MainScreenAction,
+) {
+    val crScope = rememberCoroutineScope()
+    val scaffoldState = rememberScaffoldState()
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
+            CommonTopAppBar {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                            val (menuRef) = createRefs()
+                            IconButton(
+                                onClick = {
+                                    crScope.launch {
+                                        scaffoldState.drawerState.open()
+                                    }
+                                },
+                                modifier = Modifier.constrainAs(menuRef) {
+                                    start.linkTo(parent.start)
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
                                 }
-                            },
-                            modifier=Modifier.constrainAs(menuRef){
-                                start.linkTo(parent.start)
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
+                            ) {
+                                Icon(
+                                    Icons.Default.Menu,
+                                    contentDescription = "menu button",
+                                    tint = MaterialTheme.colors.onPrimary
+                                )
                             }
-                        ) {
-                            Icon(
-                                Icons.Default.Menu,
-                                contentDescription = "menu button",
-                                tint=MaterialTheme.colors.onSurface
-                            )
                         }
                     }
                 }
             }
+        },
+        drawerContent = {
+            UserInfo()
+            ClickableDrawerItem("TODO: Manage tag") {}
+            DrawerItem{
+                ThemeSwitcher(isDark = state.isDark, switchTheme = {
+                    crScope.launch {
+                        scaffoldState.drawerState.close()
+                        action.switchTheme(it)
+                    }
+                })
+            }
+            ClickableDrawerItem("TODO: logout") {}
+        },
+    ) { contentPadding ->
+        Box(modifier = Modifier.padding(contentPadding)) {
         }
     }
 }
 
 @Composable
 @Preview
-fun previewMainScreen(){
+fun previewMainScreen() {
     PCRTheme(darkTheme = true) {
-        MainScreen(state = MainScreenState.preview())
+        MainScreen(
+            state = MainScreenState.forPreview(),
+            action =  MainScreenAction.forPreview()
+        )
     }
 }
