@@ -15,23 +15,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.qxdzbc.pcr.ui.theme.Shapes
 
+
+@Composable
+fun DrawerItem(
+    content: @Composable ()->Unit,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    Box(
+        modifier = modifier
+            .background(Color.Transparent)
+            .clickable {
+                onClick()
+            }
+            .fillMaxWidth()
+            .padding(start = 30.dp, top = 15.dp, bottom = 15.dp)
+    ){
+        content()
+    }
+
+}
 @Composable
 fun DrawerItem(
     name: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    Box(
-        modifier =modifier.background(Color.Transparent)
-            .clickable {
-                onClick()
-            }
-            .fillMaxWidth()
-            .padding(start =30.dp,top =15.dp, bottom =15.dp)
-    ){
+    DrawerItem(content = {
         Text(name, fontSize = 17.sp)
-    }
+    } , onClick = onClick, modifier = modifier)
 }
 
 @Preview(showBackground = true)

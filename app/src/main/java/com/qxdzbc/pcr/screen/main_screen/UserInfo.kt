@@ -1,7 +1,9 @@
 package com.qxdzbc.pcr.screen.main_screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -21,18 +23,24 @@ import com.qxdzbc.pcr.ui.theme.PCRTheme
 fun UserInfo(
     modifier: Modifier = Modifier
 ) {
-    Row(modifier=modifier.fillMaxWidth().padding(top =30.dp, bottom = 30.dp, start=30.dp)) {
-        Image(
-            imageVector = Icons.Outlined.AccountCircle,
-            contentDescription = "user avatar",
-            modifier = Modifier.size(50.dp),
-            colorFilter = tint(MaterialTheme.colors.onSurface)
-        )
-        Column {
-            Text("user name")
-            Text("user@email.com")
+    Column {
+        Row(modifier= modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp, bottom = 30.dp, start = 30.dp)) {
+            Image(
+                imageVector = Icons.Outlined.AccountCircle,
+                contentDescription = "user avatar",
+                modifier = Modifier.size(50.dp),
+                colorFilter = tint(MaterialTheme.colors.onSurface)
+            )
+            Column {
+                Text("user name")
+                Text("user@email.com")
+            }
         }
+        Divider(modifier=Modifier.background(MaterialTheme.colors.onSurface))
     }
+
 }
 
 @Preview(showBackground = true)
