@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.state
+package com.qxdzbc.pcr.state.app
 
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.common.St
@@ -12,4 +12,5 @@ interface AppState {
     val mainScreenStateMs:Ms<MainScreenState>
     val isDarkThemeMs:Ms<Boolean>
     val errorReporter:ErrorRouter
+    val userMs:Ms<FirebaseUserWrapper?>
 }

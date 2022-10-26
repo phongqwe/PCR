@@ -2,10 +2,9 @@ package com.qxdzbc.pcr
 
 import android.app.Application
 import com.qxdzbc.pcr.common.Ms
-import com.qxdzbc.pcr.database.AbsPcrDataBase
 import com.qxdzbc.pcr.database.PcrDatabase
 import com.qxdzbc.pcr.di.state.AppStateMs
-import com.qxdzbc.pcr.state.AppState
+import com.qxdzbc.pcr.state.app.AppState
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 

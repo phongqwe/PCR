@@ -18,6 +18,8 @@ data class DbEntry(
     val detail:String? = null,
     @ColumnInfo(name = dateTimeCol)
     val dateTime:Long = 0,
+    @ColumnInfo(name = isUploadedCol)
+    val isUploaded:Int=0,
 ) {
     companion object{
         const val idCol = "id"
@@ -25,5 +27,10 @@ data class DbEntry(
         const val detailCol ="detail"
         const val dateTimeCol = "dateTime"
         const val tableName="Entry"
+        const val isUploadedCol = "isUploaded"
+    }
+
+    fun setUploaded(i:Boolean):DbEntry{
+        return this.copy(isUploaded = if(i) 1 else 0)
     }
 }

@@ -12,7 +12,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface ActionModule {
-
+    @Binds
+    @Singleton
+    fun UpdateUserAction(i:UpdateUserActionImp):UpdateUserAction
 
     @Binds
     @Singleton

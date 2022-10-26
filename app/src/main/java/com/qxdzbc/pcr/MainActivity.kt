@@ -1,14 +1,10 @@
 package com.qxdzbc.pcr
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,19 +13,18 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.auth.FirebaseAuth
+import com.qxdzbc.pcr.action.UpdateUserAction
 import com.qxdzbc.pcr.common.Ms
-import com.qxdzbc.pcr.common.St
-import com.qxdzbc.pcr.common.StateUtils.ms
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.state.AppStateMs
 import com.qxdzbc.pcr.err.ErrorRouter
-import com.qxdzbc.pcr.err.OtherErrors
 import com.qxdzbc.pcr.screen.front_screen.FrontScreen
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenState.Companion.frontScreenNavTag
 import com.qxdzbc.pcr.screen.main_screen.MainScreen
 import com.qxdzbc.pcr.screen.main_screen.mainScreenNavTag
-import com.qxdzbc.pcr.state.AppState
+import com.qxdzbc.pcr.state.app.AppState
+import com.qxdzbc.pcr.state.app.FirebaseUserWrapper.Companion.toWrapper
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import com.qxdzbc.pcr.util.FireAuthUtils.hasUser
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +43,9 @@ class MainActivity : ComponentActivity() {
     lateinit var frontAction: FrontScreenAction
 
     @Inject
+    lateinit var updateUserAction:UpdateUserAction
+
+    @Inject
     lateinit var errorRouter: ErrorRouter
 
     val appState get() = appStateMs.value
@@ -56,15 +54,10 @@ class MainActivity : ComponentActivity() {
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
     ) { res ->
-
         when (res.resultCode) {
             android.app.Activity.RESULT_OK -> {
                 navController.navigate(mainScreenNavTag)
-            }
-            else -> {
-//                errorRouter.reportToFrontScreen(OtherErrors.UnableToLogin.report(
-//                    res.idpResponse?.email?.let { "Unable to login with email $it" }
-//                ))
+                updateUserAction.updateUser(FirebaseAuth.getInstance().currentUser?.toWrapper())
             }
         }
     }

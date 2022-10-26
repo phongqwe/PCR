@@ -25,6 +25,14 @@ data class DbEntryWithTags(
     override val money: Double get()= entry.money
     override val detail: String? get()= entry.detail
     override val dateTime: Date get()= Date(entry.dateTime)
+    override val isUploaded: Boolean
+        get() = entry.isUploaded > 0
+
+    override fun setIsUploaded(i: Boolean): Entry {
+        return this.copy(
+            entry = entry.setUploaded(i)
+        )
+    }
 
     override fun toDbEntry(): DbEntry {
         return this.entry

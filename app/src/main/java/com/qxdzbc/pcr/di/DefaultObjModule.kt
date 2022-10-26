@@ -1,7 +1,11 @@
 package com.qxdzbc.pcr.di
 
+import com.qxdzbc.pcr.common.Ms
+import com.qxdzbc.pcr.common.StateUtils
+import com.qxdzbc.pcr.common.StateUtils.ms
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbTag
+import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,6 +15,13 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface DefaultObjModule {
     companion object{
+
+        @DefaultUserMs
+        @Provides
+        fun userMs():Ms<FirebaseUserWrapper?> {
+            return ms(null)
+        }
+
         @Provides
         @False
         fun False():Boolean {

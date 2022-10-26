@@ -3,12 +3,10 @@ package com.qxdzbc.pcr.di.state
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.common.St
 import com.qxdzbc.pcr.common.StateUtils.ms
-import com.qxdzbc.pcr.err.ErrorContainer
-import com.qxdzbc.pcr.err.ErrorContainerImp
 import com.qxdzbc.pcr.err.ErrorRouter
 import com.qxdzbc.pcr.err.ErrorRouterImp
-import com.qxdzbc.pcr.state.AppState
-import com.qxdzbc.pcr.state.AppStateImp
+import com.qxdzbc.pcr.state.app.AppState
+import com.qxdzbc.pcr.state.app.AppStateImp
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -20,7 +18,7 @@ import javax.inject.Singleton
 @DisableInstallInCheck
 interface AppStateModule {
     @Binds
-    fun AppState(i:AppStateImp):AppState
+    fun AppState(i: AppStateImp): AppState
 
     @Binds
     @Singleton
@@ -30,7 +28,7 @@ interface AppStateModule {
         @Provides
         @AppStateMs
         @Singleton
-        fun AppStateMs(a:AppState):Ms<AppState>{
+        fun AppStateMs(a: AppState):Ms<AppState>{
             return ms(a)
         }
         @Provides

@@ -10,6 +10,8 @@ interface Entry {
     val detail:String?
     val dateTime: Date
     val tags:List<Tag>
+    val isUploaded:Boolean
+    fun setIsUploaded(i:Boolean):Entry
 
     fun toDbEntry():DbEntry
     fun toDbTagAssignments(): List<DbTagAssignment>

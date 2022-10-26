@@ -5,6 +5,11 @@ import javax.inject.Qualifier
 //@Scope
 //@Retention
 //annotation class PCRSingleton
+
+@Qualifier
+@Retention
+annotation class DefaultUserMs
+
 @Qualifier
 @Retention
 annotation class False
