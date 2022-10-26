@@ -21,20 +21,9 @@ fun DrawerItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-//    Button(
-//        onClick = onClick,
-//        shape = RectangleShape,
-//        colors = ButtonDefaults.buttonColors(
-//            backgroundColor = Color.Transparent,
-//            contentColor = MaterialTheme.colors.onSurface,
-//        ),
-//        modifier = modifier.fillMaxWidth()
-//    ) {
-//
-//    }
 
     Box(
-        modifier =Modifier.background(Color.Transparent)
+        modifier =modifier.background(Color.Transparent)
             .clickable {
                 onClick()
             }
