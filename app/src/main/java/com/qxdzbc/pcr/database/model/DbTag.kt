@@ -20,8 +20,8 @@ data class DbTag(
         const val tableName="Tag"
     }
 
-    override val tagId: TagId
-        get() = TagId(id)
+    override val tagId: String
+        get() = id
 
     override fun toDbTag(): DbTag {
         return this

@@ -32,7 +32,7 @@ class EntryContainerImpTest {
             tags=ts.tags
         )
          tagAssignmentDao = MockTagAssignmentDao()
-        cont = EntryContainerImp(ts.entriesWithTag.associateBy { it.id.i },entryDao,tagDao,tagAssignmentDao)
+        cont = EntryContainerImp(ts.entriesWithTag.associateBy { it.id },entryDao,tagDao,tagAssignmentDao)
     }
 
     @Test

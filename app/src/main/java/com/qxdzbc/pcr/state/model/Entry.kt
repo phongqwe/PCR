@@ -5,7 +5,7 @@ import com.qxdzbc.pcr.database.model.DbTagAssignment
 import java.util.*
 
 interface Entry {
-    val id:EntryId
+    val id:String
     val money: Double
     val detail:String?
     val dateTime: Date

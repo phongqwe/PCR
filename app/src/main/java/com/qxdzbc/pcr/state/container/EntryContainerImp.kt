@@ -29,7 +29,7 @@ data class EntryContainerImp @Inject constructor(
 
     override val allEntries: List<Entry> get() = m.values.toList()
     override fun loadFromDbAndOverwrite(): EntryContainer {
-        val nm = entryDao.getEntryWithTag().associateBy { it.id.i }
+        val nm = entryDao.getEntryWithTag().associateBy { it.id }
         return this.copy(m = nm)
     }
 

@@ -21,7 +21,7 @@ data class DbEntryWithTags(
     )
     override val tags: List<DbTag>
 ) : Entry {
-    override val id: EntryId get()= EntryId(entry.id)
+    override val id: String get()= entry.id
     override val money: Double get()= entry.money
     override val detail: String? get()= entry.detail
     override val dateTime: Date get()= Date(entry.dateTime)
@@ -41,7 +41,7 @@ data class DbEntryWithTags(
     override fun toDbTagAssignments(): List<DbTagAssignment> {
         return this.tags.map {dbTag->
             DbTagAssignment(
-                entryId = id.i,
+                entryId = id,
                 tagId = dbTag.id
             )
         }
