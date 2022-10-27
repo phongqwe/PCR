@@ -4,7 +4,6 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.qxdzbc.pcr.state.model.Entry
-import com.qxdzbc.pcr.state.model.EntryId
 import java.util.*
 
 data class DbEntryWithTags(
@@ -47,4 +46,14 @@ data class DbEntryWithTags(
         }
     }
 
+    companion object{
+        fun random():DbEntryWithTags{
+            return DbEntryWithTags(
+                entry = DbEntry.random(),
+                tags = (1 .. 4).map {
+                    DbTag.random()
+                }
+            )
+        }
+    }
 }

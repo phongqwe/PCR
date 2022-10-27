@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.qxdzbc.pcr.state.model.Tag
-import com.qxdzbc.pcr.state.model.TagId
+import java.util.*
 
 @Entity(tableName =DbTag.tableName)
 data class DbTag(
@@ -18,6 +18,14 @@ data class DbTag(
         const val idCol="id"
         const val nameCol ="name"
         const val tableName="Tag"
+
+        fun random():DbTag{
+            val id = UUID.randomUUID().toString()
+            return DbTag(
+                id= id,
+                name = "tag name: $id"
+            )
+        }
     }
 
     override val tagId: String

@@ -4,8 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.qxdzbc.pcr.state.model.EntryId
-import java.util.Date
+import java.util.*
 
 @Entity(tableName = DbEntry.tableName)
 data class DbEntry(
@@ -28,6 +27,17 @@ data class DbEntry(
         const val dateTimeCol = "dateTime"
         const val tableName="Entry"
         const val isUploadedCol = "isUploaded"
+
+        fun random():DbEntry{
+            val id = UUID.randomUUID().toString()
+            return DbEntry(
+                id = id,
+                money = (1 .. 100).random().toDouble(),
+                detail =  "detail : ${id}",
+                dateTime = (1 .. 100).random().toLong(),
+                isUploaded = 0,
+            )
+        }
     }
 
     fun setUploaded(i:Boolean):DbEntry{

@@ -8,6 +8,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.qxdzbc.pcr.database.model.DbEntry
+import com.qxdzbc.pcr.database.model.DbEntryWithTags
+import com.qxdzbc.pcr.firestore.EntryDoc
+import com.qxdzbc.pcr.firestore.FirebaseHelperImp
+import com.qxdzbc.pcr.firestore.TagDoc
 import com.qxdzbc.pcr.screen.common.CommonTopAppBar
 import com.qxdzbc.pcr.screen.common.ThemeSwitcher
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
@@ -58,7 +64,7 @@ fun MainScreen(
         drawerContent = {
             UserInfo(state.userSt.value ?: FirebaseUserWrapper.forPreview)
             ClickableDrawerItem("TODO: Manage tag") {}
-            DrawerItem{
+            DrawerItem {
                 ThemeSwitcher(isDark = state.isDark, switchTheme = {
                     crScope.launch {
                         scaffoldState.drawerState.close()
@@ -70,6 +76,65 @@ fun MainScreen(
         },
     ) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
+            Column {
+//                Button(onClick = {
+//                    val s = FirebaseFirestore.getInstance()
+//                    s.collection("users").get().addOnSuccessListener {
+//                        it.documents.map {
+//                            Log.d("Phong", it.get("name").toString())
+//                            Log.d("Phong", it.get("age").toString())
+//                        }
+//                    }
+//                }) {
+//                    Text("Query")
+//                }
+//                var i: Int by remember { ms(0) }
+//                Button(onClick = {
+//                    val s = FirebaseFirestore.getInstance()
+//                    s.collection("users").document("user$i").set(
+//                        mapOf(
+//                            "name" to "name_user $i", "age" to i,
+//                            "tags" to listOf(
+//                                mapOf("tag1" to "tagName_1"),
+//                                mapOf("tag2" to "tagName_2")
+//                            )
+//                        )
+//                    )
+//                    i += 1
+//                }) {
+//                    Text("AddUser")
+//                }
+//
+//                Button(onClick = {
+//                    val s = FirebaseFirestore.getInstance()
+//                    s.collection("users").document("user0").update(
+//                        "tags", listOf(
+//                            mapOf("tag1" to "tagName_10"),
+//                            mapOf("tag2" to "tagName_20")
+//                        )
+//                    )
+//                    i += 1
+//                }) {
+//                    Text("Add tag ")
+//                }
+                val h = remember {
+                    FirebaseHelperImp()
+                }
+                Button(onClick = {
+                    crScope.launch {
+                        val e = DbEntryWithTags.random()
+                        val uid =FirebaseAuth.getInstance().currentUser!!.uid
+                        e.tags.map { it.toTagDoc() }.forEach {
+                            h.writeTag(uid,it)
+                        }
+                        h.writeEntry(uid, e)
+                    }
+                }) {
+                    Text("Add Entry ")
+                }
+
+            }
+
         }
     }
 }
@@ -80,7 +145,7 @@ fun previewMainScreen() {
     PCRTheme(darkTheme = true) {
         MainScreen(
             state = MainScreenState.forPreview,
-            action =  MainScreenAction.forPreview
+            action = MainScreenAction.forPreview
         )
     }
 }
