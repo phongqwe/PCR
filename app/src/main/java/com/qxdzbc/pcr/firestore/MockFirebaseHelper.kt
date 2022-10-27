@@ -7,7 +7,8 @@ import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
 
 class MockFirebaseHelper constructor(
-    val entries: List<Entry> = emptyList()
+    val entries: List<Entry> = emptyList(),
+    val tags:List<Tag> = emptyList()
 ) : FirebaseHelper {
     override suspend fun writeTag(userId: String, tag: TagDoc): Rs<Unit, ErrorReport> {
         return Ok(Unit)
@@ -38,7 +39,7 @@ class MockFirebaseHelper constructor(
     }
 
     override suspend fun readAllTagsToModel(userId: String): Rs<List<Tag>, ErrorReport> {
-        return Ok(emptyList())
+        return Ok(tags)
     }
 
     override suspend fun readMultiTagsById(

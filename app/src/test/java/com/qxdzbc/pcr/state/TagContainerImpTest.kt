@@ -3,6 +3,7 @@ package com.qxdzbc.pcr.state
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.qxdzbc.pcr.database.dao.TagDao
+import com.qxdzbc.pcr.firestore.MockFirebaseHelper
 import com.qxdzbc.pcr.state.container.TagContainerImp
 import com.qxdzbc.test.MockTagDao
 import com.qxdzbc.test.TestSample
@@ -16,12 +17,23 @@ class TagContainerImpTest {
     lateinit var mockTagDao: MockTagDao
     lateinit var cont: TagContainerImp
     lateinit var ts: TestSample
-
+    lateinit var firebaseHelper: MockFirebaseHelper
     @Before
     fun bf() {
         ts = TestSample()
+        firebaseHelper = MockFirebaseHelper(tags =ts.tags.subList(0,ts.tags.size/2))
         mockTagDao = MockTagDao(ts.tags)
-        cont = TagContainerImp(emptyMap(), mockTagDao)
+        cont = TagContainerImp(emptyMap(), mockTagDao,firebaseHelper)
+    }
+
+    @Test
+    fun loadFromFirestoreAndOverwrite(){
+        runBlocking {
+            val expect = firebaseHelper.readAllTagsToModel("").component1()!!
+            assertNotEquals(cont.allTags,expect)
+            val rs = cont.loadFromFirestoreAndOverwrite("")
+            assertEquals(expect,rs.component1()!!.allTags)
+        }
     }
 
     @Test
