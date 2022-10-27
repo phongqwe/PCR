@@ -1,5 +1,6 @@
 package com.qxdzbc.pcr.state.container
 
+import com.github.michaelbull.result.map
 import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.common.ResultUtils.toOk
 import com.qxdzbc.pcr.common.Rs
@@ -9,6 +10,7 @@ import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.DefaultEntryMap
 import com.qxdzbc.pcr.err.ErrorReport
+import com.qxdzbc.pcr.firestore.FirebaseHelper
 import com.qxdzbc.pcr.state.model.Entry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,11 +22,12 @@ data class EntryContainerImp @Inject constructor(
     private val entryDao: EntryDao,
     private val tagDao: TagDao,
     private val tagAssignmentDao: TagAssignmentDao,
+    private val firebaseHelper: FirebaseHelper,
 ) : EntryContainer, Map<String, Entry> by m {
 
     companion object {
-        fun empty(entryDao: EntryDao, tagDao: TagDao, tagAssignmentDao: TagAssignmentDao) =
-            EntryContainerImp(emptyMap(), entryDao, tagDao,tagAssignmentDao)
+        fun empty(entryDao: EntryDao, tagDao: TagDao, tagAssignmentDao: TagAssignmentDao,firebaseHelper: FirebaseHelper) =
+            EntryContainerImp(emptyMap(), entryDao, tagDao,tagAssignmentDao,firebaseHelper)
     }
 
     override val allEntries: List<Entry> get() = m.values.toList()
@@ -65,4 +68,13 @@ data class EntryContainerImp @Inject constructor(
             writeToDb()
         }
     }
+
+    override suspend fun loadFromFirestoreAndOverwrite(userId:String): Rs<EntryContainer, ErrorReport> {
+        val rs = firebaseHelper.readAllEntriesToModel(userId)
+        val rt = rs .map{
+            this.copy(m=it.associateBy { it.id })
+        }
+        return rt
+    }
+
 }

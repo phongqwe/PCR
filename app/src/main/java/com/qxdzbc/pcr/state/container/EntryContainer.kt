@@ -15,5 +15,10 @@ interface EntryContainer : Map<String, Entry> {
      */
     fun writeToDb():Rs<Unit,ErrorReport>
     suspend fun susWriteToDb():Rs<Unit,ErrorReport>
+
+    /**
+     * Load and overwrite this container with data from Firestore
+     */
+    suspend fun loadFromFirestoreAndOverwrite(userId:String):Rs<EntryContainer,ErrorReport>
 }
 
