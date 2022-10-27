@@ -22,7 +22,7 @@ data class EntryContainerImp @Inject constructor(
     private val entryDao: EntryDao,
     private val tagDao: TagDao,
     private val tagAssignmentDao: TagAssignmentDao,
-    private val firebaseHelper: FirebaseHelper,
+    private val firestoreHelper: FirebaseHelper,
 ) : EntryContainer, Map<String, Entry> by m {
 
     companion object {
@@ -70,11 +70,15 @@ data class EntryContainerImp @Inject constructor(
     }
 
     override suspend fun loadFromFirestoreAndOverwrite(userId:String): Rs<EntryContainer, ErrorReport> {
-        val rs = firebaseHelper.readAllEntriesToModel(userId)
+        val rs = firestoreHelper.readAllEntriesToModel(userId)
         val rt = rs .map{
             this.copy(m=it.associateBy { it.id })
         }
         return rt
+    }
+
+    override suspend fun writeToFirestore(userId: String): Rs<Unit, ErrorReport> {
+         return firestoreHelper.writeMultiEntries(userId,allEntries)
     }
 
 }

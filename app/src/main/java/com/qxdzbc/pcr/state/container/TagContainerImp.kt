@@ -9,7 +9,6 @@ import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.DefaultTagMap
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.FirebaseHelper
-import com.qxdzbc.pcr.firestore.MockFirebaseHelper
 import com.qxdzbc.pcr.state.model.Tag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +18,7 @@ data class TagContainerImp @Inject constructor(
     @DefaultTagMap
     private val m: Map<String, Tag>,
     private val tagDao: TagDao,
-    private val firebaseHelper: FirebaseHelper
+    private val firestoreHelper: FirebaseHelper
 ) : TagContainer, Map<String, Tag> by m {
 
     override val allTags: List<Tag>
@@ -52,10 +51,13 @@ data class TagContainerImp @Inject constructor(
     }
 
     override suspend fun loadFromFirestoreAndOverwrite(userId: String): Rs<TagContainer, ErrorReport> {
-        val rt = firebaseHelper.readAllTagsToModel(userId).map {
+        val rt = firestoreHelper.readAllTagsToModel(userId).map {
             this.copy(m=it.associateBy { it.tagId })
         }
         return rt
     }
 
+    override suspend fun writeToFirestore(userId: String): Rs<Unit, ErrorReport> {
+        return firestoreHelper.writeMultiTags(userId,allTags)
+    }
 }

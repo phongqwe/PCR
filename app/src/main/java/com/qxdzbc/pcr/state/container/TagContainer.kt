@@ -2,6 +2,7 @@ package com.qxdzbc.pcr.state.container
 
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
+import com.qxdzbc.pcr.firestore.TagDoc
 import com.qxdzbc.pcr.state.model.Tag
 
 interface TagContainer: Map<String, Tag> {
@@ -17,4 +18,6 @@ interface TagContainer: Map<String, Tag> {
     suspend fun susWriteToDb():Rs<Unit, ErrorReport>
 
     suspend fun loadFromFirestoreAndOverwrite(userId:String):Rs<TagContainer,ErrorReport>
+
+    suspend fun writeToFirestore(userId:String):Rs<Unit, ErrorReport>
 }
