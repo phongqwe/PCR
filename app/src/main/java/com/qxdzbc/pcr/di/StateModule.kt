@@ -19,7 +19,5 @@ import javax.inject.Singleton
 )
 @InstallIn(SingletonComponent::class)
 interface StateModule {
-    @Binds
-    @Singleton
-    fun EntryContainer(i: EntryContainerImp): EntryContainer
+
 }

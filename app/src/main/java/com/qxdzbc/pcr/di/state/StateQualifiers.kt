@@ -33,3 +33,18 @@ annotation class ErrorContInFrontMs
 @Qualifier
 @Retention
 annotation class AppStateMs
+
+@Qualifier
+@Retention
+annotation class EntryContMs
+@Qualifier
+@Retention
+annotation class EntryContSt
+
+@Qualifier
+@Retention
+annotation class TagContMs
+
+@Qualifier
+@Retention
+annotation class TagContSt

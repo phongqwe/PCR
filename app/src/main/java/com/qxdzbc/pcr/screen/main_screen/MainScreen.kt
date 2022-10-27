@@ -32,6 +32,7 @@ fun MainScreen(
 ) {
     val crScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
+    val userId:String? = state.userSt.value?.uid
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -79,31 +80,10 @@ fun MainScreen(
     ) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
             Column {
-                val h = remember {
-                    FirebaseHelperImp()
-                }
-                val uid =FirebaseAuth.getInstance().currentUser!!.uid
                 Button(onClick = {
-                    crScope.launch {
-                        val entries = (1 .. 5).map{
-                             DbEntryWithTags.random()
-                        }
-                        val tags = entries.flatMap { it.tags }
-                        h.writeMultiTags(uid,tags)
-                        h.writeMultiEntries(uid,entries)
-                    }
-                }) {
-                    Text("Add Entry ")
-                }
-
-                Button(onClick = {
-                    crScope.launch {
-                        h.readAllEntriesToModel(uid).onSuccess {
-                            it.forEach { e->
-                                Log.d("Phong",e.toString())
-                                Log.d("Phong",e.tags.size.toString())
-
-                            }
+                    userId?.also {
+                        crScope.launch {
+                            state
                         }
                     }
                 }) {

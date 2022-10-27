@@ -16,10 +16,11 @@ import javax.inject.Inject
 
 data class TagContainerImp @Inject constructor(
     @DefaultTagMap
-    private val m: Map<String, Tag>,
+    private val m: Map<String, @JvmSuppressWildcards Tag>,
     private val tagDao: TagDao,
     private val firestoreHelper: FirebaseHelper
-) : TagContainer, Map<String, Tag> by m {
+//) : TagContainer, Map<String, Tag> by m {
+) : AbsTagContainer(m) {
 
     override val allTags: List<Tag>
         get() = m.values.toList()

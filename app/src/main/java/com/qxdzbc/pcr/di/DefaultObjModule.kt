@@ -7,14 +7,18 @@ import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.di.state.UserSt
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
+import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.Tag
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.migration.DisableInstallInCheck
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
+@DisableInstallInCheck
+//@InstallIn(SingletonComponent::class)
 interface DefaultObjModule {
     companion object{
 
@@ -24,13 +28,15 @@ interface DefaultObjModule {
             return false
         }
 
-        @DefaultEntryMap
         @Provides
-        fun DefaultEntryMap():Map<String,DbEntry> {
+        @DefaultEntryMap
+        fun DefaultEntryMap():Map<String, Entry> {
             return emptyMap()
         }
+
+        @Provides
         @DefaultTagMap
-        fun DefaultTagMap():Map<String,DbTag> {
+        fun DefaultTagMap():Map<String, Tag> {
             return emptyMap()
         }
     }

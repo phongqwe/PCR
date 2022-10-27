@@ -18,12 +18,12 @@ import javax.inject.Inject
 
 data class EntryContainerImp @Inject constructor(
     @DefaultEntryMap
-    private val m: Map<String, Entry>,
+    private val m: Map<String, @JvmSuppressWildcards Entry>,
     private val entryDao: EntryDao,
     private val tagDao: TagDao,
     private val tagAssignmentDao: TagAssignmentDao,
     private val firestoreHelper: FirebaseHelper,
-) : EntryContainer, Map<String, Entry> by m {
+) : AbsEntryContainer(m) {
 
     companion object {
         fun empty(entryDao: EntryDao, tagDao: TagDao, tagAssignmentDao: TagAssignmentDao,firebaseHelper: FirebaseHelper) =

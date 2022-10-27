@@ -42,7 +42,7 @@ class EntryContainerImpTest {
             entryDao = entryDao,
             tagDao = tagDao,
             tagAssignmentDao = tagAssignmentDao,
-            firebaseHelper = firebaseHelper
+            firestoreHelper = firebaseHelper
         )
     }
 

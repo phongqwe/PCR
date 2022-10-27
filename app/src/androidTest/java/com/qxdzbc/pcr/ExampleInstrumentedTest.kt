@@ -19,22 +19,8 @@ import org.junit.Assert.*
 class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.qxdzbc.pcr", appContext.packageName)
-    }
-    @Test
-    fun q(){
-//        FirebaseFirestore.getInstance().useEmulator("127.0.0.1", 8080)
-        val s = FirebaseFirestore.getInstance()
-        s.collection("users").document("user2").set(mapOf(
-            "name" to "user2",
-            "age" to 123
-        )).addOnSuccessListener {
-            Log.d("Phong","Success")
-        }.addOnFailureListener {
-            Log.d("Phong","Fail")
-        }
-
+//        // Context of the app under test.
+//        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+//        assertEquals("com.qxdzbc.pcr", appContext.packageName)
     }
 }
