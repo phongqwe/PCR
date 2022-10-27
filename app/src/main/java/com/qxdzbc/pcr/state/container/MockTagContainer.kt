@@ -5,7 +5,11 @@ import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.model.Tag
 
-class MockTagContainer(val m: Map<String, Tag> = emptyMap()): AbsTagContainer(m){
+data class MockTagContainer(val m: Map<String, Tag> = emptyMap()): AbsTagContainer(m){
+    override fun removeAll(): TagContainer {
+        return this.copy(m=emptyMap())
+    }
+
     override fun loadFromDbAndOverwrite(): TagContainer {
         return this
     }

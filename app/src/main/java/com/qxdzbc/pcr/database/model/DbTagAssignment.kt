@@ -25,9 +25,9 @@ import androidx.room.ForeignKey
     ]
 )
 data class DbTagAssignment(
-    @ColumnInfo(name = entryIdCol)
+    @ColumnInfo(name = entryIdCol,defaultValue = "")
     val entryId: String,
-    @ColumnInfo(name = tagIdCol)
+    @ColumnInfo(name = tagIdCol,defaultValue = "")
     val tagId: String,
 ) {
     companion object {

@@ -10,15 +10,15 @@ import java.util.*
 @Entity(tableName = DbEntry.tableName)
 data class DbEntry(
     @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = idCol)
+    @ColumnInfo(name = idCol,defaultValue = "")
     val id:String,
-    @ColumnInfo(name = moneyCol)
+    @ColumnInfo(name = moneyCol,defaultValue = "0")
     val money: Double = 0.0,
     @ColumnInfo(name = detailCol)
     val detail:String? = null,
-    @ColumnInfo(name = dateTimeCol)
+    @ColumnInfo(name = dateTimeCol,defaultValue = "0")
     val dateTime:Long = 0,
-    @ColumnInfo(name = isUploadedCol)
+    @ColumnInfo(name = isUploadedCol, defaultValue = "0")
     val isUploaded:Int=0,
 ) {
     companion object{

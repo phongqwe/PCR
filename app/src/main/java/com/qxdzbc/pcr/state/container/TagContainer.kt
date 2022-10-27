@@ -8,6 +8,8 @@ import com.qxdzbc.pcr.state.model.Tag
 interface TagContainer: Map<String, Tag> {
     val allTags:List<Tag>
 
+    fun removeAll():TagContainer
+
     fun loadFromDbAndOverwrite(): TagContainer
     suspend fun susLoadFromDbAndOverWrite(): TagContainer
 

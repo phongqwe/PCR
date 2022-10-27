@@ -24,6 +24,10 @@ data class TagContainerImp @Inject constructor(
     override val allTags: List<Tag>
         get() = m.values.toList()
 
+    override fun removeAll(): TagContainer {
+        return this.copy(m= emptyMap())
+    }
+
     override fun loadFromDbAndOverwrite(): TagContainer {
         return this.copy(m = tagDao.getAll().associateBy { it.id })
     }

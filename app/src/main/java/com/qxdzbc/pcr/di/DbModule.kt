@@ -21,7 +21,7 @@ interface DbModule {
         @Singleton
         fun db(app:App): PcrDatabase {
             return Room.databaseBuilder(app, AbsPcrDataBase::class.java, AbsPcrDataBase.dbName)
-                .createFromAsset("initDb")
+                .createFromAsset("initDb.db")
                 .build()
         }
 

@@ -26,11 +26,12 @@ class App : Application(){
     @AppStateMs
     lateinit var _appStateMs:Ms<AppState>
     private val appStateMs get()=_appStateMs
-    private var appState by appStateMs
+
     override fun onCreate() {
         super.onCreate()
+//        var appState by appStateMs
         MainScope().launch(Dispatchers.Default) {
-            appState.initLoadData()
+            appStateMs.value.initLoadData()
         }
     }
 }
