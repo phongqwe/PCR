@@ -3,7 +3,6 @@ package com.qxdzbc.pcr.state
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.qxdzbc.pcr.database.dao.EntryDao
-import com.qxdzbc.pcr.firestore.FirebaseHelper
 import com.qxdzbc.pcr.firestore.MockFirebaseHelper
 import com.qxdzbc.pcr.state.container.EntryContainerImp
 import com.qxdzbc.test.MockEntryDao
@@ -82,9 +81,40 @@ class EntryContainerImpTest {
         runBlocking {
             val expect = firebaseHelper.readAllEntriesToModel("asd").component1()!!
             assertNotEquals(expect, cont.allEntries)
-            val c2Rs=cont.loadFromFirestoreAndOverwrite("userId123")
+            val c2Rs = cont.loadFromFirestoreAndOverwrite("userId123")
             assertTrue(c2Rs is Ok)
-            assertEquals(expect,c2Rs.component1()?.allEntries)
+            assertEquals(expect, c2Rs.component1()?.allEntries)
         }
+    }
+
+    @Test
+    fun initLoad() {
+        val uid = "userId"
+        fun `load ok from db, dont load from firestore`() {
+            val expect = entryDao.getEntryWithTag()
+            val c2 = cont.clearAll()
+            assertTrue(c2.allEntries.isEmpty())
+            assertNotEquals(expect,c2.allEntries)
+            runBlocking {
+                val c3 = c2.initLoad(uid)
+                assertEquals(expect,c3.allEntries)
+            }
+        }
+
+
+        fun `load fail from db, attemp to load from firestore`() {
+            val emptyEntryDao = MockEntryDao()
+            val c2 = cont.copy(entryDao = emptyEntryDao).clearAll()
+            runBlocking {
+                val expect = firebaseHelper.readAllEntriesToModel(uid).component1()!!
+                assertTrue(c2.allEntries.isEmpty())
+                assertNotEquals(expect, c2.allEntries)
+                val c3 = c2.initLoad(uid)
+                assertEquals(expect,c3.allEntries)
+            }
+        }
+        `load ok from db, dont load from firestore`()
+        `load fail from db, attemp to load from firestore`()
+
     }
 }

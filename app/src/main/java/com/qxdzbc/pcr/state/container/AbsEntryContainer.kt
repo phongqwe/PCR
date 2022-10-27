@@ -7,4 +7,5 @@ abstract class AbsEntryContainer(
 ) : EntryContainer,Map<String, Entry> by m{
     override val allEntries: List<Entry>
         get() = m.values.toList()
+
 }

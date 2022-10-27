@@ -40,6 +40,10 @@ data class EntryContainerImp @Inject constructor(
     }
 
     override val allEntries: List<Entry> get() = m.values.toList()
+    override fun clearAll(): EntryContainer {
+        return this.copy(m= emptyMap())
+    }
+
     override fun loadFromDbAndOverwrite(): EntryContainer {
         val nm = entryDao.getEntryWithTag().associateBy { it.id }
         return this.copy(m = nm)

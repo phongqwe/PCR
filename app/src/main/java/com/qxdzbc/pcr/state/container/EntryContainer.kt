@@ -6,7 +6,7 @@ import com.qxdzbc.pcr.state.model.Entry
 
 interface EntryContainer : Map<String, Entry> {
     val allEntries: List<Entry>
-
+    fun clearAll():EntryContainer
     fun loadFromDbAndOverwrite(): EntryContainer
     suspend fun susLoadFromDbAndOverWrite(): EntryContainer
 

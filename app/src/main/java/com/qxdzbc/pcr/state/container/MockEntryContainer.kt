@@ -6,7 +6,11 @@ import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.model.Entry
 
-class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntryContainer(m) {
+data class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntryContainer(m) {
+    override fun clearAll(): EntryContainer {
+        return this.copy(m= emptyMap())
+    }
+
     override fun loadFromDbAndOverwrite(): EntryContainer {
         return this
     }
