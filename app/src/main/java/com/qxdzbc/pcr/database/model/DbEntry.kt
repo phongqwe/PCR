@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.qxdzbc.pcr.firestore.EntryDoc
 import java.util.*
 
 @Entity(tableName = DbEntry.tableName)
@@ -36,6 +37,15 @@ data class DbEntry(
                 detail =  "detail : ${id}",
                 dateTime = (1 .. 100).random().toLong(),
                 isUploaded = 0,
+            )
+        }
+        fun fromEntryDoc(ed:EntryDoc):DbEntry{
+            return DbEntry(
+                id =ed.id,
+                money=ed.money,
+                detail=ed.detail,
+                dateTime = ed.date,
+                isUploaded = 1,
             )
         }
     }

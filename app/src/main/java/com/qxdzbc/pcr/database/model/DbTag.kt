@@ -3,6 +3,7 @@ package com.qxdzbc.pcr.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.qxdzbc.pcr.firestore.TagDoc
 import com.qxdzbc.pcr.state.model.Tag
 import java.util.*
 
@@ -25,6 +26,9 @@ data class DbTag(
                 id= id,
                 name = "tag name: $id"
             )
+        }
+        fun fromTagDoc(td:TagDoc):DbTag{
+            return DbTag(id=td.id,name=td.name)
         }
     }
 

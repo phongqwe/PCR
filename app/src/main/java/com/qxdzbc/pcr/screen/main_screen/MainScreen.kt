@@ -1,5 +1,6 @@
 package com.qxdzbc.pcr.screen.main_screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -8,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.github.michaelbull.result.onSuccess
 import com.google.firebase.auth.FirebaseAuth
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
@@ -77,64 +79,37 @@ fun MainScreen(
     ) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
             Column {
-//                Button(onClick = {
-//                    val s = FirebaseFirestore.getInstance()
-//                    s.collection("users").get().addOnSuccessListener {
-//                        it.documents.map {
-//                            Log.d("Phong", it.get("name").toString())
-//                            Log.d("Phong", it.get("age").toString())
-//                        }
-//                    }
-//                }) {
-//                    Text("Query")
-//                }
-//                var i: Int by remember { ms(0) }
-//                Button(onClick = {
-//                    val s = FirebaseFirestore.getInstance()
-//                    s.collection("users").document("user$i").set(
-//                        mapOf(
-//                            "name" to "name_user $i", "age" to i,
-//                            "tags" to listOf(
-//                                mapOf("tag1" to "tagName_1"),
-//                                mapOf("tag2" to "tagName_2")
-//                            )
-//                        )
-//                    )
-//                    i += 1
-//                }) {
-//                    Text("AddUser")
-//                }
-//
-//                Button(onClick = {
-//                    val s = FirebaseFirestore.getInstance()
-//                    s.collection("users").document("user0").update(
-//                        "tags", listOf(
-//                            mapOf("tag1" to "tagName_10"),
-//                            mapOf("tag2" to "tagName_20")
-//                        )
-//                    )
-//                    i += 1
-//                }) {
-//                    Text("Add tag ")
-//                }
                 val h = remember {
                     FirebaseHelperImp()
                 }
+                val uid =FirebaseAuth.getInstance().currentUser!!.uid
                 Button(onClick = {
                     crScope.launch {
-                        val e = DbEntryWithTags.random()
-                        val uid =FirebaseAuth.getInstance().currentUser!!.uid
-                        e.tags.map { it.toTagDoc() }.forEach {
-                            h.writeTag(uid,it)
+                        val entries = (1 .. 5).map{
+                             DbEntryWithTags.random()
                         }
-                        h.writeEntry(uid, e)
+                        val tags = entries.flatMap { it.tags }
+                        h.writeMultiTags(uid,tags)
+                        h.writeMultiEntries(uid,entries)
                     }
                 }) {
                     Text("Add Entry ")
                 }
 
-            }
+                Button(onClick = {
+                    crScope.launch {
+                        h.readAllEntriesToModel(uid).onSuccess {
+                            it.forEach { e->
+                                Log.d("Phong",e.toString())
+                                Log.d("Phong",e.tags.size.toString())
 
+                            }
+                        }
+                    }
+                }) {
+                    Text("Read entry")
+                }
+            }
         }
     }
 }
