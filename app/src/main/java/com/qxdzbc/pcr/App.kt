@@ -25,7 +25,7 @@ class App : Application(){
     @Inject
     @AppStateMs
     lateinit var _appStateMs:Ms<AppState>
-    val appStateMs get()=_appStateMs
+    private val appStateMs get()=_appStateMs
     private var appState by appStateMs
     override fun onCreate() {
         super.onCreate()

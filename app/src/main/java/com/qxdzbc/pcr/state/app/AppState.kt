@@ -10,6 +10,9 @@ import com.qxdzbc.pcr.state.container.EntryContainer
 import com.qxdzbc.pcr.state.container.TagContainer
 
 interface AppState {
+    /**
+     * init load the entry and tag containers
+     */
     suspend fun initLoadData()
     val frontScreenStateMs:Ms<FrontScreenState>
     val mainScreenStateMs:Ms<MainScreenState>
