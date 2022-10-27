@@ -20,4 +20,6 @@ interface TagContainer: Map<String, Tag> {
     suspend fun loadFromFirestoreAndOverwrite(userId:String):Rs<TagContainer,ErrorReport>
 
     suspend fun writeToFirestore(userId:String):Rs<Unit, ErrorReport>
+
+    suspend fun initLoad(userId:String?):TagContainer
 }

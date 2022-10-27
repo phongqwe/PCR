@@ -1,6 +1,9 @@
 package com.qxdzbc.pcr.state.container
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import com.github.michaelbull.result.map
+import com.github.michaelbull.result.onSuccess
 import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.common.ResultUtils.toOk
 import com.qxdzbc.pcr.common.Rs
@@ -11,6 +14,7 @@ import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.DefaultEntryMap
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.FirebaseHelper
+import com.qxdzbc.pcr.firestore.FirestoreErrors
 import com.qxdzbc.pcr.state.model.Entry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,8 +30,13 @@ data class EntryContainerImp @Inject constructor(
 ) : AbsEntryContainer(m) {
 
     companion object {
-        fun empty(entryDao: EntryDao, tagDao: TagDao, tagAssignmentDao: TagAssignmentDao,firebaseHelper: FirebaseHelper) =
-            EntryContainerImp(emptyMap(), entryDao, tagDao,tagAssignmentDao,firebaseHelper)
+        fun empty(
+            entryDao: EntryDao,
+            tagDao: TagDao,
+            tagAssignmentDao: TagAssignmentDao,
+            firebaseHelper: FirebaseHelper
+        ) =
+            EntryContainerImp(emptyMap(), entryDao, tagDao, tagAssignmentDao, firebaseHelper)
     }
 
     override val allEntries: List<Entry> get() = m.values.toList()
@@ -69,16 +78,28 @@ data class EntryContainerImp @Inject constructor(
         }
     }
 
-    override suspend fun loadFromFirestoreAndOverwrite(userId:String): Rs<EntryContainer, ErrorReport> {
+    override suspend fun loadFromFirestoreAndOverwrite(userId: String): Rs<EntryContainer, ErrorReport> {
         val rs = firestoreHelper.readAllEntriesToModel(userId)
-        val rt = rs .map{
-            this.copy(m=it.associateBy { it.id })
+        val rt = rs.map {
+            this.copy(m = it.associateBy { it.id })
         }
         return rt
     }
 
     override suspend fun writeToFirestore(userId: String): Rs<Unit, ErrorReport> {
-         return firestoreHelper.writeMultiEntries(userId,allEntries)
+        return firestoreHelper.writeMultiEntries(userId, allEntries)
+    }
+
+    override suspend fun initLoad(userId: String?): EntryContainer {
+        val tCont = susLoadFromDbAndOverWrite()
+        val rt = userId?.let { uid ->
+            if (tCont.isEmpty()) {
+                tCont.loadFromFirestoreAndOverwrite(uid).component1() ?: tCont
+            }else{
+                tCont
+            }
+        }?:tCont
+        return rt
     }
 
 }

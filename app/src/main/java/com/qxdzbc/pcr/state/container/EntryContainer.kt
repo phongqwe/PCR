@@ -22,5 +22,10 @@ interface EntryContainer : Map<String, Entry> {
     suspend fun loadFromFirestoreAndOverwrite(userId:String):Rs<EntryContainer,ErrorReport>
 
     suspend fun writeToFirestore(userId: String):Rs<Unit,ErrorReport>
+
+    /**
+     * First load from db. Only if data load from db is empty, then attempt to load from Firestore. If loading from Firestore cause error, silently discard the error, and return the container loaded from db.
+     */
+    suspend fun initLoad(userId: String?): EntryContainer
 }
 

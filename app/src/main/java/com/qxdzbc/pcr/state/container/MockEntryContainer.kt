@@ -28,6 +28,10 @@ class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntryConta
     }
 
     override suspend fun writeToFirestore(userId: String): Rs<Unit, ErrorReport> {
-        TODO("Not yet implemented")
+        return Ok(Unit)
+    }
+
+    override suspend fun initLoad(userId: String?): EntryContainer {
+        return this
     }
 }

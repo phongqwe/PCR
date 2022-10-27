@@ -19,7 +19,6 @@ data class TagContainerImp @Inject constructor(
     private val m: Map<String, @JvmSuppressWildcards Tag>,
     private val tagDao: TagDao,
     private val firestoreHelper: FirebaseHelper
-//) : TagContainer, Map<String, Tag> by m {
 ) : AbsTagContainer(m) {
 
     override val allTags: List<Tag>
@@ -53,12 +52,24 @@ data class TagContainerImp @Inject constructor(
 
     override suspend fun loadFromFirestoreAndOverwrite(userId: String): Rs<TagContainer, ErrorReport> {
         val rt = firestoreHelper.readAllTagsToModel(userId).map {
-            this.copy(m=it.associateBy { it.tagId })
+            this.copy(m = it.associateBy { it.tagId })
         }
         return rt
     }
 
     override suspend fun writeToFirestore(userId: String): Rs<Unit, ErrorReport> {
-        return firestoreHelper.writeMultiTags(userId,allTags)
+        return firestoreHelper.writeMultiTags(userId, allTags)
+    }
+
+    override suspend fun initLoad(userId: String?): TagContainer {
+        val tCont = susLoadFromDbAndOverWrite()
+        val rt = userId?.let { uid ->
+            if (tCont.isEmpty()) {
+                tCont.loadFromFirestoreAndOverwrite(uid).component1() ?: tCont
+            } else {
+                tCont
+            }
+        } ?: tCont
+        return rt
     }
 }

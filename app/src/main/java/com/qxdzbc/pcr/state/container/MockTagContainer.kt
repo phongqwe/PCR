@@ -29,4 +29,8 @@ class MockTagContainer(val m: Map<String, Tag> = emptyMap()): AbsTagContainer(m)
     override suspend fun writeToFirestore(userId: String): Rs<Unit, ErrorReport> {
         return Ok(Unit)
     }
+
+    override suspend fun initLoad(userId: String?): TagContainer {
+        return this
+    }
 }
