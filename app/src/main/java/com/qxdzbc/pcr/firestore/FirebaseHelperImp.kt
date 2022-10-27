@@ -23,8 +23,10 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FirebaseHelperImp @Inject constructor() : FirebaseHelper {
+
     val db = FirebaseFirestore.getInstance()
     val dbRoot = "users"
+
     override suspend fun writeTag(userId: String, tag: TagDoc): Rs<Unit, ErrorReport> {
         val task = tagDocRef(userId, tag.id).set(tag)
         task.await()
