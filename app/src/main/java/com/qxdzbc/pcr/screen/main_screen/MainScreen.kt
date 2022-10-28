@@ -1,6 +1,7 @@
 package com.qxdzbc.pcr.screen.main_screen
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +17,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.michaelbull.result.onSuccess
 import com.google.firebase.auth.FirebaseAuth
 import com.qxdzbc.pcr.common.MBox
+import com.qxdzbc.pcr.common.StateUtils.ms
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.firestore.EntryDoc
@@ -24,6 +26,7 @@ import com.qxdzbc.pcr.firestore.TagDoc
 import com.qxdzbc.pcr.screen.common.CommonTopAppBar
 import com.qxdzbc.pcr.screen.common.ThemeSwitcher
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
+import com.qxdzbc.pcr.screen.main_screen.date_filter_view.DateView
 import com.qxdzbc.pcr.screen.main_screen.entry_view.EntryView
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
@@ -39,6 +42,7 @@ fun MainScreen(
     val crScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val userId:String? = state.userSt.value?.uid
+    var isDateFilterOpen:Boolean by remember{ms(false)}
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -88,15 +92,15 @@ fun MainScreen(
             .fillMaxSize()
             .padding(contentPadding)) {
             Column {
-                Card(modifier=Modifier.fillMaxWidth().padding(5.dp),elevation =10.dp){
-                    MBox(modifier=Modifier.fillMaxWidth().padding(top=10.dp,bottom =10.dp)){
-                        val dateStr =state.mainScreenFilter?.dateDisplayText
-                        if(dateStr!=null){
-                            Text(dateStr,modifier=Modifier.align(Alignment.Center))
-                        }else{
-                            Text("<<Date period>>",modifier=Modifier.align(Alignment.Center))
-                        }
-
+                Card(modifier=Modifier.fillMaxWidth().padding(5.dp).height(30.dp),elevation =10.dp){
+                    MBox(
+                        modifier=Modifier.fillMaxSize()
+                    ){
+                        DateView(
+                            state.mainScreenFilter,
+                            modifier=Modifier
+                                .align(Alignment.Center)
+                        )
                     }
                 }
 
