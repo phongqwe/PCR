@@ -15,6 +15,7 @@ import com.qxdzbc.pcr.di.DefaultEntryMap
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.FirebaseHelper
 import com.qxdzbc.pcr.firestore.FirestoreErrors
+import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import com.qxdzbc.pcr.state.model.Entry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

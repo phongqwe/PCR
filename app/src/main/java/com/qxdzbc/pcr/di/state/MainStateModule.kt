@@ -11,6 +11,7 @@ import com.qxdzbc.pcr.state.container.EntryContainer
 import com.qxdzbc.pcr.state.container.EntryContainerImp
 import com.qxdzbc.pcr.state.container.TagContainer
 import com.qxdzbc.pcr.state.container.TagContainerImp
+import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -27,6 +28,21 @@ interface MainStateModule {
     fun MainState(i:MainScreenStateImp):MainScreenState
 
     companion object{
+        @Provides
+        @Singleton
+        @MainScreenFilterMs
+        fun MainScreenFilterMs():Ms<EntryFilter?>{
+            return ms(null)
+        }
+
+        @Provides
+        @Singleton
+        @MainScreenFilterSt
+        fun MainScreenFilterSt(@MainScreenFilterMs i:Ms<EntryFilter?> ):St<EntryFilter?>{
+            return i
+        }
+
+
 
         @Provides
         @Singleton

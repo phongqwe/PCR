@@ -4,6 +4,14 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention
+annotation class MainScreenFilterSt
+
+@Qualifier
+@Retention
+annotation class MainScreenFilterMs
+
+@Qualifier
+@Retention
 annotation class UserSt
 
 @Qualifier

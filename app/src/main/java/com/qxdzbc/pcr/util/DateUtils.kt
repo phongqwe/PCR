@@ -14,4 +14,5 @@ object DateUtils {
         val rt = format.parse(dateStr)
         return rt ?: throw IllegalArgumentException("invalid entry date format")
     }
+    val displayDateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.US)
 }

@@ -6,6 +6,8 @@ import com.qxdzbc.pcr.err.ErrorContainer
 import com.qxdzbc.pcr.err.ErrorContainerImp
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.state.container.*
+import com.qxdzbc.pcr.state.container.filter.EntryFilter
+import java.util.*
 
 interface MainScreenState {
     val errorContainerSt:St<ErrorContainer>
@@ -13,6 +15,7 @@ interface MainScreenState {
     val tagContainerSt:St<TagContainer>
     val userSt:St<FirebaseUserWrapper?>
     val isDark:Boolean
+    val mainScreenFilter:EntryFilter?
 
     companion object{
         val forPreview:MainScreenState get(){
@@ -20,8 +23,9 @@ interface MainScreenState {
                 errorContainerMs = ms(ErrorContainerImp()),
                 isDarkSt = ms(true),
                 userSt = ms(FirebaseUserWrapper.forPreview),
-                entryContainerSt = ms(MockEntryContainer()),
-                tagContainerSt = ms(MockTagContainer())
+                entryContainerSt = ms(MockEntryContainer.random()),
+                tagContainerSt = ms(MockTagContainer()),
+                mainScreenFilterSt = ms(EntryFilter.forPreview())
             )
         }
         const val mainScreenNavTag = "MainScreen_NavTag"

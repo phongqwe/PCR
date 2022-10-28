@@ -5,6 +5,7 @@ import androidx.room.Ignore
 import androidx.room.Junction
 import androidx.room.Relation
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.util.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,11 +52,8 @@ data class DbEntryWithTags(
         }
     }
 
-    @Ignore
-    private val formater = SimpleDateFormat("dd-MMM-yyyy", Locale.US)
-
     override val displayDate: String
-        get() = formater.format(this.dateTime)
+        get() = DateUtils.displayDateFormat.format(this.dateTime)
     override val displayMoney: String
         get(){
             val rt = "$"+if(this.isCost){

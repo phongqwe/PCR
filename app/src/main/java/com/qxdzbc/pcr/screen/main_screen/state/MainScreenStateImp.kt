@@ -10,6 +10,7 @@ import com.qxdzbc.pcr.err.ErrorContainerImp
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.state.container.EntryContainer
 import com.qxdzbc.pcr.state.container.TagContainer
+import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import javax.inject.Inject
 
 class MainScreenStateImp @Inject constructor(
@@ -23,8 +24,12 @@ class MainScreenStateImp @Inject constructor(
     override val entryContainerSt: St<@JvmSuppressWildcards EntryContainer>,
     @TagContSt
     override val tagContainerSt: St<@JvmSuppressWildcards TagContainer>,
+    @MainScreenFilterSt
+    val mainScreenFilterSt: St<@JvmSuppressWildcards EntryFilter?>,
 ) : MainScreenState {
     override val errorContainerSt: St<ErrorContainer>
         get() = errorContainerMs
     override val isDark: Boolean by isDarkSt
+    override val mainScreenFilter: EntryFilter?
+        get() = mainScreenFilterSt.value
 }

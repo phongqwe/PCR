@@ -3,10 +3,21 @@ package com.qxdzbc.pcr.state.container
 import com.github.michaelbull.result.Ok
 import com.qxdzbc.pcr.common.ResultUtils.toOk
 import com.qxdzbc.pcr.common.Rs
+import com.qxdzbc.pcr.database.model.DbEntryWithTags
+import com.qxdzbc.pcr.database.model.DbTagWithEntries
 import com.qxdzbc.pcr.err.ErrorReport
+import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import com.qxdzbc.pcr.state.model.Entry
 
 data class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntryContainer(m) {
+
+    companion object{
+        fun random():MockEntryContainer{
+            return MockEntryContainer(
+                m = (1 .. 20).map { DbEntryWithTags.random() }.associateBy { it.id }
+            )
+        }
+    }
     override fun clearAll(): EntryContainer {
         return this.copy(m= emptyMap())
     }

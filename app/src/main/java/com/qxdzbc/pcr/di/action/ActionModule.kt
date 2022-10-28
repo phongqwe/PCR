@@ -1,5 +1,7 @@
 package com.qxdzbc.pcr.di.action
 
+import com.qxdzbc.pcr.action.main_screen.FilterEntryOnMainScreenAction
+import com.qxdzbc.pcr.action.main_screen.FilterEntryOnMainScreenActionImp
 import com.qxdzbc.pcr.action.remove_err.RemoveErr
 import com.qxdzbc.pcr.action.remove_err.RemoveErrFromFrontScreen
 import com.qxdzbc.pcr.action.remove_err.RemoveErrFromMainScreen
@@ -20,6 +22,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface ActionModule {
+
+    @Binds
+    @Singleton
+    fun FilterEntryOnMainScreenAction(i: FilterEntryOnMainScreenActionImp):FilterEntryOnMainScreenAction
+
     @Binds
     @Singleton
     fun MainScreenAction(i:MainScreenActionImp): MainScreenAction
