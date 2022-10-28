@@ -4,6 +4,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbTagAssignment
 import com.qxdzbc.pcr.firestore.EntryDoc
+import java.text.SimpleDateFormat
 import java.util.*
 
 interface Entry {
@@ -14,6 +15,8 @@ interface Entry {
     val dateTime: Date
     val tags: List<Tag>
     val isUploaded: Boolean
+    val isCost:Boolean
+
     fun setIsUploaded(i: Boolean): Entry
 
     fun toDbEntry(): DbEntry
@@ -30,4 +33,7 @@ interface Entry {
             }
         )
     }
+
+    val displayDate:String
+    val displayMoney:String
 }

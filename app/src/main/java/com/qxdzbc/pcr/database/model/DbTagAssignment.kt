@@ -36,7 +36,3 @@ data class DbTagAssignment(
         const val tableName = "TagAssignment"
     }
 }
-
-
-//@JvmInline
-//value class EntryId(private val i:String)

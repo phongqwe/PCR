@@ -27,7 +27,7 @@ data class DbTag(
             val id = UUID.randomUUID().toString()
             return DbTag(
                 id = id,
-                name = "tag name: $id",
+                name = "tag name: ${id.subSequence(0, minOf(5,id.length))}",
                 isUploadedInternal = 0
             )
         }

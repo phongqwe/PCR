@@ -20,8 +20,11 @@ data class DbEntry(
     val dateTime:Long = 0,
     @ColumnInfo(name = isUploadedCol, defaultValue = "0")
     val isUploaded:Int=0,
+    @ColumnInfo(name = isCostCol, defaultValue = "0")
+    val isCost:Int =0,
 ) {
     companion object{
+        const val isCostCol = "isCost"
         const val idCol = "id"
         const val moneyCol ="money"
         const val detailCol ="detail"
