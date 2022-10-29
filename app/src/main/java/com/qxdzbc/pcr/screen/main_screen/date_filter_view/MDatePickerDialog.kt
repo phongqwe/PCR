@@ -24,6 +24,7 @@ fun MDatePickerDialog(
             }
             val newDate =calendar.time
             onDatePick(newDate)
+            onDismiss()
         },
         cc.get(Calendar.YEAR),cc.get(Calendar.MONTH),cc.get(Calendar.DAY_OF_MONTH)
     )

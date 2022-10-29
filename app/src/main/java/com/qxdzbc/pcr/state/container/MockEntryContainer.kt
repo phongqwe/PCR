@@ -8,6 +8,8 @@ import com.qxdzbc.pcr.database.model.DbTagWithEntries
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.Tag
+import java.util.*
 
 data class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntryContainer(m) {
 
@@ -46,11 +48,25 @@ data class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntry
         return Ok(this)
     }
 
+    override suspend fun writeUnUploadedToFirestore(userId: String): Rs<EntryContainer, ErrorReport> {
+        return Ok(this)
+    }
+
     override suspend fun initLoad(userId: String?): EntryContainer {
         return this
     }
 
-    override suspend fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport> {
+    override fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport> {
+        return Ok(this)
+    }
+
+    override fun createEntryAndWriteToDb(
+        date: Date,
+        money: Double,
+        detail: String?,
+        tags: List<Tag>,
+        isCost: Boolean
+    ): Rs<EntryContainer, ErrorReport> {
         return Ok(this)
     }
 }
