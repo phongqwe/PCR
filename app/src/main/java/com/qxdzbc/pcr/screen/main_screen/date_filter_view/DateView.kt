@@ -18,14 +18,18 @@ import java.util.*
 @Composable
 fun DateView(
     entryFilter: EntryFilter?,
+    fromDateClick: () -> Unit,
+    toDateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier =  modifier) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         val fromDate: Date? = entryFilter?.fromDate
         val toDate: Date? = entryFilter?.toDate
         Text(
-            text = fromDate?.let {  DateUtils.displayDateFormat.format(it)} ?: "<<From>>",
-            modifier = Modifier.clickable { },
+            text = fromDate?.let { DateUtils.displayDateFormat.format(it) } ?: "<<From>>",
+            modifier = Modifier.clickable {
+                fromDateClick()
+            },
             color = MaterialTheme.colors.primaryVariant,
             fontWeight = FontWeight.Bold
         )
@@ -33,8 +37,10 @@ fun DateView(
         Text(text = " to ")
 
         Text(
-            text = toDate?.let {DateUtils.displayDateFormat.format(it)} ?: "<<To>>",
-            modifier = Modifier.clickable { },
+            text = toDate?.let { DateUtils.displayDateFormat.format(it) } ?: "<<To>>",
+            modifier = Modifier.clickable {
+                toDateClick()
+            },
             color = MaterialTheme.colors.primaryVariant,
             fontWeight = FontWeight.Bold
         )
@@ -44,5 +50,5 @@ fun DateView(
 @Preview
 @Composable
 fun PreviewDateView() {
-    DateView(entryFilter = EntryFilter.forPreview())
+    DateView(entryFilter = EntryFilter.forPreview(),{},{})
 }

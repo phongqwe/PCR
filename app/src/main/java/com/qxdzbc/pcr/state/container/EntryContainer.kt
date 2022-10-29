@@ -39,5 +39,10 @@ interface EntryContainer : Map<String, Entry> {
             return allEntries
         }
     }
+
+    /**
+     * Add an entry to the db and Firestore. Return a rs containing a new container
+     */
+    suspend fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport>
 }
 

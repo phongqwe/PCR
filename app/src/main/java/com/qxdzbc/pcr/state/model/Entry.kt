@@ -17,6 +17,17 @@ interface Entry {
     val isUploaded: Boolean
     val isCost:Boolean
 
+    /**
+     * Edit this entry, automatically mark the output as "not uploaded"
+     */
+    fun edit(
+        money:Double = this.money,
+        detail:String? = this.detail,
+        dateTime:Date = this.dateTime,
+        tags:List<Tag> = this.tags,
+        isCost:Boolean = this.isCost
+    ):Entry
+
     fun setIsUploaded(i: Boolean): Entry
 
     fun toDbEntry(): DbEntry

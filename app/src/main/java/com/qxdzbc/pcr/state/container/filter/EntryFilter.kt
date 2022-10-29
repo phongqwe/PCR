@@ -27,8 +27,8 @@ data class EntryFilter(
     companion object {
         fun forPreview():EntryFilter{
             return EntryFilter(
-                fromDate = Date(0),
-                toDate = Date(1000),
+                fromDate = DateUtils.createDate(2000,1,1),
+                toDate = DateUtils.createDate(2023,1,1),
                 text ="",
                 tags =  emptyList()
             )

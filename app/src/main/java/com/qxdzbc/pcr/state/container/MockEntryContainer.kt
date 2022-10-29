@@ -49,4 +49,11 @@ data class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntry
     override suspend fun initLoad(userId: String?): EntryContainer {
         return this
     }
+
+    override suspend fun addEntryAndWriteToDb(
+        userId: String?,
+        newEntry: Entry
+    ): Rs<EntryContainer, ErrorReport> {
+        return Ok(this)
+    }
 }

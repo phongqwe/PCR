@@ -9,8 +9,18 @@ object FirestoreErrors {
         UnableToDeleteTag,UnableToDeleteEntry,
         UnableToReadAllTag, UnableToReadAllEntry,
         UnableToWriteMultiTag,UnableToWriteMultiEntry,
-        UnableToReadMultiTagById,UnableToReadMultiTagByRef
+        UnableToReadMultiTagById,UnableToReadMultiTagByRef,
+        InvalidUser
     )
+
+    object InvalidUser{
+        fun report(detail:String?=null): ErrorReport {
+            return ErrorReport(
+                code= "$prefix ${l.indexOf(this)}",
+                detail = detail ?: "Unable to perform firestore action because the current user is invalid"
+            )
+        }
+    }
     object UnableToReadMultiTagByRef{
         fun report(detail:String?=null): ErrorReport {
             return ErrorReport(

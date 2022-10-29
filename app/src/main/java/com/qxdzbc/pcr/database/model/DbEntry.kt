@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.qxdzbc.pcr.firestore.EntryDoc
+import com.qxdzbc.pcr.util.DateUtils
 import java.util.*
 
 @Entity(tableName = DbEntry.tableName)
@@ -38,7 +39,7 @@ data class DbEntry(
                 id = id,
                 money = (1 .. 100).random().toDouble(),
                 detail =  "detail : ${id}",
-                dateTime = (1 .. 100).random().toLong(),
+                dateTime = DateUtils.randomDate().time,
                 isUploaded = 0,
             )
         }

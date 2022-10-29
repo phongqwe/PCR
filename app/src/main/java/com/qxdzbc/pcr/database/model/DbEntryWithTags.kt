@@ -5,6 +5,7 @@ import androidx.room.Ignore
 import androidx.room.Junction
 import androidx.room.Relation
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.Tag
 import com.qxdzbc.pcr.util.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,6 +33,25 @@ data class DbEntryWithTags(
         get() = entry.isUploaded > 0
     override val isCost: Boolean
         get() = entry.isCost > 0
+
+    override fun edit(
+        money: Double,
+        detail: String?,
+        dateTime: Date,
+        tags: List<Tag>,
+        isCost: Boolean
+    ): Entry {
+        return this.copy(
+            entry = entry.copy(
+                money = money,
+                detail =detail,
+                dateTime = dateTime.time,
+                isUploaded = 0,
+                isCost = if(isCost) 1 else 0
+            ),
+            tags = tags.map { it.toDbTag() }
+        )
+    }
 
     override fun setIsUploaded(i: Boolean): Entry {
         return this.copy(

@@ -1,9 +1,8 @@
 package com.qxdzbc.pcr.state.container
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.flatMap
 import com.github.michaelbull.result.map
-import com.github.michaelbull.result.onSuccess
 import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.common.ResultUtils.toOk
 import com.qxdzbc.pcr.common.Rs
@@ -15,7 +14,6 @@ import com.qxdzbc.pcr.di.DefaultEntryMap
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.FirebaseHelper
 import com.qxdzbc.pcr.firestore.FirestoreErrors
-import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import com.qxdzbc.pcr.state.model.Entry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -105,6 +103,28 @@ data class EntryContainerImp @Inject constructor(
             }
         }?:tCont
         return rt
+    }
+    private fun plainAdd(e:Entry):EntryContainerImp{
+        return this.copy(m=m+(e.id to e))
+    }
+
+    override suspend fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport> {
+            val currentCont = this
+            val rt=insert(newEntry).map {
+                currentCont.plainAdd(newEntry)
+            }
+            return rt
+    }
+
+
+    private fun insert(e:Entry):Rs<Unit,ErrorReport>{
+        try{
+            entryDao.insert(e.toDbEntry())
+            return Ok(Unit)
+        }catch (e:Throwable){
+            val msg = "Unable to write ${e} into the db"
+            return DbErrors.UnableToWriteEntryToDb.report(msg).toErr()
+        }
     }
 
 }

@@ -2,7 +2,11 @@ package com.qxdzbc.pcr.state
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
+import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.database.dao.EntryDao
+import com.qxdzbc.pcr.database.model.DbEntryWithTags
+import com.qxdzbc.pcr.err.OtherErrors
+import com.qxdzbc.pcr.firestore.FirebaseHelper
 import com.qxdzbc.pcr.firestore.MockFirebaseHelper
 import com.qxdzbc.pcr.state.container.EntryContainerImp
 import com.qxdzbc.test.MockEntryDao
@@ -43,6 +47,33 @@ class EntryContainerImpTest {
             tagAssignmentDao = tagAssignmentDao,
             firestoreHelper = firebaseHelper
         )
+    }
+
+    @Test
+    fun addEntryAndWriteToDb() {
+        runBlocking {
+            suspend fun okCase(){
+                val e = DbEntryWithTags.random()
+                assertTrue(e !in cont.allEntries)
+                val rs=cont.addEntryAndWriteToDb("",e)
+                assertTrue(rs is Ok)
+                assertTrue(e in rs.component1()!!.allEntries)
+            }
+            suspend fun unableToWriteToDb(){
+                val e = DbEntryWithTags.random()
+                val mockEntryDao = mock<EntryDao>(){
+                    whenever(it.insert(e.toDbEntry())).thenAnswer {
+                        throw Exception()
+                    }
+                }
+                val c2 = cont.copy(entryDao = mockEntryDao)
+                val rs = c2.addEntryAndWriteToDb("",e)
+                assertTrue(rs is Err)
+            }
+
+            okCase()
+            unableToWriteToDb()
+        }
     }
 
     @Test
@@ -94,10 +125,10 @@ class EntryContainerImpTest {
             val expect = entryDao.getEntryWithTag()
             val c2 = cont.clearAll()
             assertTrue(c2.allEntries.isEmpty())
-            assertNotEquals(expect,c2.allEntries)
+            assertNotEquals(expect, c2.allEntries)
             runBlocking {
                 val c3 = c2.initLoad(uid)
-                assertEquals(expect,c3.allEntries)
+                assertEquals(expect, c3.allEntries)
             }
         }
 
@@ -110,11 +141,10 @@ class EntryContainerImpTest {
                 assertTrue(c2.allEntries.isEmpty())
                 assertNotEquals(expect, c2.allEntries)
                 val c3 = c2.initLoad(uid)
-                assertEquals(expect,c3.allEntries)
+                assertEquals(expect, c3.allEntries)
             }
         }
         `load ok from db, dont load from firestore`()
         `load fail from db, attemp to load from firestore`()
-
     }
 }
