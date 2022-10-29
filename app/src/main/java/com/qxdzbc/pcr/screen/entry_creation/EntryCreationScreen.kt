@@ -2,6 +2,8 @@ package com.qxdzbc.pcr.screen.entry_creation
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,11 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,19 +37,25 @@ import java.util.*
 
 @Composable
 fun EntryCreationScreen(
-    tags: List<Tag>,
+    currentTags: List<Tag>,
     onOk: (newEntry: Entry) -> Unit,
+    back:()->Unit,
     modifier: Modifier = Modifier,
-    back:()->Unit
 ) {
     var detail: String? by remember { ms(null) }
     var money: Double by remember { ms(0.0) }
     var date: Date by remember { ms(Date()) }
-    var openDatePicker by remember { ms(false) }
+    var isDatePickerOpen by remember { ms(false) }
     var isTagSelectDialogOpen by remember { ms(false) }
     var isCost by remember { ms(false) }
     val selectedTagListMs: Ms<List<Tag>> = remember { ms(emptyList()) }
-
+    val openTagSelectDialog:()->Unit = remember{{
+        isTagSelectDialogOpen = true
+    }}
+    val openDatePickerDialog:()->Unit = remember {{
+        isDatePickerOpen = true
+    }
+    }
     Scaffold(
         topBar ={
             PCRTopAppBar {
@@ -65,7 +69,9 @@ fun EntryCreationScreen(
             }
         }
     ) {contentPadding->
-        Surface(modifier=Modifier.padding(contentPadding).padding(top=contentPadding.calculateTopPadding()+10.dp)) {
+        Surface(modifier= Modifier
+            .padding(contentPadding)
+            .padding(top = contentPadding.calculateTopPadding() + 10.dp)) {
             Column(modifier = modifier.padding(horizontal = 10.dp)) {
                 MRow {
                     Text("is this a cost?")
@@ -82,7 +88,6 @@ fun EntryCreationScreen(
                         money = newStr.toDoubleOrNull() ?: oldVl
                     }
                 }
-
                 OutlinedTextField(
                     value = DateUtils.displayDateFormat.format(date),
                     modifier = Modifier.fillMaxWidth(),
@@ -93,13 +98,22 @@ fun EntryCreationScreen(
                     },
                     trailingIcon = {
                         IconButton(
-                            onClick = { openDatePicker = true },
+                            onClick = { openDatePickerDialog() },
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.calendar_24),
                                 contentDescription = "pick date",
                                 tint = MaterialTheme.colors.primary
                             )
+                        }
+                    },
+                    interactionSource = remember { MutableInteractionSource() }.also{i->
+                        LaunchedEffect(i) {
+                            i.interactions.collect {
+                                if (it is PressInteraction.Release) {
+                                    openDatePickerDialog()
+                                }
+                            }
                         }
                     }
                 )
@@ -121,7 +135,7 @@ fun EntryCreationScreen(
                             .fillMaxWidth()
                             .padding(vertical = 5.dp)
                             .clickable {
-                                isTagSelectDialogOpen = true
+                                openTagSelectDialog()
                             }
                     ) {
                         TagListView(
@@ -136,6 +150,7 @@ fun EntryCreationScreen(
 
                         IconButton(
                             onClick = {
+                                openTagSelectDialog()
                             }, modifier = Modifier
                                 .weight(1.0f)
                                 .padding(end = 5.dp)
@@ -158,24 +173,24 @@ fun EntryCreationScreen(
                             isUploaded = false.toInt(),
                             isCost = isCost.toInt(),
                         ),
-                        tags = tags.map { it.toDbTag() }
+                        tags = currentTags.map { it.toDbTag() }
                     )
                     onOk(newEntry)
                 }, modifier = Modifier.align(Alignment.End)) {
                     Text("Ok")
                 }
             }
-            if (openDatePicker) {
+            if (isDatePickerOpen) {
                 MDatePickerDialog(currentDate = date, onDatePick = {
                     date = it
                 }, onDismiss = {
-                    openDatePicker = false
+                    isDatePickerOpen = false
                 })
             }
 
             if (isTagSelectDialogOpen) {
                 TagPickerDialog(
-                    tags = tags,
+                    tags = currentTags,
                     initSelectedList = selectedTagListMs.value,
                     onDone = {
                         selectedTagListMs.value = it
@@ -195,7 +210,7 @@ fun PreviewEntryCreationScreen() {
     PCRTheme {
         EntryCreationScreen(
             modifier = Modifier.fillMaxWidth(),
-            tags = (1..4).map { DbTag.random() },
+            currentTags = (1..4).map { DbTag.random() },
             onOk = {},
             back={},
         )
