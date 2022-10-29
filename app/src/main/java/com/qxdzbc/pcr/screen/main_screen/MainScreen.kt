@@ -1,13 +1,12 @@
 package com.qxdzbc.pcr.screen.main_screen
 
-import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,16 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.github.michaelbull.result.onSuccess
-import com.google.firebase.auth.FirebaseAuth
 import com.qxdzbc.pcr.common.MBox
 import com.qxdzbc.pcr.common.StateUtils.ms
-import com.qxdzbc.pcr.database.model.DbEntry
-import com.qxdzbc.pcr.database.model.DbEntryWithTags
-import com.qxdzbc.pcr.firestore.EntryDoc
-import com.qxdzbc.pcr.firestore.FirebaseHelperImp
-import com.qxdzbc.pcr.firestore.TagDoc
-import com.qxdzbc.pcr.screen.common.CommonTopAppBar
+import com.qxdzbc.pcr.screen.common.MIconButton
+import com.qxdzbc.pcr.screen.common.PCRTopAppBar
 import com.qxdzbc.pcr.screen.common.ThemeSwitcher
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.DateView
@@ -49,31 +42,22 @@ fun MainScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            CommonTopAppBar {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-                            val (menuRef) = createRefs()
-                            IconButton(
-                                onClick = {
-                                    crScope.launch {
-                                        scaffoldState.drawerState.open()
-                                    }
-                                },
-                                modifier = Modifier.constrainAs(menuRef) {
-                                    start.linkTo(parent.start)
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                }
-                            ) {
-                                Icon(
-                                    Icons.Default.Menu,
-                                    contentDescription = "menu button",
-                                    tint = MaterialTheme.colors.onPrimary
-                                )
+            PCRTopAppBar {
+                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                    val (menuRef) = createRefs()
+                    MIconButton(
+                        imageVector=Icons.Default.Menu,
+                        onClick = {
+                            crScope.launch {
+                                scaffoldState.drawerState.open()
                             }
+                        },
+                        modifier = Modifier.constrainAs(menuRef) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
                         }
-                    }
+                    )
                 }
             }
         },
@@ -94,7 +78,7 @@ fun MainScreen(
             FloatingActionButton(
                 onClick = { /*TODO*/ },
                 elevation = FloatingActionButtonDefaults.elevation(10.dp),
-                backgroundColor=MaterialTheme.colors.primary
+                backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(
                     Icons.Filled.Add,
