@@ -1,6 +1,7 @@
 package com.qxdzbc.pcr.screen.entry_creation
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,7 +35,6 @@ import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import com.qxdzbc.pcr.util.DateUtils
-import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
@@ -65,7 +65,7 @@ fun EntryCreationScreen(
             }
         }
     ) {contentPadding->
-        Surface(modifier=Modifier.padding(contentPadding)) {
+        Surface(modifier=Modifier.padding(contentPadding).padding(top=contentPadding.calculateTopPadding()+10.dp)) {
             Column(modifier = modifier.padding(horizontal = 10.dp)) {
                 MRow {
                     Text("is this a cost?")
@@ -120,6 +120,9 @@ fun EntryCreationScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 5.dp)
+                            .clickable {
+                                isTagSelectDialogOpen = true
+                            }
                     ) {
                         TagListView(
                             tags = selectedTagListMs.value,
@@ -133,7 +136,6 @@ fun EntryCreationScreen(
 
                         IconButton(
                             onClick = {
-                                isTagSelectDialogOpen = true
                             }, modifier = Modifier
                                 .weight(1.0f)
                                 .padding(end = 5.dp)
