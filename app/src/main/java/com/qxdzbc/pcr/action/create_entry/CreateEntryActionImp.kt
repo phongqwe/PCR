@@ -25,7 +25,7 @@ class CreateEntryActionImp @Inject constructor(
     val ecMs:Ms<EntryContainer>,
     val errorRouter: ErrorRouter,
 ) : CreateEntryAction {
-    override fun createEntryAndWriteToDb(
+    override fun createEntryAndWriteToDbAndAttemptFirebase(
         date: Date,
         money: Double,
         detail: String?,

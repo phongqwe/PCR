@@ -111,7 +111,9 @@ class MainActivity : ComponentActivity() {
                     composable(entryCreationScreenNavTag){
                         EntryCreationScreen(
                             currentTags = appState.tagContainerMs.value.allTags,
-                            onOk = {},
+                            onOk = {
+
+                            },
                             back = {
                                 onBackPressed()
                             })

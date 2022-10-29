@@ -9,7 +9,7 @@ interface CreateEntryAction {
     /**
      * Create an entry using the input information, add that to the appropriate container and db.
      */
-    fun createEntryAndWriteToDb(
+    fun createEntryAndWriteToDbAndAttemptFirebase(
         date:Date,
         money:Double,
         detail:String?,

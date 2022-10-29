@@ -14,7 +14,7 @@ object MainScreenActionDoNothing : MainScreenAction {
     override fun filter(filter: EntryFilter) {
     }
 
-    override fun createEntryAndWriteToDb(
+    override fun createEntryAndWriteToDbAndAttemptFirebase(
         date: Date,
         money: Double,
         detail: String?,
