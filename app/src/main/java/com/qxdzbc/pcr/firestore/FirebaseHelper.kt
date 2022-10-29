@@ -21,9 +21,16 @@ interface FirebaseHelper {
     suspend fun readMultiTagsById(userId: String, tagIds: Collection<String>): Rs<List<TagDoc>, ErrorReport>
 
     suspend fun writeEntry(userId: String, entryDoc: EntryDoc): Rs<Unit, ErrorReport>
-    suspend fun writeEntry(userId: String, entryDoc: Entry): Rs<Unit, ErrorReport>
 
-    suspend fun writeMultiEntries(userId: String, entries:List<Entry>):Rs<Unit, ErrorReport>
+    /**
+     * write an entry to firebase. Return a new entry that is similar to the input entry but marked as "uploaded"
+     */
+    suspend fun writeEntry(userId: String, entry: Entry): Rs<Entry, ErrorReport>
+
+    /**
+     * write multiple entries to firebase. Return a new entry list that is similar to the input entries but all marked as "uploaded"
+     */
+    suspend fun writeMultiEntries(userId: String, entries:List<Entry>): Rs<List<Entry>, ErrorReport>
 
     suspend fun removeEntry(userId: String, entryDoc: EntryDoc): Rs<Unit, ErrorReport>
     suspend fun removeEntry(userId: String, entry: Entry): Rs<Unit, ErrorReport>

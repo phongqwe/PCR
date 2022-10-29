@@ -42,18 +42,15 @@ data class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntry
         return this.toOk()
     }
 
-    override suspend fun writeToFirestore(userId: String): Rs<Unit, ErrorReport> {
-        return Ok(Unit)
+    override suspend fun writeAllToFirestore(userId: String): Rs<EntryContainer, ErrorReport> {
+        return Ok(this)
     }
 
     override suspend fun initLoad(userId: String?): EntryContainer {
         return this
     }
 
-    override suspend fun addEntryAndWriteToDb(
-        userId: String?,
-        newEntry: Entry
-    ): Rs<EntryContainer, ErrorReport> {
+    override suspend fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport> {
         return Ok(this)
     }
 }

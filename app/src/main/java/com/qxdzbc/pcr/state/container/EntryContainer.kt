@@ -4,6 +4,8 @@ import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.Tag
+import java.util.*
 
 interface EntryContainer : Map<String, Entry> {
     val allEntries: List<Entry>
@@ -22,7 +24,15 @@ interface EntryContainer : Map<String, Entry> {
      */
     suspend fun loadFromFirestoreAndOverwrite(userId:String):Rs<EntryContainer,ErrorReport>
 
-    suspend fun writeToFirestore(userId: String):Rs<Unit,ErrorReport>
+    /**
+     * Write the entire container to firestore.
+     */
+    suspend fun writeAllToFirestore(userId: String): Rs<EntryContainer, ErrorReport>
+
+    /**
+     * Only write un-uploaded entries to the firestore. Return a new entry container holding updated entries.
+     */
+    suspend fun writeUnUploadedToFirestore(userId: String): Rs<EntryContainer, ErrorReport>
 
     /**
      * First load from db. Only if data load from db is empty, then attempt to load from Firestore. If loading from Firestore cause error, silently discard the error, and return the container loaded from db.
@@ -43,6 +53,13 @@ interface EntryContainer : Map<String, Entry> {
     /**
      * Add an entry to the db and Firestore. Return a rs containing a new container
      */
-    suspend fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport>
+    fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport>
+    fun createEntryAndWriteToDb(
+        date: Date,
+        money:Double,
+        detail:String?,
+        tags:List<Tag>,
+        isCost:Boolean
+    ):Rs<EntryContainer, ErrorReport>
 }
 

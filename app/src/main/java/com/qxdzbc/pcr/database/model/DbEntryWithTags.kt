@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Ignore
 import androidx.room.Junction
 import androidx.room.Relation
+import com.qxdzbc.pcr.common.CommonUtils.toInt
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
 import com.qxdzbc.pcr.util.DateUtils
@@ -47,7 +48,7 @@ data class DbEntryWithTags(
                 detail =detail,
                 dateTime = dateTime.time,
                 isUploaded = 0,
-                isCost = if(isCost) 1 else 0
+                isCost = isCost.toInt()
             ),
             tags = tags.map { it.toDbTag() }
         )

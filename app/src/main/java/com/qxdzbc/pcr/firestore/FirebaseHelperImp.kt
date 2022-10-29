@@ -111,26 +111,29 @@ class FirebaseHelperImp @Inject constructor() : FirebaseHelper {
         }
     }
 
-    override suspend fun writeEntry(userId: String, entryDoc: Entry): Rs<Unit, ErrorReport> {
+    override suspend fun writeEntry(userId: String, entry: Entry): Rs<Entry, ErrorReport> {
         val tagColRef = tagColRef(userId)
-        val e = entryDoc.toEntryDoc(tagColRef)
-        return this.writeEntry(userId, e)
+        val e = entry.toEntryDoc(tagColRef)
+        val rt = this.writeEntry(userId, e).map {
+            entry.setIsUploaded(true)
+        }
+        return rt
     }
 
     override suspend fun writeMultiEntries(
         userId: String,
         entries: List<Entry>
-    ): Rs<Unit, ErrorReport> {
+    ): Rs<List<Entry>, ErrorReport> {
         val entryColRef = entryColRef(userId)
         val tagColRef = tagColRef(userId)
-        val t = db.runBatch { b ->
+        val task = db.runBatch { b ->
             for (entry in entries) {
                 b.set(entryColRef.document(entry.id), entry.toEntryDoc(tagColRef))
             }
         }
-        t.await()
-        if (t.isSuccessful) {
-            return Ok(Unit)
+        task.await()
+        if (task.isSuccessful) {
+            return Ok(entries.map { it.setIsUploaded(true) })
         } else {
             return FirestoreErrors.UnableToWriteMultiEntry.report().toErr()
         }
@@ -199,9 +202,9 @@ class FirebaseHelperImp @Inject constructor() : FirebaseHelper {
         }
     }
 
-    private suspend fun readMultiTagByRefToMap(tagRefs: Collection<DocumentReference>): Rs<Map<DocumentReference,TagDoc>, ErrorReport> {
+    private suspend fun readMultiTagByRefToMap(tagRefs: Collection<DocumentReference>): Rs<Map<DocumentReference, TagDoc>, ErrorReport> {
         val task = db.runTransaction { trans ->
-            val rs:MutableMap<DocumentReference,TagDoc> = mutableMapOf()
+            val rs: MutableMap<DocumentReference, TagDoc> = mutableMapOf()
             for (ref in tagRefs) {
                 trans.get(ref).toObject<TagDoc>()?.also {
                     rs[ref] = it
@@ -222,7 +225,7 @@ class FirebaseHelperImp @Inject constructor() : FirebaseHelper {
         val rt = allEntryDocsRs.flatMap { entryDocs ->
             val tagRefs = entryDocs.flatMap { it.tagRefs }.toSet()
             val tagMapRs = readMultiTagByRefToMap(tagRefs)
-            tagMapRs.map {tagMap->
+            tagMapRs.map { tagMap ->
                 entryDocs.map { ed ->
                     DbEntryWithTags(
                         entry = DbEntry.fromEntryDoc(ed),

@@ -6,9 +6,14 @@ import com.qxdzbc.pcr.state.model.Tag
 import java.util.Date
 
 interface CreateEntryAction {
-    suspend fun createEntry(
-        date:Date,money:Double,
-        detail:String?,tags:List<Tag>,
+    /**
+     * Create an entry using the input information, add that to the appropriate container and db.
+     */
+    fun createEntryAndWriteToDb(
+        date:Date,
+        money:Double,
+        detail:String?,
+        tags:List<Tag>,
         isCost:Boolean
-    )
+    ): Rs<Unit, ErrorReport>
 }

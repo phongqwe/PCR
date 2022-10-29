@@ -10,13 +10,17 @@ import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
+import com.qxdzbc.pcr.database.model.DbEntry
+import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.di.DefaultEntryMap
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.FirebaseHelper
 import com.qxdzbc.pcr.firestore.FirestoreErrors
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.Tag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 data class EntryContainerImp @Inject constructor(
@@ -89,8 +93,22 @@ data class EntryContainerImp @Inject constructor(
         return rt
     }
 
-    override suspend fun writeToFirestore(userId: String): Rs<Unit, ErrorReport> {
-        return firestoreHelper.writeMultiEntries(userId, allEntries)
+    private fun setAll(entries:List<Entry>):EntryContainerImp{
+        return this.copy(m=entries.associateBy { it.id })
+    }
+    override suspend fun writeAllToFirestore(userId: String): Rs<EntryContainer, ErrorReport> {
+        return firestoreHelper.writeMultiEntries(userId, allEntries).map {
+            setAll(it)
+        }
+    }
+
+    override suspend fun writeUnUploadedToFirestore(userId: String): Rs<EntryContainer, ErrorReport> {
+        val all = allEntries
+        val targetEntries = allEntries.filter { !it.isUploaded }
+        val rt = firestoreHelper.writeMultiEntries(userId, targetEntries).map {
+            setAll(all.map { it.setIsUploaded(true) })
+        }
+        return rt
     }
 
     override suspend fun initLoad(userId: String?): EntryContainer {
@@ -108,12 +126,33 @@ data class EntryContainerImp @Inject constructor(
         return this.copy(m=m+(e.id to e))
     }
 
-    override suspend fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport> {
+    override fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport> {
             val currentCont = this
             val rt=insert(newEntry).map {
                 currentCont.plainAdd(newEntry)
             }
             return rt
+    }
+
+    override fun createEntryAndWriteToDb(
+        date: Date,
+        money: Double,
+        detail: String?,
+        tags: List<Tag>,
+        isCost: Boolean
+    ): Rs<EntryContainer, ErrorReport> {
+        val entry = DbEntryWithTags(
+            entry = DbEntry(
+                id = UUID.randomUUID().toString(),
+                money=money,
+                detail=detail,
+                dateTime = date.time,
+                isUploaded = 0,
+                isCost = if(isCost) 1 else 0
+            ),
+            tags = tags.map { it.toDbTag() }
+        )
+        return this.addEntryAndWriteToDb(entry)
     }
 
 

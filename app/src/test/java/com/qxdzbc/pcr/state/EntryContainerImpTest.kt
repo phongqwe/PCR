@@ -55,7 +55,7 @@ class EntryContainerImpTest {
             suspend fun okCase(){
                 val e = DbEntryWithTags.random()
                 assertTrue(e !in cont.allEntries)
-                val rs=cont.addEntryAndWriteToDb("",e)
+                val rs=cont.addEntryAndWriteToDb(e)
                 assertTrue(rs is Ok)
                 assertTrue(e in rs.component1()!!.allEntries)
             }
@@ -67,7 +67,7 @@ class EntryContainerImpTest {
                     }
                 }
                 val c2 = cont.copy(entryDao = mockEntryDao)
-                val rs = c2.addEntryAndWriteToDb("",e)
+                val rs = c2.addEntryAndWriteToDb(e)
                 assertTrue(rs is Err)
             }
 

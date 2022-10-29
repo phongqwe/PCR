@@ -53,15 +53,15 @@ class MockFirebaseHelper constructor(
         return Ok(Unit)
     }
 
-    override suspend fun writeEntry(userId: String, entryDoc: Entry): Rs<Unit, ErrorReport> {
-        return Ok(Unit)
+    override suspend fun writeEntry(userId: String, entry: Entry): Rs<Entry, ErrorReport> {
+        return Ok(entry)
     }
 
     override suspend fun writeMultiEntries(
         userId: String,
         entries: List<Entry>
-    ): Rs<Unit, ErrorReport> {
-        return Ok(Unit)
+    ): Rs<List<Entry>, ErrorReport> {
+        return Ok(this.entries)
     }
 
     override suspend fun removeEntry(userId: String, entryDoc: EntryDoc): Rs<Unit, ErrorReport> {

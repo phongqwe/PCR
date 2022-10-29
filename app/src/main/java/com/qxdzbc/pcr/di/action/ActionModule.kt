@@ -1,5 +1,7 @@
 package com.qxdzbc.pcr.di.action
 
+import com.qxdzbc.pcr.action.create_entry.CreateEntryAction
+import com.qxdzbc.pcr.action.create_entry.CreateEntryActionImp
 import com.qxdzbc.pcr.action.filter_entry.FilterEntryOnMainScreenAction
 import com.qxdzbc.pcr.action.filter_entry.FilterEntryOnMainScreenActionImp
 import com.qxdzbc.pcr.action.remove_err.RemoveErr
@@ -22,6 +24,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface ActionModule {
+    @Binds
+    @Singleton
+    fun CreateEntryAction(i: CreateEntryActionImp):CreateEntryAction
 
     @Binds
     @Singleton

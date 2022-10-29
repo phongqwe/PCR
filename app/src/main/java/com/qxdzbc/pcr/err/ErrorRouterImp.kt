@@ -17,19 +17,21 @@ class ErrorRouterImp @Inject constructor(
         errContMs.value = errContMs.value.addErr(err)
     }
 
-    override fun reportToFrontScreen(rs: Rs<Any, ErrorReport>) {
+    override fun <T> reportToFrontScreenIfNeed(rs: Rs<T, ErrorReport>): Rs<T, ErrorReport> {
         rs.onFailure {
             this.reportToFrontScreen(it)
         }
+        return rs
     }
 
     override fun reportToMainScreen(err: ErrorReport) {
         errContInMainMs.value = errContInMainMs.value.addErr(err)
     }
 
-    override fun reportToMainScreen(rs: Rs<Any, ErrorReport>) {
+    override fun <T> reportToMainScreenIfNeed(rs: Rs<T, ErrorReport>): Rs<T, ErrorReport> {
         rs.onFailure {
             this.reportToMainScreen(it)
         }
+        return rs
     }
 }
