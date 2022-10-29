@@ -7,5 +7,6 @@ interface ErrorRouter {
     fun <T> reportToFrontScreenIfNeed(rs:Rs<T,ErrorReport>):Rs<T,ErrorReport>
     fun reportToMainScreen(err: ErrorReport)
     fun <T> reportToMainScreenIfNeed(rs:Rs<T,ErrorReport>):Rs<T,ErrorReport>
+    fun <T> reportToCreateEntryScreenIfNeed(rs:Rs<T,ErrorReport>):Rs<T,ErrorReport>
 
 }

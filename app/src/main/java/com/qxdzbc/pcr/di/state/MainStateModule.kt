@@ -84,6 +84,13 @@ interface MainStateModule {
         fun ErrorContInMainMs():Ms<ErrorContainer>{
             return ms(ErrorContainerImp())
         }
+
+        @Provides
+        @ErrorContInCreateEntryScreenMs
+        @Singleton
+        fun ErrorContInEntryCreateMs():Ms<ErrorContainer>{
+            return ms(ErrorContainerImp())
+        }
     }
 
 }

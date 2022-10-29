@@ -36,6 +36,10 @@ annotation class ErrorContInMainMs
 
 @Qualifier
 @Retention
+annotation class ErrorContInCreateEntryScreenMs
+
+@Qualifier
+@Retention
 annotation class ErrorContInFrontMs
 
 @Qualifier

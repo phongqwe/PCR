@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.material.*
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,26 +14,30 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.auth.FirebaseAuth
+import com.qxdzbc.pcr.action.create_entry.CreateEntryAction
 import com.qxdzbc.pcr.action.update_user.UpdateUserAction
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.state.AppStateMs
-import com.qxdzbc.pcr.di.state.MainScreenStateMs
+import com.qxdzbc.pcr.di.state.ErrorContInCreateEntryScreenMs
+import com.qxdzbc.pcr.err.ErrorContainer
 import com.qxdzbc.pcr.err.ErrorRouter
-import com.qxdzbc.pcr.screen.entry_creation.EntryCreationScreen
-import com.qxdzbc.pcr.screen.entry_creation.entryCreationScreenNavTag
+import com.qxdzbc.pcr.screen.create_entry.CreateEntryScreen
+import com.qxdzbc.pcr.screen.create_entry.CreateEntryScreenAction
+import com.qxdzbc.pcr.screen.create_entry.createEntryScreenNavTag
 import com.qxdzbc.pcr.screen.front_screen.FrontScreen
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenState.Companion.frontScreenNavTag
 import com.qxdzbc.pcr.screen.main_screen.MainScreen
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
-import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState.Companion.mainScreenNavTag
 import com.qxdzbc.pcr.state.app.AppState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper.Companion.toWrapper
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import com.qxdzbc.pcr.util.FireAuthUtils.hasUser
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -55,6 +60,16 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var errorRouter: ErrorRouter
+
+    @Inject
+    lateinit var createEntryAction:CreateEntryAction
+
+    @Inject
+    lateinit var createEntryScreenAction: CreateEntryScreenAction
+
+    @Inject
+    @ErrorContInCreateEntryScreenMs
+    lateinit var errorContInCreateEntryScreenMs:Ms<ErrorContainer>
 
     val appState get() = appStateMs.value
 
@@ -93,7 +108,7 @@ class MainActivity : ComponentActivity() {
                             state = appState.mainScreenStateMs.value,
                             action = mainAction,
                             toEntryCreateScreen = {
-                                navController.navigate(entryCreationScreenNavTag)
+                                navController.navigate(createEntryScreenNavTag)
                             }
                         )
                         BackHandler(true) {
@@ -108,11 +123,15 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                    composable(entryCreationScreenNavTag){
-                        EntryCreationScreen(
+                    composable(createEntryScreenNavTag){
+                        CreateEntryScreen(
+                            action=createEntryScreenAction,
+                            errorCont=errorContInCreateEntryScreenMs.value,
                             currentTags = appState.tagContainerMs.value.allTags,
                             onOk = {
-
+                                lifecycleScope.launch(Dispatchers.Default) {
+                                    createEntryAction.addEntryAndWriteToDbAndAttemptFirebase(it)
+                                }
                             },
                             back = {
                                 onBackPressed()

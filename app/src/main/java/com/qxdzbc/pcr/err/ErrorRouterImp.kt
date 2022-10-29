@@ -3,6 +3,7 @@ package com.qxdzbc.pcr.err
 import com.github.michaelbull.result.onFailure
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.common.Rs
+import com.qxdzbc.pcr.di.state.ErrorContInCreateEntryScreenMs
 import com.qxdzbc.pcr.di.state.ErrorContInFrontMs
 import com.qxdzbc.pcr.di.state.ErrorContInMainMs
 import javax.inject.Inject
@@ -11,7 +12,9 @@ class ErrorRouterImp @Inject constructor(
     @ErrorContInFrontMs
     private val errContMs:Ms<ErrorContainer>,
     @ErrorContInMainMs
-    private val errContInMainMs:Ms<ErrorContainer>
+    private val errContInMainMs:Ms<ErrorContainer>,
+    @ErrorContInCreateEntryScreenMs
+    private val errContInCreateEntryScreenMs:Ms<ErrorContainer>,
 ) : ErrorRouter {
     override fun reportToFrontScreen(err: ErrorReport) {
         errContMs.value = errContMs.value.addErr(err)
@@ -31,6 +34,13 @@ class ErrorRouterImp @Inject constructor(
     override fun <T> reportToMainScreenIfNeed(rs: Rs<T, ErrorReport>): Rs<T, ErrorReport> {
         rs.onFailure {
             this.reportToMainScreen(it)
+        }
+        return rs
+    }
+
+    override fun <T> reportToCreateEntryScreenIfNeed(rs: Rs<T, ErrorReport>): Rs<T, ErrorReport> {
+        rs.onFailure {
+            this.errContInCreateEntryScreenMs.value = this.errContInCreateEntryScreenMs.value.addErr(it)
         }
         return rs
     }

@@ -1,4 +1,4 @@
-package com.qxdzbc.pcr.screen.entry_creation
+package com.qxdzbc.pcr.screen.create_entry
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,7 +19,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.google.firebase.auth.ktx.actionCodeSettings
 import com.qxdzbc.pcr.R
+import com.qxdzbc.pcr.action.create_entry.CreateEntryAction
 import com.qxdzbc.pcr.common.CommonUtils.toInt
 import com.qxdzbc.pcr.common.MBox
 import com.qxdzbc.pcr.common.Ms
@@ -27,6 +29,9 @@ import com.qxdzbc.pcr.common.StateUtils.ms
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.database.model.DbTag
+import com.qxdzbc.pcr.err.ErrorContainer
+import com.qxdzbc.pcr.err.ErrorContainerImp
+import com.qxdzbc.pcr.screen.ErrDisplay
 import com.qxdzbc.pcr.screen.common.*
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.MDatePickerDialog
 import com.qxdzbc.pcr.state.model.Entry
@@ -35,11 +40,13 @@ import com.qxdzbc.pcr.ui.theme.PCRTheme
 import com.qxdzbc.pcr.util.DateUtils
 import java.util.*
 
-val entryCreationScreenNavTag = "entryCreationScreenNavTag"
+val createEntryScreenNavTag = "entryCreationScreenNavTag"
 
 @Composable
-fun EntryCreationScreen(
+fun CreateEntryScreen(
+    action:CreateEntryScreenAction,
     currentTags: List<Tag>,
+    errorCont: ErrorContainer,
     onOk: (newEntry: Entry) -> Unit,
     back: () -> Unit,
     modifier: Modifier = Modifier,
@@ -174,7 +181,7 @@ fun EntryCreationScreen(
                 }
                 Button(onClick = {
                     val money = moneyStr.toDoubleOrNull()
-                    if(money!=null){
+                    if (money != null) {
                         val newEntry = DbEntryWithTags(
                             entry = DbEntry(
                                 id = UUID.randomUUID().toString(),
@@ -187,7 +194,7 @@ fun EntryCreationScreen(
                             tags = currentTags.map { it.toDbTag() }
                         )
                         onOk(newEntry)
-                    }else{
+                    } else {
                         showInvalidMoneyDialog = true
                     }
                 }, modifier = Modifier.align(Alignment.End)) {
@@ -215,20 +222,22 @@ fun EntryCreationScreen(
                 )
             }
             if (showInvalidMoneyDialog) {
-                AlertDialog(
-                    onDismissRequest = {
+                SingleButtonErrDialog(
+                    onDismiss = {
                         showInvalidMoneyDialog = false
                     },
-                    confirmButton = {
-                        Button(onClick = { showInvalidMoneyDialog = false }) {
-                            Text("Ok")
-                        }
+                    onOk = {
+                        showInvalidMoneyDialog = false
                     },
-                    text = {
-                        Text("invalid money amount:${moneyStr}")
-                    },
+                    text = "invalid money amount:${moneyStr}"
                 )
             }
+            ErrDisplay(
+                errorList = errorCont,
+                removeErr = {
+                    action.removeErr(it)
+                }
+            )
         }
     }
 }
@@ -237,11 +246,13 @@ fun EntryCreationScreen(
 @Composable
 fun PreviewEntryCreationScreen() {
     PCRTheme {
-        EntryCreationScreen(
+        CreateEntryScreen(
+            action=CreateEntryScreenAction.forReview,
             modifier = Modifier.fillMaxWidth(),
             currentTags = (1..4).map { DbTag.random() },
             onOk = {},
             back = {},
+            errorCont = ErrorContainerImp()
         )
     }
 }

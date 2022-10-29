@@ -8,4 +8,8 @@ annotation class RemoveErrFromFrontScreenQ
 
 @Qualifier
 @Retention
+annotation class RemoveErrFromCreateEntryScreenQ
+
+@Qualifier
+@Retention
 annotation class RemoveErrFromMainScreenQ

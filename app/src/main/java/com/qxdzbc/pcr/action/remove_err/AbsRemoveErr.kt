@@ -6,7 +6,7 @@ import com.qxdzbc.pcr.err.ErrorReport
 
 abstract class AbsRemoveErr constructor(
     val ecMs: Ms<ErrorContainer>
-) : RemoveErr {
+) : RemoveErrAction {
     override fun removeErr(err: ErrorReport) {
         ecMs.value = ecMs.value.remove(err)
     }
