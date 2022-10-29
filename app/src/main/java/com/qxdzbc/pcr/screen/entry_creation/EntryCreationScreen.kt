@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,10 +24,7 @@ import com.qxdzbc.pcr.common.StateUtils.ms
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.database.model.DbTag
-import com.qxdzbc.pcr.screen.common.InputField
-import com.qxdzbc.pcr.screen.common.MRow
-import com.qxdzbc.pcr.screen.common.TagListView
-import com.qxdzbc.pcr.screen.common.TagPickerDialog
+import com.qxdzbc.pcr.screen.common.*
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.MDatePickerDialog
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
@@ -39,19 +38,35 @@ fun EntryCreationScreen(
     onOk: (newEntry: Entry) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val detailMs: Ms<String?> = remember { ms(null) }
-    val moneyMs: Ms<Double> = remember { ms(0.0) }
-    val dateMs: Ms<Date> = remember { ms(Date()) }
-    val openDatePickerMs = remember { ms(false) }
-    val isTagSelectionDialogOpenMs = remember { ms(false) }
-    val isCostMs = remember {
-        ms(false)
-    }
+//    val detailMs: Ms<String?> = remember { ms(null) }
+    var detail: String? by remember { ms(null) }
+    var money: Double by remember { ms(0.0) }
+    var date: Date by remember { ms(Date()) }
+    var openDatePicker by remember { ms(false) }
+    var isTagSelectDialogOpen by remember { ms(false) }
+    var isCost by remember { ms(false) }
     val selectedTagListMs: Ms<List<Tag>> = remember { ms(emptyList()) }
     Surface {
         Column(modifier = modifier.padding(horizontal = 10.dp)) {
+
+            MRow {
+                Text("is this a cost?")
+                MCheckbox(checked = isCost, onCheckedChange = {
+                    isCost=it
+                })
+                InputField(
+                    "Money amount",
+                    value = money.toString(),
+                    isNumber = true,
+                    modifier = Modifier.fillMaxWidth()
+                ) { newStr ->
+                    val oldVl = money
+                    money = newStr.toDoubleOrNull() ?: oldVl
+                }
+            }
+
             OutlinedTextField(
-                value = DateUtils.displayDateFormat.format(dateMs.value),
+                value = DateUtils.displayDateFormat.format(date),
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {},
                 readOnly = true,
@@ -60,7 +75,7 @@ fun EntryCreationScreen(
                 },
                 trailingIcon = {
                     IconButton(
-                        onClick = { openDatePickerMs.value = true },
+                        onClick = { openDatePicker = true },
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.calendar_24),
@@ -70,21 +85,13 @@ fun EntryCreationScreen(
                     }
                 }
             )
-            InputField(
-                "Money",
-                value = moneyMs.value.toString(),
-                isNumber = true,
-                modifier = Modifier.fillMaxWidth()
-            ) { newStr ->
-                val oldVl = moneyMs.value
-                moneyMs.value = newStr.toDoubleOrNull() ?: oldVl
-            }
+
             InputField(
                 title = "Detail",
-                value = detailMs.value ?: "",
+                value = detail ?: "",
                 modifier = Modifier.fillMaxWidth()
             ) {
-                detailMs.value = it
+                detail = it
             }
             MBox(
                 modifier = Modifier
@@ -102,14 +109,13 @@ fun EntryCreationScreen(
                             .weight(9f)
                             .padding(start = 10.dp, end = 5.dp),
                         onCloseTag = {
-                            //TODO on close tag
                             selectedTagListMs.value = selectedTagListMs.value - it
                         }
                     )
 
                     IconButton(
                         onClick = {
-                            isTagSelectionDialogOpenMs.value = true
+                            isTagSelectDialogOpen = true
                         }, modifier = Modifier
                             .weight(1.0f)
                             .padding(end = 5.dp)
@@ -126,11 +132,11 @@ fun EntryCreationScreen(
                 val newEntry = DbEntryWithTags(
                     entry = DbEntry(
                         id = UUID.randomUUID().toString(),
-                        money = moneyMs.value,
-                        detail = detailMs.value,
-                        dateTime = dateMs.value.time,
+                        money = money,
+                        detail = detail,
+                        dateTime = date.time,
                         isUploaded = false.toInt(),
-                        isCost = isCostMs.value.toInt(),
+                        isCost = isCost.toInt(),
                     ),
                     tags = tags.map { it.toDbTag() }
                 )
@@ -139,15 +145,15 @@ fun EntryCreationScreen(
                 Text("Ok")
             }
         }
-        if (openDatePickerMs.value) {
-            MDatePickerDialog(currentDate = dateMs.value, onDatePick = {
-                dateMs.value = it
+        if (openDatePicker) {
+            MDatePickerDialog(currentDate = date, onDatePick = {
+                date = it
             }, onDismiss = {
-                openDatePickerMs.value = false
+                openDatePicker = false
             })
         }
 
-        if (isTagSelectionDialogOpenMs.value) {
+        if (isTagSelectDialogOpen) {
             TagPickerDialog(
                 tags = tags,
                 initSelectedList = selectedTagListMs.value,
@@ -155,7 +161,7 @@ fun EntryCreationScreen(
                     selectedTagListMs.value = it
                 },
                 onDismiss = {
-                    isTagSelectionDialogOpenMs.value = false
+                    isTagSelectDialogOpen = false
                 }
             )
         }
