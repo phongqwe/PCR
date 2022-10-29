@@ -23,7 +23,7 @@ import com.qxdzbc.pcr.ui.theme.PCRTheme
 @Composable
 fun SmallTagView(
     tag: Tag,
-    onClose:()->Unit = {}
+    onClose:()->Unit
 ) {
     Box(
         modifier = Modifier
@@ -68,7 +68,7 @@ fun SmallTagView(
 fun PreviewSmallTagView() {
     PCRTheme(darkTheme = true) {
         Surface() {
-            SmallTagView(tag = DbTag.random())
+            SmallTagView(tag = DbTag.random(), onClose = {})
         }
     }
 }

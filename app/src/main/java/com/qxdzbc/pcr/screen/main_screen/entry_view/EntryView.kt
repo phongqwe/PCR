@@ -1,10 +1,6 @@
 package com.qxdzbc.pcr.screen.main_screen.entry_view
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
@@ -18,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.screen.common.StdDivider
+import com.qxdzbc.pcr.screen.common.TagListView
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 
@@ -29,9 +26,8 @@ fun EntryView(
     cardSpacing: Int = 5,
 ) {
     val crScope = rememberCoroutineScope()
-    val tagListState = rememberLazyListState()
     Card(
-        modifier = modifier.padding(bottom=cardSpacing.dp),
+        modifier = modifier.padding(bottom = cardSpacing.dp),
         elevation = 10.dp
     ) {
         Column(
@@ -83,25 +79,16 @@ fun EntryView(
             StdDivider(modifier = Modifier.padding(bottom = 5.dp))
 
             val tagRowScrollState = rememberScrollState(0)
-            val tagListPadding = 0.dp
-            val spacerWidth = 6.dp
-            LazyRow(
-                state = tagListState,
-                modifier = Modifier
-                    .scrollable(tagRowScrollState, orientation = Orientation.Vertical)
-                    .padding(start = tagListPadding)
-            ) {
-                items(entry.tags.withIndex().toList()) { (i, tag) ->
-                    Box(modifier = Modifier) {
-                        SmallTagView(tag = tag)
-                    }
-                    if (i != entry.tags.size - 1) {
-                        Spacer(modifier = Modifier.width(spacerWidth))
-                    }
-                }
-            }
-        }
+            val tagListState = rememberLazyListState()
 
+            TagListView(
+                entry.tags,
+                lazyListState = tagListState,
+                scrollState = tagRowScrollState,
+                onCloseTag = {
+                    // TODO
+                })
+        }
     }
 }
 

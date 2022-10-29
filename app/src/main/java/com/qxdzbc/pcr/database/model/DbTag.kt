@@ -31,7 +31,6 @@ data class DbTag(
                 isUploadedInternal = 0
             )
         }
-
         fun fromTagDoc(td: TagDoc): DbTag {
             return DbTag(id = td.id, name = td.name, isUploadedInternal = 1)
         }
