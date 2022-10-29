@@ -19,6 +19,8 @@ import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.state.AppStateMs
 import com.qxdzbc.pcr.di.state.MainScreenStateMs
 import com.qxdzbc.pcr.err.ErrorRouter
+import com.qxdzbc.pcr.screen.entry_creation.EntryCreationScreen
+import com.qxdzbc.pcr.screen.entry_creation.entryCreationScreenNavTag
 import com.qxdzbc.pcr.screen.front_screen.FrontScreen
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenState.Companion.frontScreenNavTag
@@ -89,19 +91,30 @@ class MainActivity : ComponentActivity() {
                     composable(mainScreenNavTag) {
                         MainScreen(
                             state = appState.mainScreenStateMs.value,
-                            action = mainAction
+                            action = mainAction,
+                            toEntryCreateScreen = {
+                                navController.navigate(entryCreationScreenNavTag)
+                            }
                         )
                         BackHandler(true) {
                             if (hasUser()) {
                                 /*
-                                 do nothing, prevent user from
+                                 prevent user from
                                  going back to front screen once
-                                 they have login
+                                 they have logged in
                                  */
                             } else {
                                 onBackPressed()
                             }
                         }
+                    }
+                    composable(entryCreationScreenNavTag){
+                        EntryCreationScreen(
+                            currentTags = appState.tagContainerMs.value.allTags,
+                            onOk = {},
+                            back = {
+                                onBackPressed()
+                            })
                     }
                 }
                 toMainIfPossible()

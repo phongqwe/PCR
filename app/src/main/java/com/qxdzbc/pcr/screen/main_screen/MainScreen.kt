@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 fun MainScreen(
     state: MainScreenState,
     action: MainScreenAction,
+    toEntryCreateScreen:()->Unit
 ) {
     val crScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -76,7 +77,7 @@ fun MainScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = { toEntryCreateScreen() },
                 elevation = FloatingActionButtonDefaults.elevation(10.dp),
                 backgroundColor = MaterialTheme.colors.primary
             ) {
@@ -172,7 +173,8 @@ fun previewMainScreen() {
     PCRTheme(darkTheme = false) {
         MainScreen(
             state = MainScreenState.forPreview,
-            action = MainScreenAction.forPreview
+            action = MainScreenAction.forPreview,
+            toEntryCreateScreen = {}
         )
     }
 }

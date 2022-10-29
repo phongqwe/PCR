@@ -35,58 +35,68 @@ import com.qxdzbc.pcr.ui.theme.PCRTheme
 import com.qxdzbc.pcr.util.DateUtils
 import java.util.*
 
+val entryCreationScreenNavTag = "entryCreationScreenNavTag"
+
 @Composable
 fun EntryCreationScreen(
     currentTags: List<Tag>,
     onOk: (newEntry: Entry) -> Unit,
-    back:()->Unit,
+    back: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var detail: String? by remember { ms(null) }
-    var money: Double by remember { ms(0.0) }
+    var moneyStr: String by remember { ms("0.0") }
     var date: Date by remember { ms(Date()) }
     var isDatePickerOpen by remember { ms(false) }
     var isTagSelectDialogOpen by remember { ms(false) }
     var isCost by remember { ms(false) }
     val selectedTagListMs: Ms<List<Tag>> = remember { ms(emptyList()) }
-    val openTagSelectDialog:()->Unit = remember{{
-        isTagSelectDialogOpen = true
-    }}
-    val openDatePickerDialog:()->Unit = remember {{
-        isDatePickerOpen = true
+    var showInvalidMoneyDialog by remember {
+        ms(false)
     }
+    val openTagSelectDialog: () -> Unit = remember {
+        {
+            isTagSelectDialogOpen = true
+        }
+    }
+    val openDatePickerDialog: () -> Unit = remember {
+        {
+            isDatePickerOpen = true
+        }
     }
     Scaffold(
-        topBar ={
+        topBar = {
             PCRTopAppBar {
                 ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                     val (menuRef) = createRefs()
                     MIconButton(
-                        imageVector=Icons.Default.ArrowBack,
+                        imageVector = Icons.Default.ArrowBack,
                         onClick = back
                     )
                 }
             }
         }
-    ) {contentPadding->
-        Surface(modifier= Modifier
-            .padding(contentPadding)
-            .padding(top = contentPadding.calculateTopPadding() + 10.dp)) {
+    ) { contentPadding ->
+        Surface(
+            modifier = Modifier
+                .padding(contentPadding)
+                .padding(top = contentPadding.calculateTopPadding() + 10.dp)
+        ) {
             Column(modifier = modifier.padding(horizontal = 10.dp)) {
                 MRow {
                     Text("is this a cost?")
                     MCheckbox(checked = isCost, onCheckedChange = {
-                        isCost=it
+                        isCost = it
                     })
                     InputField(
                         "Money amount",
-                        value = money.toString(),
+                        value = moneyStr,
                         isNumber = true,
-                        modifier = Modifier.fillMaxWidth()
-                    ) { newStr ->
-                        val oldVl = money
-                        money = newStr.toDoubleOrNull() ?: oldVl
-                    }
+                        modifier = Modifier.fillMaxWidth(),
+                        onValueChange = { newStr ->
+                            moneyStr = newStr
+                        }
+                    )
                 }
                 OutlinedTextField(
                     value = DateUtils.displayDateFormat.format(date),
@@ -107,7 +117,7 @@ fun EntryCreationScreen(
                             )
                         }
                     },
-                    interactionSource = remember { MutableInteractionSource() }.also{i->
+                    interactionSource = remember { MutableInteractionSource() }.also { i ->
                         LaunchedEffect(i) {
                             i.interactions.collect {
                                 if (it is PressInteraction.Release) {
@@ -147,7 +157,6 @@ fun EntryCreationScreen(
                                 selectedTagListMs.value = selectedTagListMs.value - it
                             }
                         )
-
                         IconButton(
                             onClick = {
                                 openTagSelectDialog()
@@ -164,18 +173,23 @@ fun EntryCreationScreen(
                     }
                 }
                 Button(onClick = {
-                    val newEntry = DbEntryWithTags(
-                        entry = DbEntry(
-                            id = UUID.randomUUID().toString(),
-                            money = money,
-                            detail = detail,
-                            dateTime = date.time,
-                            isUploaded = false.toInt(),
-                            isCost = isCost.toInt(),
-                        ),
-                        tags = currentTags.map { it.toDbTag() }
-                    )
-                    onOk(newEntry)
+                    val money = moneyStr.toDoubleOrNull()
+                    if(money!=null){
+                        val newEntry = DbEntryWithTags(
+                            entry = DbEntry(
+                                id = UUID.randomUUID().toString(),
+                                money = money,
+                                detail = detail,
+                                dateTime = date.time,
+                                isUploaded = false.toInt(),
+                                isCost = isCost.toInt(),
+                            ),
+                            tags = currentTags.map { it.toDbTag() }
+                        )
+                        onOk(newEntry)
+                    }else{
+                        showInvalidMoneyDialog = true
+                    }
                 }, modifier = Modifier.align(Alignment.End)) {
                     Text("Ok")
                 }
@@ -200,6 +214,21 @@ fun EntryCreationScreen(
                     }
                 )
             }
+            if (showInvalidMoneyDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showInvalidMoneyDialog = false
+                    },
+                    confirmButton = {
+                        Button(onClick = { showInvalidMoneyDialog = false }) {
+                            Text("Ok")
+                        }
+                    },
+                    text = {
+                        Text("invalid money amount:${moneyStr}")
+                    },
+                )
+            }
         }
     }
 }
@@ -212,7 +241,7 @@ fun PreviewEntryCreationScreen() {
             modifier = Modifier.fillMaxWidth(),
             currentTags = (1..4).map { DbTag.random() },
             onOk = {},
-            back={},
+            back = {},
         )
     }
 }
