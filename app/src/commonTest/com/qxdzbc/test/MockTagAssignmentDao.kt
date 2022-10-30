@@ -2,10 +2,14 @@ package com.qxdzbc.test
 
 import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.model.DbTagAssignment
+import javax.inject.Inject
 
 open class MockTagAssignmentDao(
-    val tagAssignments: List<DbTagAssignment> = emptyList()
+    val tagAssignments: List<DbTagAssignment>
 ): TagAssignmentDao {
+    @Inject
+    constructor():this(emptyList())
+
     override fun insert(vararg tagAssignment: DbTagAssignment) {
     }
 

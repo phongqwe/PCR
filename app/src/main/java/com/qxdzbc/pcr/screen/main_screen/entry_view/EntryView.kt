@@ -9,10 +9,14 @@ import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.qxdzbc.pcr.R
+import com.qxdzbc.pcr.common.MBox
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
+import com.qxdzbc.pcr.screen.common.MIconButton
 import com.qxdzbc.pcr.screen.common.StdDivider
 import com.qxdzbc.pcr.screen.common.TagListView
 import com.qxdzbc.pcr.state.model.Entry
@@ -41,24 +45,23 @@ fun EntryView(
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 })
-                if (entry.isUploaded.not()) {
-
-                    IconButton(
-                        onClick = {
-                            uploadEntry()
-                        },
-                        modifier = Modifier.constrainAs(warning) {
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                        }
-                    ) {
+                MBox(modifier = Modifier.constrainAs(warning) {
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }) {
+                    if (entry.isUploaded) {
                         Icon(
-                            imageVector = Icons.Outlined.Warning,
+                            painter = painterResource(R.drawable.cloud_done_24),
                             contentDescription = null,
-                            tint = Color.Red,
+                            tint = MaterialTheme.colors.primary,
                         )
-
+                    } else {
+                        MIconButton(
+                            painter = painterResource(R.drawable.backup_icon_24),
+                            onClick = { uploadEntry() },
+                            tint=Color.Red
+                        )
                     }
                 }
             }

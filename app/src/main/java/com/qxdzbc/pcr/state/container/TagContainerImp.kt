@@ -8,7 +8,7 @@ import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.di.DefaultTagMap
 import com.qxdzbc.pcr.err.ErrorReport
-import com.qxdzbc.pcr.firestore.FirebaseHelper
+import com.qxdzbc.pcr.firestore.FirestoreHelper
 import com.qxdzbc.pcr.state.model.Tag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,7 +18,7 @@ data class TagContainerImp @Inject constructor(
     @DefaultTagMap
     private val m: Map<String, @JvmSuppressWildcards Tag>,
     private val tagDao: TagDao,
-    private val firestoreHelper: FirebaseHelper
+    private val firestoreHelper: FirestoreHelper
 ) : AbsTagContainer(m) {
 
     override val allTags: List<Tag>

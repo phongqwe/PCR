@@ -20,6 +20,7 @@ import com.qxdzbc.pcr.screen.common.MIconButton
 import com.qxdzbc.pcr.screen.common.PCRTopAppBar
 import com.qxdzbc.pcr.screen.common.ThemeSwitcher
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
+import com.qxdzbc.pcr.screen.main_screen.date_filter_view.DateType
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.DateView
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.MDatePickerDialog
 import com.qxdzbc.pcr.screen.main_screen.entry_view.EntryView
@@ -137,7 +138,7 @@ fun MainScreen(
                 val fromDate = filter.fromDate ?: Date()
                 MDatePickerDialog(
                     currentDate = fromDate,
-                    isFromDate=true,
+                    dateType = DateType.Start,
                     onDatePick = {
                         val newFilter = filter.copy(fromDate = it)
                         action.filter(newFilter)
@@ -152,7 +153,7 @@ fun MainScreen(
                 val toDate = filter.toDate ?: Date()
                     MDatePickerDialog(
                         currentDate = toDate,
-                        isFromDate=false,
+                        dateType = DateType.End,
                         onDatePick = {
                             val newFilter = filter.copy(toDate = it)
                             action.filter(newFilter)

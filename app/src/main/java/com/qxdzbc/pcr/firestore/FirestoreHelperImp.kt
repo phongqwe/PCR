@@ -22,7 +22,7 @@ import com.qxdzbc.pcr.state.model.Tag
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseHelperImp @Inject constructor() : FirebaseHelper {
+class FirestoreHelperImp @Inject constructor() : FirestoreHelper {
 
     val db = FirebaseFirestore.getInstance()
     val dbRoot = "users"
@@ -241,6 +241,7 @@ class FirebaseHelperImp @Inject constructor() : FirebaseHelper {
 
 
     private fun userDocRef(userId: String): DocumentReference {
+        db
         return db.collection(dbRoot).document(userId)
     }
 

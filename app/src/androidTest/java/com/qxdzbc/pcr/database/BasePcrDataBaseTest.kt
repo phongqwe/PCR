@@ -3,17 +3,13 @@ package com.qxdzbc.pcr.database
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.qxdzbc.test.TestSample
+import com.qxdzbc.pcr.TestSample
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.database.model.*
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
 
 abstract class BasePcrDataBaseTest {
 
@@ -24,11 +20,11 @@ abstract class BasePcrDataBaseTest {
     lateinit var entries: List<DbEntry>
     lateinit var tagAsignments: List<DbTagAssignment>
     lateinit var tags: List<DbTag>
-    lateinit var ts: TestSample
+    lateinit var ts: com.qxdzbc.pcr.TestSample
 
     @Before
     fun b() {
-        ts = TestSample()
+        ts = com.qxdzbc.pcr.TestSample()
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AbsPcrDataBase::class.java).build()
         entryDao = db.entryDao

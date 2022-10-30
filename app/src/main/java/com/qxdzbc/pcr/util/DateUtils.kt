@@ -16,15 +16,23 @@ object DateUtils {
     }
     val displayDateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.US)
     fun randomDate():Date{
-        return createDate((2000 .. 2022).random(),(1 .. 12).random(),(1 ..25).random())
+        return createDateAtStart((2000 .. 2022).random(),(0 .. 11).random(),(1 ..25).random())
     }
 
-    /**
-     * month: 1-12
-     */
-    fun createDate(year:Int,month:Int,day:Int):Date{
+    fun createDateAtStart(year:Int, month:Int, day:Int):Date{
         return Calendar.getInstance().apply {
-            set(year, month-1, day)
+            set(year, month, day,0,0,0)
+        }.time
+    }
+
+    fun createDateAtEnd(year:Int, month:Int, day:Int):Date{
+        return Calendar.getInstance().apply {
+            set(year, month, day,24,59,59)
+        }.time
+    }
+    fun createDate(year:Int, month:Int, day:Int):Date{
+        return Calendar.getInstance().apply {
+            set(year, month, day)
         }.time
     }
 }

@@ -3,13 +3,13 @@ package com.qxdzbc.pcr.screen.main_screen.date_filter_view
 import android.app.DatePickerDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import java.util.Calendar
-import java.util.Date
+import com.qxdzbc.pcr.util.DateUtils
+import java.util.*
 
 @Composable
 fun MDatePickerDialog(
     currentDate:Date,
-    isFromDate:Boolean = true,
+    dateType: DateType,
     onDatePick:(newDate:Date)->Unit,
     onDismiss:()->Unit,
 ) {
@@ -20,15 +20,11 @@ fun MDatePickerDialog(
     val dialog=DatePickerDialog(
         ctx,
         { view, year, month, dayOfMonth ->
-            val calendar = Calendar.getInstance().apply {
-                if(isFromDate){
-                    set(year,month,dayOfMonth,0,0,0)
-                }else{
-                    set(year,month,dayOfMonth,24,59,59)
-                }
-
+            val newDate =when(dateType) {
+                DateType.Start -> DateUtils.createDateAtStart(year, month, dayOfMonth)
+                DateType.End-> DateUtils.createDateAtEnd(year, month, dayOfMonth)
+                else->DateUtils.createDate(year, month, dayOfMonth)
             }
-            val newDate =calendar.time
             onDatePick(newDate)
             onDismiss()
         },

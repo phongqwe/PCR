@@ -2,17 +2,14 @@ package com.qxdzbc.pcr.state
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
-import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
-import com.qxdzbc.pcr.err.OtherErrors
-import com.qxdzbc.pcr.firestore.FirebaseHelper
-import com.qxdzbc.pcr.firestore.MockFirebaseHelper
+import com.qxdzbc.pcr.firestore.MockFirestoreHelper
 import com.qxdzbc.pcr.state.container.EntryContainerImp
 import com.qxdzbc.test.MockEntryDao
 import com.qxdzbc.test.MockTagAssignmentDao
 import com.qxdzbc.test.MockTagDao
-import com.qxdzbc.test.TestSample
+import com.qxdzbc.pcr.TestSample
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -25,7 +22,7 @@ class EntryContainerImpTest {
     lateinit var entryDao: MockEntryDao
     lateinit var tagDao: MockTagDao
     lateinit var tagAssignmentDao: MockTagAssignmentDao
-    lateinit var firebaseHelper: MockFirebaseHelper
+    lateinit var firebaseHelper: MockFirestoreHelper
 
     @Before
     fun bf() {
@@ -35,10 +32,11 @@ class EntryContainerImpTest {
             entriesWithTags = ts.entriesWithTag
         )
         tagDao = MockTagDao(
-            tags = ts.tags
+            tags = ts.tags,
+            tweList = emptyList()
         )
         firebaseHelper =
-            MockFirebaseHelper(ts.entriesWithTag.subList(0, ts.entriesWithTag.size / 2))
+            MockFirestoreHelper(ts.entriesWithTag.subList(0, ts.entriesWithTag.size / 2))
         tagAssignmentDao = MockTagAssignmentDao()
         cont = EntryContainerImp(
             m = ts.entriesWithTag.associateBy { it.id },

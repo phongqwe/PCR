@@ -54,8 +54,8 @@ data class EntryFilter(
         val empty = EntryFilter(null, null, null, emptyList())
         fun forPreview(): EntryFilter {
             return EntryFilter(
-                fromDate = DateUtils.createDate(2000, 1, 1),
-                toDate = DateUtils.createDate(2023, 1, 1),
+                fromDate = DateUtils.createDateAtStart(2000, 0, 1),
+                toDate = DateUtils.createDateAtStart(2023, 0, 1),
                 text = "",
                 tags = emptyList()
             )

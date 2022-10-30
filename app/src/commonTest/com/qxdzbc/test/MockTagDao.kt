@@ -3,11 +3,16 @@ package com.qxdzbc.test
 import com.qxdzbc.pcr.database.dao.TagDao
 import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.database.model.DbTagWithEntries
+import javax.inject.Inject
 
 open class MockTagDao(
-    val tags: List<DbTag> = emptyList(),
-    val tweList: List<DbTagWithEntries> = emptyList(),
+    val tags: List<DbTag>,
+    val tweList: List<DbTagWithEntries>,
 ) : TagDao {
+
+    @Inject
+    constructor():this(emptyList(),emptyList())
+
     override fun getTagWithEntries(): List<DbTagWithEntries> {
         return tweList
     }

@@ -1,15 +1,22 @@
 package com.qxdzbc.pcr.firestore
 
 import com.github.michaelbull.result.Ok
+import com.google.firebase.firestore.DocumentReference
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
+import javax.inject.Inject
 
-class MockFirebaseHelper constructor(
+class MockFirestoreHelper constructor(
     val entries: List<Entry> = emptyList(),
     val tags:List<Tag> = emptyList()
-) : FirebaseHelper {
+) : FirestoreHelper {
+
+    @Inject
+    constructor():this(emptyList(),emptyList())
+
+
     override suspend fun writeTag(userId: String, tag: TagDoc): Rs<Unit, ErrorReport> {
         return Ok(Unit)
     }
@@ -35,7 +42,7 @@ class MockFirebaseHelper constructor(
     }
 
     override suspend fun readAllTags(userId: String): Rs<List<TagDoc>, ErrorReport> {
-        return Ok(emptyList())
+        return Ok(tags.map { it.toTagDoc() })
     }
 
     override suspend fun readAllTagsToModel(userId: String): Rs<List<Tag>, ErrorReport> {
@@ -54,14 +61,14 @@ class MockFirebaseHelper constructor(
     }
 
     override suspend fun writeEntry(userId: String, entry: Entry): Rs<Entry, ErrorReport> {
-        return Ok(entry)
+        return Ok(entry.setIsUploaded(true))
     }
 
     override suspend fun writeMultiEntries(
         userId: String,
         entries: List<Entry>
     ): Rs<List<Entry>, ErrorReport> {
-        return Ok(this.entries)
+        return Ok(entries.map{it.setIsUploaded(true)})
     }
 
     override suspend fun removeEntry(userId: String, entryDoc: EntryDoc): Rs<Unit, ErrorReport> {
@@ -77,6 +84,7 @@ class MockFirebaseHelper constructor(
     }
 
     override suspend fun readAllEntries(userId: String): Rs<List<EntryDoc>, ErrorReport> {
+        // TODO problematic
         return Ok(emptyList())
     }
 

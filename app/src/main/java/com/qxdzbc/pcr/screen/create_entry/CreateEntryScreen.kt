@@ -19,9 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.google.firebase.auth.ktx.actionCodeSettings
 import com.qxdzbc.pcr.R
-import com.qxdzbc.pcr.action.create_entry.CreateEntryAction
 import com.qxdzbc.pcr.common.CommonUtils.toInt
 import com.qxdzbc.pcr.common.MBox
 import com.qxdzbc.pcr.common.Ms
@@ -33,6 +31,7 @@ import com.qxdzbc.pcr.err.ErrorContainer
 import com.qxdzbc.pcr.err.ErrorContainerImp
 import com.qxdzbc.pcr.screen.ErrDisplay
 import com.qxdzbc.pcr.screen.common.*
+import com.qxdzbc.pcr.screen.main_screen.date_filter_view.DateType
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.MDatePickerDialog
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
@@ -57,7 +56,7 @@ fun CreateEntryScreen(
     var isDatePickerOpen by remember { ms(false) }
     var isTagSelectDialogOpen by remember { ms(false) }
     var isCost by remember { ms(false) }
-    val selectedTagListMs: Ms<List<Tag>> = remember { ms(emptyList()) }
+    val selectedTagsMs: Ms<List<Tag>> = remember { ms(emptyList()) }
     var showInvalidMoneyDialog by remember {
         ms(false)
     }
@@ -156,12 +155,12 @@ fun CreateEntryScreen(
                             }
                     ) {
                         TagListView(
-                            tags = selectedTagListMs.value,
+                            tags = selectedTagsMs.value,
                             modifier = Modifier
                                 .weight(9f)
                                 .padding(start = 10.dp, end = 5.dp),
                             onCloseTag = {
-                                selectedTagListMs.value = selectedTagListMs.value - it
+                                selectedTagsMs.value = selectedTagsMs.value - it
                             }
                         )
                         IconButton(
@@ -191,7 +190,7 @@ fun CreateEntryScreen(
                                 isUploaded = false.toInt(),
                                 isCost = isCost.toInt(),
                             ),
-                            tags = currentTags.map { it.toDbTag() }
+                            tags = selectedTagsMs.value.map { it.toDbTag() }
                         )
                         onOk(newEntry)
                         back()
@@ -209,15 +208,17 @@ fun CreateEntryScreen(
                     date = it
                 }, onDismiss = {
                     isDatePickerOpen = false
-                })
+                },
+                    dateType = DateType.Current
+                )
             }
 
             if (isTagSelectDialogOpen) {
                 TagPickerDialog(
                     tags = currentTags,
-                    initSelectedList = selectedTagListMs.value,
+                    initSelectedList = selectedTagsMs.value,
                     onDone = {
-                        selectedTagListMs.value = it
+                        selectedTagsMs.value = it
                     },
                     onDismiss = {
                         isTagSelectDialogOpen = false

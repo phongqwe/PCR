@@ -1,7 +1,6 @@
 package com.qxdzbc.pcr.state.container
 
 import com.github.michaelbull.result.Ok
-import com.github.michaelbull.result.flatMap
 import com.github.michaelbull.result.map
 import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.common.ResultUtils.toOk
@@ -14,8 +13,7 @@ import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.di.DefaultEntryMap
 import com.qxdzbc.pcr.err.ErrorReport
-import com.qxdzbc.pcr.firestore.FirebaseHelper
-import com.qxdzbc.pcr.firestore.FirestoreErrors
+import com.qxdzbc.pcr.firestore.FirestoreHelper
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +27,7 @@ data class EntryContainerImp @Inject constructor(
     private val entryDao: EntryDao,
     private val tagDao: TagDao,
     private val tagAssignmentDao: TagAssignmentDao,
-    private val firestoreHelper: FirebaseHelper,
+    private val firestoreHelper: FirestoreHelper,
 ) : AbsEntryContainer(m) {
 
     companion object {
@@ -37,9 +35,9 @@ data class EntryContainerImp @Inject constructor(
             entryDao: EntryDao,
             tagDao: TagDao,
             tagAssignmentDao: TagAssignmentDao,
-            firebaseHelper: FirebaseHelper
+            firestoreHelper: FirestoreHelper
         ) =
-            EntryContainerImp(emptyMap(), entryDao, tagDao, tagAssignmentDao, firebaseHelper)
+            EntryContainerImp(emptyMap(), entryDao, tagDao, tagAssignmentDao, firestoreHelper)
     }
 
     override val allEntries: List<Entry> get() = m.values.toList()
@@ -106,7 +104,15 @@ data class EntryContainerImp @Inject constructor(
         val all = allEntries
         val targetEntries = allEntries.filter { !it.isUploaded }
         val rt = firestoreHelper.writeMultiEntries(userId, targetEntries).map {
-            setAll(all.map { it.setIsUploaded(true) })
+            val uploadedEntries = it.associateBy { it.id }
+            val allNewEntries=all.map { oldEntry->
+                if(oldEntry.id in uploadedEntries){
+                    uploadedEntries[oldEntry.id]!!
+                }else{
+                    oldEntry
+                }
+            }
+            setAll(allNewEntries)
         }
         return rt
     }
@@ -128,7 +134,7 @@ data class EntryContainerImp @Inject constructor(
 
     override fun addEntryAndWriteToDb(newEntry: Entry): Rs<EntryContainer, ErrorReport> {
             val currentCont = this
-            val rt=insert(newEntry).map {
+            val rt=insertIntoDb(newEntry).map {
                 currentCont.plainAdd(newEntry)
             }
             return rt
@@ -156,7 +162,7 @@ data class EntryContainerImp @Inject constructor(
     }
 
 
-    private fun insert(e:Entry):Rs<Unit,ErrorReport>{
+    private fun insertIntoDb(e:Entry):Rs<Unit,ErrorReport>{
         try{
             entryDao.insert(e.toDbEntry())
             return Ok(Unit)

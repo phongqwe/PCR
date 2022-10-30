@@ -1,9 +1,11 @@
-package com.qxdzbc.test
+package com.qxdzbc.pcr
 
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.database.model.DbTagAssignment
+import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
+import com.qxdzbc.pcr.state.app.MockFirebaseUserWrapper
 import java.util.*
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -36,5 +38,12 @@ class TestSample {
             )
         }
         m
+    }
+    val fakeUser=MockFirebaseUserWrapper()
+    val comp: TestComponent = DaggerTestComponent.create()
+
+    init{
+        val userMs = comp.userMs()
+        userMs.value = fakeUser
     }
 }

@@ -3,10 +3,10 @@ package com.qxdzbc.pcr.state
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.qxdzbc.pcr.database.dao.TagDao
-import com.qxdzbc.pcr.firestore.MockFirebaseHelper
+import com.qxdzbc.pcr.firestore.MockFirestoreHelper
 import com.qxdzbc.pcr.state.container.TagContainerImp
 import com.qxdzbc.test.MockTagDao
-import com.qxdzbc.test.TestSample
+import com.qxdzbc.pcr.TestSample
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -17,12 +17,12 @@ class TagContainerImpTest {
     lateinit var mockTagDao: MockTagDao
     lateinit var cont: TagContainerImp
     lateinit var ts: TestSample
-    lateinit var firebaseHelper: MockFirebaseHelper
+    lateinit var firebaseHelper: MockFirestoreHelper
     @Before
     fun bf() {
         ts = TestSample()
-        firebaseHelper = MockFirebaseHelper(tags =ts.tags.subList(0,ts.tags.size/2))
-        mockTagDao = MockTagDao(ts.tags)
+        firebaseHelper = MockFirestoreHelper(tags =ts.tags.subList(0,ts.tags.size/2))
+        mockTagDao = MockTagDao(ts.tags, emptyList())
         cont = TagContainerImp(emptyMap(), mockTagDao,firebaseHelper)
     }
 

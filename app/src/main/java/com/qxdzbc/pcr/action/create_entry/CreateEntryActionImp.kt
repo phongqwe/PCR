@@ -1,8 +1,6 @@
 package com.qxdzbc.pcr.action.create_entry
 
-import com.github.michaelbull.result.flatMap
-import com.github.michaelbull.result.map
-import com.github.michaelbull.result.onSuccess
+import com.github.michaelbull.result.*
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.common.St
@@ -19,19 +17,20 @@ import javax.inject.Inject
 
 class CreateEntryActionImp @Inject constructor(
     @EntryContMs
-    val ecMs:Ms<EntryContainer>,
+    val ecMs: Ms<EntryContainer>,
     val errorRouter: ErrorRouter,
     @UserSt
-    val userSt:St<@JvmSuppressWildcards FirebaseUserWrapper?>
+    val userSt: St<@JvmSuppressWildcards FirebaseUserWrapper?>
 ) : CreateEntryAction {
+
     override fun createEntryAndWriteToDb(
         date: Date,
         money: Double,
         detail: String?,
         tags: List<Tag>,
-        isCost:Boolean
-    ) :Rs<Unit,ErrorReport>{
-        val rs= ecMs.value.createEntryAndWriteToDb(
+        isCost: Boolean
+    ): Rs<Unit, ErrorReport> {
+        val rs = ecMs.value.createEntryAndWriteToDb(
             date, money, detail, tags, isCost
         )
         rs.onSuccess {
@@ -44,17 +43,25 @@ class CreateEntryActionImp @Inject constructor(
     override suspend fun addEntryAndWriteToDbAndAttemptFirebase(entry: Entry): Rs<Unit, ErrorReport> {
         val rs = ecMs.value.addEntryAndWriteToDb(entry)
         val userId = userSt.value?.uid
-        if(userId!=null){
-            val rs2=rs.flatMap{
+        rs.onSuccess {
+            ecMs.value = it
+        }
+        if (userId != null) {
+            val rs2 = rs.flatMap {
                 it.writeUnUploadedToFirestore(userId)
-            }.onSuccess {
-                ecMs.value = it
             }
             errorRouter.reportToCreateEntryScreenIfNeed(rs2)
-            return rs2.map {  }
-        }else{
-            return rs.map {  }
+            return rs2
+                .onSuccess {
+                    val r2=it.writeToDb()
+                    if(r2 is Ok){
+                        ecMs.value =it
+                    }
+                }
+                .map { }
+        } else {
+            return rs
+                .map { }
         }
-
     }
 }

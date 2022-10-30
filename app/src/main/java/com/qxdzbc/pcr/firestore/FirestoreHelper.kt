@@ -5,7 +5,7 @@ import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
 
-interface FirebaseHelper {
+interface FirestoreHelper {
     suspend fun writeTag(userId: String, tag: TagDoc): Rs<Unit, ErrorReport>
     suspend fun writeTag(userId: String,tag:Tag): Rs<Unit, ErrorReport>
 

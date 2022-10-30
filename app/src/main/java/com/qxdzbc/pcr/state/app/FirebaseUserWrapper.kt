@@ -16,6 +16,6 @@ interface FirebaseUserWrapper {
         fun FirebaseUser.toWrapper():FirebaseUserWrapper{
             return FirebaseUserWrapperImp(this)
         }
-        val forPreview:FirebaseUserWrapper = FirebaseUserWrapperMock()
+        val forPreview:FirebaseUserWrapper = MockFirebaseUserWrapper()
     }
 }

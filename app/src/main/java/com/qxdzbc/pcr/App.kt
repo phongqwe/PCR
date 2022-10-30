@@ -10,6 +10,7 @@ import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.database.PcrDatabase
 import com.qxdzbc.pcr.di.state.AppStateMs
 import com.qxdzbc.pcr.state.app.AppState
+import com.qxdzbc.pcr.state.app.FirebaseUserWrapper.Companion.toWrapper
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -32,6 +33,10 @@ class App : Application(){
 //        var appState by appStateMs
         MainScope().launch(Dispatchers.Default) {
             appStateMs.value.initLoadData()
+        }
+        appStateMs.value.userMs.value = FirebaseAuth.getInstance().currentUser?.toWrapper()
+        FirebaseAuth.getInstance().addAuthStateListener {
+            appStateMs.value.userMs.value = it.currentUser?.toWrapper()
         }
     }
 }

@@ -3,11 +3,15 @@ package com.qxdzbc.test
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
+import javax.inject.Inject
 
 class MockEntryDao(
-    var entries:List<DbEntry> = emptyList(),
-    var entriesWithTags: List<DbEntryWithTags> = emptyList()
+    var entries:List<DbEntry> ,
+    var entriesWithTags: List<DbEntryWithTags>
 ) :EntryDao{
+    @Inject
+    constructor():this(emptyList(),emptyList())
+
     override fun getEntryWithTag(): List<DbEntryWithTags> {
         return entriesWithTags
     }
