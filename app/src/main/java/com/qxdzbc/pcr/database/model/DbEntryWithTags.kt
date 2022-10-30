@@ -6,6 +6,8 @@ import androidx.room.Junction
 import androidx.room.Relation
 import com.qxdzbc.pcr.common.CommonUtils.toInt
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.EntryState
+import com.qxdzbc.pcr.state.model.EntryState.Companion.toEntryState
 import com.qxdzbc.pcr.state.model.Tag
 import com.qxdzbc.pcr.util.DateUtils
 import java.text.SimpleDateFormat
@@ -32,6 +34,13 @@ data class DbEntryWithTags(
     override val dateTime: Date get() = Date(entry.dateTime)
     override val isUploaded: Boolean
         get() = entry.isUploaded > 0
+    override val state: EntryState
+        get() = entry.state.toEntryState()!!
+
+    override fun setState(i: EntryState): Entry {
+        return this.copy(entry=this.entry.copy(state=i.name))
+    }
+
     override val isCost: Boolean
         get() = entry.isCost > 0
 

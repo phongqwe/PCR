@@ -4,6 +4,7 @@ import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.EntryState
 import com.qxdzbc.pcr.state.model.Tag
 import java.util.*
 
@@ -42,7 +43,9 @@ interface EntryContainer : Map<String, Entry> {
     fun filterEntries(filter: EntryFilter): List<Entry> {
         if(filter.canBeUsed()){
             val rt= allEntries.filter {
-                filter.match(it)
+                val c1 = it.state!=EntryState.DeletePending
+                val c2 = filter.match(it)
+                c1 && c2
             }
             return rt
         }else{
@@ -63,5 +66,14 @@ interface EntryContainer : Map<String, Entry> {
     ):Rs<EntryContainer, ErrorReport>
 
     fun addOrReplaceAndWriteToDb(entry:Entry): Rs<EntryContainer, ErrorReport>
+
+    /**
+     * Mark target entry as DeletePending, store them to db.
+     * Then process to delete the target in this
+     * order: firestore -> db -> memory.
+     * Failing at any step will result in the container before delete and after marking.
+     * Marked entries will no longer involve in any operation
+     */
+    suspend fun removeEntry(entry:Entry): EntryContainer
 }
 

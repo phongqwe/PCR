@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.qxdzbc.pcr.firestore.EntryDoc
+import com.qxdzbc.pcr.state.model.EntryState
 import com.qxdzbc.pcr.util.DateUtils
 import java.util.*
 
@@ -23,8 +24,11 @@ data class DbEntry(
     val isUploaded:Int=0,
     @ColumnInfo(name = isCostCol, defaultValue = "0")
     val isCost:Int =0,
+    @ColumnInfo(name = stateCol, defaultValue = "")
+    val state:String = EntryState.WritePending.name
 ) {
     companion object{
+        const val stateCol="state"
         const val isCostCol = "isCost"
         const val idCol = "id"
         const val moneyCol ="money"
@@ -41,6 +45,7 @@ data class DbEntry(
                 detail =  "detail : ${id}",
                 dateTime = DateUtils.randomDate().time,
                 isUploaded = 0,
+                state=EntryState.WritePending.name
             )
         }
         fun fromEntryDoc(ed:EntryDoc):DbEntry{
@@ -50,6 +55,7 @@ data class DbEntry(
                 detail=ed.detail,
                 dateTime = ed.date,
                 isUploaded = 1,
+                state =EntryState.OK.name
             )
         }
     }

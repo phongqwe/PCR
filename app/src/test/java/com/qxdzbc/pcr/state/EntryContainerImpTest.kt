@@ -10,6 +10,12 @@ import com.qxdzbc.test.MockEntryDao
 import com.qxdzbc.test.MockTagAssignmentDao
 import com.qxdzbc.test.MockTagDao
 import com.qxdzbc.pcr.TestSample
+import com.qxdzbc.pcr.common.ResultUtils.toErr
+import com.qxdzbc.pcr.common.StateUtils.ms
+import com.qxdzbc.pcr.err.OtherErrors
+import com.qxdzbc.pcr.firestore.FirestoreHelper
+import com.qxdzbc.pcr.state.app.MockFirebaseUserWrapper
+import com.qxdzbc.pcr.state.model.EntryState
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -35,16 +41,74 @@ class EntryContainerImpTest {
             tags = ts.tags,
             tweList = emptyList()
         )
-        firebaseHelper =
-            MockFirestoreHelper(ts.entriesWithTag.subList(0, ts.entriesWithTag.size / 2))
+        firebaseHelper = MockFirestoreHelper(ts.entriesWithTag.subList(0, ts.entriesWithTag.size / 2))
         tagAssignmentDao = MockTagAssignmentDao()
         cont = EntryContainerImp(
             m = ts.entriesWithTag.associateBy { it.id },
             entryDao = entryDao,
             tagDao = tagDao,
             tagAssignmentDao = tagAssignmentDao,
-            firestoreHelper = firebaseHelper
+            firestoreHelper = firebaseHelper,
+            userSt = ms(MockFirebaseUserWrapper())
         )
+    }
+
+    @Test
+    fun removeEntry(){
+        val target = cont.allEntries[0]
+        fun okCase(){
+            val rs =runBlocking {
+                cont.removeEntry(target)
+            }
+            val c2 = rs
+            assertNull(c2[target.id])
+        }
+        fun notLoggedIn(){
+            val c2 = cont.copy(userSt = ms(null))
+            val rs =runBlocking {
+                c2.removeEntry(target)
+            }
+            val c3 = rs
+            val e = c3[target.id]
+            assertNotNull(e)
+            assertEquals(EntryState.DeletePending,e!!.state)
+        }
+        fun unableToRemoveFromFireStore(){
+            val mockFirestoreHelper = mock<FirestoreHelper>{q->
+                onBlocking {
+                    q.removeEntry(cont.userId!!,target.id)
+                } doReturn OtherErrors.CommonErr.report().toErr()
+            }
+
+            val c2 = cont.copy(firestoreHelper = mockFirestoreHelper)
+            val rs =runBlocking {
+                c2.removeEntry(target)
+            }
+            val c3 = rs
+            val e = c3[target.id]
+            assertNotNull(e)
+            assertEquals(EntryState.DeletePending,e!!.state)
+        }
+
+        fun `removed from fireStored but unable to remove from db`(){
+            val mockFirestoreHelper = mock<EntryDao>{q->
+                onBlocking {
+                    deleteRs(target.setState(EntryState.DeletePending).toDbEntry())
+                } doReturn OtherErrors.CommonErr.report().toErr()
+            }
+
+            val c2 = cont.copy(entryDao = mockFirestoreHelper)
+            val rs =runBlocking {
+                c2.removeEntry(target)
+            }
+            val e = rs[target.id]
+            assertEquals(EntryState.DeletePending,e!!.state)
+        }
+
+        okCase()
+        notLoggedIn()
+        unableToRemoveFromFireStore()
+        `removed from fireStored but unable to remove from db`()
     }
 
     @Test
@@ -76,7 +140,7 @@ class EntryContainerImpTest {
 
     @Test
     fun loadFromDb() {
-        val c0 = EntryContainerImp.empty(entryDao, tagDao, tagAssignmentDao, firebaseHelper)
+        val c0 = EntryContainerImp.empty(entryDao, tagDao, tagAssignmentDao, firebaseHelper,ms(null))
         assertTrue(c0.isEmpty())
         val c1 = c0.loadFromDbAndOverwrite()
         assertEquals(entryDao.entriesWithTags, c1.allEntries)

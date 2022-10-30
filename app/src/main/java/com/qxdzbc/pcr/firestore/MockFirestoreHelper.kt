@@ -5,10 +5,11 @@ import com.google.firebase.firestore.DocumentReference
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.EntryState
 import com.qxdzbc.pcr.state.model.Tag
 import javax.inject.Inject
 
-class MockFirestoreHelper constructor(
+open class MockFirestoreHelper constructor(
     val entries: List<Entry> = emptyList(),
     val tags:List<Tag> = emptyList()
 ) : FirestoreHelper {
@@ -61,14 +62,14 @@ class MockFirestoreHelper constructor(
     }
 
     override suspend fun writeEntry(userId: String, entry: Entry): Rs<Entry, ErrorReport> {
-        return Ok(entry.setIsUploaded(true))
+        return Ok(entry.setIsUploaded(true).setState(EntryState.OK))
     }
 
     override suspend fun writeMultiEntries(
         userId: String,
         entries: List<Entry>
     ): Rs<List<Entry>, ErrorReport> {
-        return Ok(entries.map{it.setIsUploaded(true)})
+        return Ok(entries.map{it.setIsUploaded(true).setState(EntryState.OK)})
     }
 
     override suspend fun removeEntry(userId: String, entryDoc: EntryDoc): Rs<Unit, ErrorReport> {

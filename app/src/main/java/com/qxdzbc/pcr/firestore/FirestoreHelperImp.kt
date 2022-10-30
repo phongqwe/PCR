@@ -23,6 +23,7 @@ import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.EntryDoc.Companion.entriesColPath
 import com.qxdzbc.pcr.firestore.TagDoc.Companion.tagColPath
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.EntryState
 import com.qxdzbc.pcr.state.model.Tag
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -150,7 +151,7 @@ class FirestoreHelperImp @Inject constructor(
         val tagColRef = tagColRef(userId)
         val e = entry.toEntryDoc(tagColRef)
         val rt = this.writeEntry(userId, e).map {
-            entry.setIsUploaded(true)
+            entry.setIsUploaded(true).setState(EntryState.OK)
         }
         return rt
     }
@@ -168,7 +169,7 @@ class FirestoreHelperImp @Inject constructor(
         }
         task.await()
         if (task.isSuccessful) {
-            return Ok(entries.map { it.setIsUploaded(true) })
+            return Ok(entries.map { it.setIsUploaded(true).setState(EntryState.OK) })
         } else {
             return FirestoreErrors.UnableToWriteMultiEntry.report().toErr()
         }

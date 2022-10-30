@@ -1,5 +1,7 @@
 package com.qxdzbc.pcr.screen.main_screen
 
+import android.graphics.drawable.GradientDrawable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +13,8 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -32,6 +36,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
     state: MainScreenState,
@@ -122,17 +127,40 @@ fun MainScreen(
                     }
                 }
 
-                LazyColumn(modifier = Modifier.padding(5.dp)) {
+
+
+                LazyColumn(
+                    modifier =
+                    Modifier
+                        .padding(5.dp)
+                ) {
                     val shownEntries =
                         state.entryContainerSt.value.filterEntries(state.mainScreenFilter)
                     items(shownEntries) { entry ->
-                        EntryView(
-                            entry = entry,
-                            uploadEntry = {
-                                crScope.launch {
-                                    action.uploadEntry(it)
-                                }
-                            })
+                        val dismissState = rememberDismissState(
+                            confirmStateChange = {
+//                                if (it == DismissValue.DismissedToEnd) {
+//                                    action.removeEntry(entry)
+//                                    true
+//                                } else {
+//                                    false
+//                                }
+                                true
+                            }
+                        )
+
+                        SwipeToDismiss(
+                            state = dismissState,
+                            background = { Color.Red },
+                        ) {
+                            EntryView(
+                                entry = entry,
+                                uploadEntry = {
+                                    crScope.launch {
+                                        action.uploadEntry(it)
+                                    }
+                                })
+                        }
                     }
                 }
             }

@@ -35,6 +35,7 @@ import com.qxdzbc.pcr.screen.common.*
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.DateType
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.MDatePickerDialog
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.EntryState
 import com.qxdzbc.pcr.state.model.Tag
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import com.qxdzbc.pcr.util.DateUtils
@@ -190,6 +191,7 @@ fun CreateEntryScreen(
                                 dateTime = date.time,
                                 isUploaded = false.toInt(),
                                 isCost = isCost.toInt(),
+                                state = EntryState.WritePending.name,
                             ),
                             tags = selectedTagsMs.value.map { it.toDbTag() }
                         )

@@ -6,8 +6,13 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.github.michaelbull.result.Ok
+import com.qxdzbc.pcr.common.ResultUtils.toErr
+import com.qxdzbc.pcr.common.Rs
+import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
+import com.qxdzbc.pcr.err.ErrorReport
 
 @Dao
 interface EntryDao{
@@ -24,6 +29,15 @@ interface EntryDao{
     fun insert(entries: List<DbEntry>)
     @Delete
     fun delete(entry: DbEntry)
+
+    fun deleteRs(entry:DbEntry):Rs<Unit,ErrorReport>{
+        try{
+            delete(entry)
+            return Ok(Unit)
+        }catch (e:Throwable){
+            return DbErrors.UnableToDeleteEntryFromDb.report().toErr()
+        }
+    }
 
     @Update
     fun update(entries: List<DbEntry>)

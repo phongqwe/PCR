@@ -73,4 +73,8 @@ data class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntry
     override fun addOrReplaceAndWriteToDb(entry: Entry): Rs<EntryContainer, ErrorReport> {
         return Ok(this)
     }
+
+    override suspend fun removeEntry(entry: Entry): EntryContainer {
+        return this
+    }
 }

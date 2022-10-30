@@ -6,6 +6,7 @@ import com.qxdzbc.pcr.BaseTest
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.EntryState
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -27,7 +28,7 @@ class CreateEntryActionImpTest : BaseTest() {
             act.addEntryAndWriteToDbAndAttemptFirebase(newEntry)
         }
         assertTrue(rs is Ok)
-        assertTrue(newEntry.setIsUploaded(true) in ec.allEntries)
+        assertTrue(newEntry.setIsUploaded(true).setState(EntryState.OK) in ec.allEntries)
         verify(entryDao, times(1)).insert(newEntry.toDbEntry())
         runBlocking {
             verify(firestoreHelper, times(1)).writeMultiEntries(ts.fakeUser.uid, listOf(newEntry))

@@ -6,6 +6,7 @@ import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.database.model.DbTagAssignment
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.state.app.MockFirebaseUserWrapper
+import com.qxdzbc.pcr.state.model.EntryState
 import java.util.*
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -16,7 +17,8 @@ class TestSample {
             id = it.toString(),
             money = Random.nextInt(100..200).toDouble(),
             detail = "entry $it",
-            dateTime = Date().time
+            dateTime = Date().time,
+            state = EntryState.WritePending.name,
         )
     }
     val tags = (1..10).map {
