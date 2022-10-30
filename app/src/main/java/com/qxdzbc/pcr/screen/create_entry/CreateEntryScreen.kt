@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -73,12 +74,12 @@ fun CreateEntryScreen(
     Scaffold(
         topBar = {
             PCRTopAppBar {
-                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-                    val (menuRef) = createRefs()
+                Row(verticalAlignment=Alignment.CenterVertically) {
                     MIconButton(
                         imageVector = Icons.Default.ArrowBack,
                         onClick = back
                     )
+                    Text("Create new entry", fontSize=MaterialTheme.typography.h6.fontSize, fontWeight=MaterialTheme.typography.h6.fontWeight, color=MaterialTheme.colors.onPrimary)
                 }
             }
         }

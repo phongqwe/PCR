@@ -1,9 +1,9 @@
 package com.qxdzbc.pcr.database
 
+import CommonTestSample
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.qxdzbc.pcr.TestSample
 import com.qxdzbc.pcr.database.dao.EntryDao
 import com.qxdzbc.pcr.database.dao.TagAssignmentDao
 import com.qxdzbc.pcr.database.dao.TagDao
@@ -20,11 +20,11 @@ abstract class BasePcrDataBaseTest {
     lateinit var entries: List<DbEntry>
     lateinit var tagAsignments: List<DbTagAssignment>
     lateinit var tags: List<DbTag>
-    lateinit var ts: com.qxdzbc.pcr.TestSample
+    lateinit var ts: CommonTestSample
 
     @Before
     fun b() {
-        ts = com.qxdzbc.pcr.TestSample()
+        ts = CommonTestSample()
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AbsPcrDataBase::class.java).build()
         entryDao = db.entryDao
