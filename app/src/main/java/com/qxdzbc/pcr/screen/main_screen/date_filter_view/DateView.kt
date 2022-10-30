@@ -17,14 +17,14 @@ import java.util.*
 
 @Composable
 fun DateView(
-    entryFilter: EntryFilter?,
+    entryFilter: EntryFilter,
     fromDateClick: () -> Unit,
     toDateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
-        val fromDate: Date? = entryFilter?.fromDate
-        val toDate: Date? = entryFilter?.toDate
+        val fromDate: Date? = entryFilter.fromDate
+        val toDate: Date? = entryFilter.toDate
         Text(
             text = fromDate?.let { DateUtils.displayDateFormat.format(it) } ?: "<<From>>",
             modifier = Modifier.clickable {

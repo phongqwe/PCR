@@ -39,5 +39,8 @@ class EntryFilterTest {
         assertFalse(filter.match(ewt.copy(
             entry = e.copy(dateTime = 1000)
         )))
+
+        val filterSkipText = filter.clearTextFilter()
+        assertTrue(filterSkipText.match(ewt.copy(entry=e.copy(detail ="123"))))
     }
 }

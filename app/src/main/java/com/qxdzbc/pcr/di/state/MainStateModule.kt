@@ -31,14 +31,14 @@ interface MainStateModule {
         @Provides
         @Singleton
         @MainScreenFilterMs
-        fun MainScreenFilterMs():Ms<EntryFilter?>{
-            return ms(null)
+        fun MainScreenFilterMs():Ms<EntryFilter>{
+            return ms(EntryFilter.empty)
         }
 
         @Provides
         @Singleton
         @MainScreenFilterSt
-        fun MainScreenFilterSt(@MainScreenFilterMs i:Ms<EntryFilter?> ):St<EntryFilter?>{
+        fun MainScreenFilterSt(@MainScreenFilterMs i:Ms<EntryFilter> ):St<EntryFilter>{
             return i
         }
 

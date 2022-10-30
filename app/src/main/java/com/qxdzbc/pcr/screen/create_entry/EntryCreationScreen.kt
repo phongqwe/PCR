@@ -194,6 +194,7 @@ fun CreateEntryScreen(
                             tags = currentTags.map { it.toDbTag() }
                         )
                         onOk(newEntry)
+                        back()
                     } else {
                         showInvalidMoneyDialog = true
                     }
@@ -202,7 +203,9 @@ fun CreateEntryScreen(
                 }
             }
             if (isDatePickerOpen) {
-                MDatePickerDialog(currentDate = date, onDatePick = {
+                MDatePickerDialog(
+                    currentDate = date,
+                    onDatePick = {
                     date = it
                 }, onDismiss = {
                     isDatePickerOpen = false

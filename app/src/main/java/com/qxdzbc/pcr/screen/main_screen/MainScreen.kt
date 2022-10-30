@@ -25,8 +25,10 @@ import com.qxdzbc.pcr.screen.main_screen.date_filter_view.MDatePickerDialog
 import com.qxdzbc.pcr.screen.main_screen.entry_view.EntryView
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
+import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 @Composable
@@ -132,35 +134,33 @@ fun MainScreen(
 
             val filter = state.mainScreenFilter
             if (isFromDatePickerOpen) {
-                val fromDate = filter?.fromDate
-                if (fromDate != null) {
-                    MDatePickerDialog(
-                        currentDate = fromDate,
-                        onDatePick = {
-                            val newFilter = filter.copy(fromDate = it)
-                            action.filter(newFilter)
-                        },
-                        onDismiss = {
-                            isFromDatePickerOpen = false
-                        }
-                    )
-                }
+                val fromDate = filter.fromDate ?: Date()
+                MDatePickerDialog(
+                    currentDate = fromDate,
+                    isFromDate=true,
+                    onDatePick = {
+                        val newFilter = filter.copy(fromDate = it)
+                        action.filter(newFilter)
+                    },
+                    onDismiss = {
+                        isFromDatePickerOpen = false
+                    }
+                )
             }
 
             if (isToDatePickerOpen) {
-                val toDate = filter?.toDate
-                if (toDate != null) {
+                val toDate = filter.toDate ?: Date()
                     MDatePickerDialog(
                         currentDate = toDate,
+                        isFromDate=false,
                         onDatePick = {
-                            val newFilter = filter.copy(fromDate = it)
+                            val newFilter = filter.copy(toDate = it)
                             action.filter(newFilter)
                         },
                         onDismiss = {
                             isToDatePickerOpen = false
                         }
                     )
-                }
             }
 
         }

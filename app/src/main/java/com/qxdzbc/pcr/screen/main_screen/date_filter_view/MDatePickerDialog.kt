@@ -9,6 +9,7 @@ import java.util.Date
 @Composable
 fun MDatePickerDialog(
     currentDate:Date,
+    isFromDate:Boolean = true,
     onDatePick:(newDate:Date)->Unit,
     onDismiss:()->Unit,
 ) {
@@ -20,7 +21,12 @@ fun MDatePickerDialog(
         ctx,
         { view, year, month, dayOfMonth ->
             val calendar = Calendar.getInstance().apply {
-                set(year,month,dayOfMonth)
+                if(isFromDate){
+                    set(year,month,dayOfMonth,0,0,0)
+                }else{
+                    set(year,month,dayOfMonth,24,59,59)
+                }
+
             }
             val newDate =calendar.time
             onDatePick(newDate)

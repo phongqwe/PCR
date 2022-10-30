@@ -12,41 +12,69 @@ import com.qxdzbc.pcr.util.DateUtils
 import java.util.Date
 
 data class EntryFilter(
-    val fromDate:Date,
-    val toDate:Date,
-    val text:String,
-    val tags:Collection<Tag>,
-){
-    private val datePeriod = fromDate.time .. toDate.time
-    fun match(entry: Entry):Boolean{
-        val dateMatch = entry.dateTime.time in datePeriod
-        val textMatch = entry.detail?.contains(text) ?: false
-        val containAllTag=entry.tags.containsAll(tags)
-        return dateMatch && textMatch && containAllTag
+    val fromDate: Date?,
+    val toDate: Date?,
+    val text: String?,
+    val tags: Collection<Tag>,
+) {
+
+    fun clearDateFilter(): EntryFilter {
+        return this.copy(fromDate = null, toDate = null)
     }
+
+    fun clearTextFilter(): EntryFilter {
+        return this.copy(text = null)
+    }
+
+    fun clearTagFilter(): EntryFilter {
+        return this.copy(tags = emptyList())
+    }
+
+    fun clearAll(): EntryFilter {
+        return empty
+    }
+
+    fun canBeUsed(): Boolean {
+        return fromDate != null && toDate != null
+    }
+
+    private val datePeriod = if (canBeUsed()) fromDate!!.time..toDate!!.time else null
+    fun match(entry: Entry): Boolean {
+        if (datePeriod != null) {
+            val dateMatch = entry.dateTime.time in datePeriod
+            val textMatch = text?.let { entry.detail?.contains(it) } ?: true
+            val containAllTag = if (tags.isEmpty()) true else entry.tags.containsAll(tags)
+            return dateMatch && textMatch && containAllTag
+        } else {
+            return true
+        }
+    }
+
     companion object {
-        fun forPreview():EntryFilter{
+        val empty = EntryFilter(null, null, null, emptyList())
+        fun forPreview(): EntryFilter {
             return EntryFilter(
-                fromDate = DateUtils.createDate(2000,1,1),
-                toDate = DateUtils.createDate(2023,1,1),
-                text ="",
-                tags =  emptyList()
+                fromDate = DateUtils.createDate(2000, 1, 1),
+                toDate = DateUtils.createDate(2023, 1, 1),
+                text = "",
+                tags = emptyList()
             )
         }
     }
 
-    val dateDisplayText:AnnotatedString get(){
-        val rt = buildAnnotatedString {
-            withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)){
-                append(DateUtils.displayDateFormat.format(fromDate))
+    val dateDisplayText: AnnotatedString
+        get() {
+            val rt = buildAnnotatedString {
+                withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
+                    append(DateUtils.displayDateFormat.format(fromDate))
+                }
+                append(" to ")
+                withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)) {
+                    append(DateUtils.displayDateFormat.format(toDate))
+                }
             }
-            append(" to ")
-            withStyle(style = SpanStyle(color = Color.Blue, fontWeight = FontWeight.Bold)){
-                append(DateUtils.displayDateFormat.format(toDate))
-            }
+            return rt
         }
-        return rt
-    }
 
 
 }

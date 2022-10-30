@@ -15,7 +15,7 @@ interface MainScreenState {
     val tagContainerSt:St<TagContainer>
     val userSt:St<FirebaseUserWrapper?>
     val isDark:Boolean
-    val mainScreenFilter:EntryFilter?
+    val mainScreenFilter:EntryFilter
 
     companion object{
         val forPreview:MainScreenState get(){

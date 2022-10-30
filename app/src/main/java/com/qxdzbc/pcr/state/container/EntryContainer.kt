@@ -39,8 +39,8 @@ interface EntryContainer : Map<String, Entry> {
      */
     suspend fun initLoad(userId: String?): EntryContainer
 
-    fun filterEntries(filter: EntryFilter?): List<Entry> {
-        if(filter!=null){
+    fun filterEntries(filter: EntryFilter): List<Entry> {
+        if(filter.canBeUsed()){
             val rt= allEntries.filter {
                 filter.match(it)
             }
