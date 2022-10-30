@@ -21,4 +21,5 @@ interface AppState {
     val isDarkThemeMs:Ms<Boolean>
     val errorReporter:ErrorRouter
     val userMs:Ms<FirebaseUserWrapper?>
+    val hasNetworkConnectionMs:Ms<Boolean>
 }

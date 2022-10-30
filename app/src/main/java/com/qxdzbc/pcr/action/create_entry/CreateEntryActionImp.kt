@@ -42,6 +42,7 @@ class CreateEntryActionImp @Inject constructor(
 
     override suspend fun addEntryAndWriteToDbAndAttemptFirebase(entry: Entry): Rs<Unit, ErrorReport> {
         val rs = ecMs.value.addEntryAndWriteToDb(entry)
+//        val userId = userSt.value?.uid
         val userId = userSt.value?.uid
         rs.onSuccess {
             ecMs.value = it
@@ -63,5 +64,7 @@ class CreateEntryActionImp @Inject constructor(
             return rs
                 .map { }
         }
+//        return rs
+//            .map { }
     }
 }

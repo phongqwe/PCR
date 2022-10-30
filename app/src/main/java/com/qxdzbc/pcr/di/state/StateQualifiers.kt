@@ -24,6 +24,13 @@ annotation class IsDarkThemeMs
 
 @Qualifier
 @Retention
+annotation class HasNetworkConnectionMs
+@Qualifier
+@Retention
+annotation class HasNetworkConnectionSt
+
+@Qualifier
+@Retention
 annotation class FrontScreeStateMs
 
 @Qualifier

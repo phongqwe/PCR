@@ -36,7 +36,7 @@ import java.util.*
 fun MainScreen(
     state: MainScreenState,
     action: MainScreenAction,
-    toEntryCreateScreen:()->Unit
+    toEntryCreateScreen: () -> Unit
 ) {
     val crScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -50,7 +50,7 @@ fun MainScreen(
                 ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                     val (menuRef) = createRefs()
                     MIconButton(
-                        imageVector=Icons.Default.Menu,
+                        imageVector = Icons.Default.Menu,
                         onClick = {
                             crScope.launch {
                                 scaffoldState.drawerState.open()
@@ -128,7 +128,11 @@ fun MainScreen(
                     items(shownEntries) { entry ->
                         EntryView(
                             entry = entry,
-                            uploadEntry = { /*TODO*/ })
+                            uploadEntry = {
+                                crScope.launch {
+                                    action.uploadEntry(it)
+                                }
+                            })
                     }
                 }
             }
@@ -151,17 +155,17 @@ fun MainScreen(
 
             if (isToDatePickerOpen) {
                 val toDate = filter.toDate ?: Date()
-                    MDatePickerDialog(
-                        currentDate = toDate,
-                        dateType = DateType.End,
-                        onDatePick = {
-                            val newFilter = filter.copy(toDate = it)
-                            action.filter(newFilter)
-                        },
-                        onDismiss = {
-                            isToDatePickerOpen = false
-                        }
-                    )
+                MDatePickerDialog(
+                    currentDate = toDate,
+                    dateType = DateType.End,
+                    onDatePick = {
+                        val newFilter = filter.copy(toDate = it)
+                        action.filter(newFilter)
+                    },
+                    onDismiss = {
+                        isToDatePickerOpen = false
+                    }
+                )
             }
 
         }

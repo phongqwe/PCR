@@ -13,6 +13,11 @@ annotation class UserMs
 @Qualifier
 @Retention
 annotation class False
+
+@Qualifier
+@Retention
+annotation class FalseMs
+
 @Qualifier
 @Retention
 annotation class DefaultEntryMap

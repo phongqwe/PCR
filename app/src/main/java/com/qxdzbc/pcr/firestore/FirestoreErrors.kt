@@ -10,8 +10,17 @@ object FirestoreErrors {
         UnableToReadAllTag, UnableToReadAllEntry,
         UnableToWriteMultiTag,UnableToWriteMultiEntry,
         UnableToReadMultiTagById,UnableToReadMultiTagByRef,
-        InvalidUser
+        InvalidUser,NoNetwork
     )
+
+    object NoNetwork{
+        fun report(detail:String?=null): ErrorReport {
+            return ErrorReport(
+                code= "$prefix ${l.indexOf(this)}",
+                detail = detail ?: "No network connection"
+            )
+        }
+    }
 
     object InvalidUser{
         fun report(detail:String?=null): ErrorReport {

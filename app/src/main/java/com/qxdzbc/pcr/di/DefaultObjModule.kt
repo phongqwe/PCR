@@ -21,6 +21,11 @@ import javax.inject.Singleton
 //@InstallIn(SingletonComponent::class)
 interface DefaultObjModule {
     companion object{
+        @Provides
+        @FalseMs
+        fun FalseMs():Ms<Boolean>{
+            return ms(false)
+        }
 
         @Provides
         @False

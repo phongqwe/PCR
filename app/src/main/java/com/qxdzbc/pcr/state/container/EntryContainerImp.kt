@@ -1,5 +1,7 @@
 package com.qxdzbc.pcr.state.container
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.map
 import com.qxdzbc.pcr.common.ResultUtils.toErr
@@ -159,6 +161,14 @@ data class EntryContainerImp @Inject constructor(
             tags = tags.map { it.toDbTag() }
         )
         return this.addEntryAndWriteToDb(entry)
+    }
+
+    override fun addOrReplaceAndWriteToDb(entry: Entry): Rs<EntryContainer,ErrorReport> {
+        val mm = m.toMutableMap()
+        mm[entry.id]=entry
+        val nc= this.copy(m = mm)
+        val rt=nc.writeToDb().map { nc }
+        return rt
     }
 
 

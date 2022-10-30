@@ -12,6 +12,8 @@ import com.qxdzbc.pcr.action.switch_theme.SwitchThemeAction
 import com.qxdzbc.pcr.action.switch_theme.SwitchThemeActionImp
 import com.qxdzbc.pcr.action.update_user.UpdateUserAction
 import com.qxdzbc.pcr.action.update_user.UpdateUserActionImp
+import com.qxdzbc.pcr.action.upload_entry.UploadEntryAction
+import com.qxdzbc.pcr.action.upload_entry.UploadEntryActionImp
 import com.qxdzbc.pcr.screen.create_entry.CreateEntryScreenAction
 import com.qxdzbc.pcr.screen.create_entry.CreateEntryScreenActionImp
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
@@ -27,6 +29,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface ActionModule {
+
+    @Binds
+    @Singleton
+    fun UploadEntryAction(i:UploadEntryActionImp): UploadEntryAction
 
     @Binds
     @Singleton

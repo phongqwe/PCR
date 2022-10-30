@@ -61,5 +61,7 @@ interface EntryContainer : Map<String, Entry> {
         tags:List<Tag>,
         isCost:Boolean
     ):Rs<EntryContainer, ErrorReport>
+
+    fun addOrReplaceAndWriteToDb(entry:Entry): Rs<EntryContainer, ErrorReport>
 }
 

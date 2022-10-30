@@ -25,7 +25,7 @@ import com.qxdzbc.pcr.ui.theme.PCRTheme
 @Composable
 fun EntryView(
     entry: Entry,
-    uploadEntry: () -> Unit,
+    uploadEntry: (Entry) -> Unit,
     modifier: Modifier = Modifier,
     cardSpacing: Int = 5,
 ) {
@@ -59,7 +59,7 @@ fun EntryView(
                     } else {
                         MIconButton(
                             painter = painterResource(R.drawable.backup_icon_24),
-                            onClick = { uploadEntry() },
+                            onClick = { uploadEntry(entry) },
                             tint=Color.Red
                         )
                     }

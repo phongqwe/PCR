@@ -56,6 +56,21 @@ interface AppStateModule {
         }
 
         @Provides
+        @HasNetworkConnectionMs
+        @Singleton
+        fun HasNetworkConnectionMs(): Ms<Boolean> {
+            return ms(false)
+        }
+
+        @Provides
+        @HasNetworkConnectionSt
+        @Singleton
+        fun HasNetworkConnectionSt(@HasNetworkConnectionMs i:Ms<Boolean>): St<Boolean> {
+            return i
+        }
+
+
+        @Provides
         @IsDarkThemeSt
         @Singleton
         fun IsDarkThemeSt(@IsDarkThemeMs i: Ms<Boolean>): St<Boolean> {

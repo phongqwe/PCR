@@ -6,6 +6,8 @@ import com.github.michaelbull.result.map
 import com.github.michaelbull.result.onSuccess
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.common.StateUtils.ms
+import com.qxdzbc.pcr.di.False
+import com.qxdzbc.pcr.di.FalseMs
 import com.qxdzbc.pcr.di.UserMs
 import com.qxdzbc.pcr.di.state.*
 import com.qxdzbc.pcr.err.ErrorRouter
@@ -29,6 +31,8 @@ data class AppStateImp @Inject constructor(
     override val entryContainerMs: Ms<EntryContainer>,
     @TagContMs
     override val tagContainerMs: Ms<TagContainer>,
+    @HasNetworkConnectionMs
+    override val hasNetworkConnectionMs: Ms<Boolean>,
 ) : AppState {
     override suspend fun initLoadData() {
         val user by userMs
