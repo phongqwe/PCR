@@ -24,6 +24,7 @@ class ManageTagScreenActionImp @Inject constructor(
         withContext(Dispatchers.Default){
             val newCont = tcMs.value.addTagAndWriteToDb(tag)
             tcMs.value = newCont
+            tcMs.value = tcMs.value.uploadThePendings()
         }
     }
 }

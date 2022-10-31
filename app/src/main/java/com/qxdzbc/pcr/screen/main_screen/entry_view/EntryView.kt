@@ -20,6 +20,7 @@ import com.qxdzbc.pcr.screen.common.MIconButton
 import com.qxdzbc.pcr.screen.common.StdDivider
 import com.qxdzbc.pcr.screen.common.TagListView
 import com.qxdzbc.pcr.state.model.Entry
+import com.qxdzbc.pcr.state.model.WriteState
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 
 @Composable
@@ -50,18 +51,21 @@ fun EntryView(
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 }) {
-                    if (entry.isUploaded) {
-                        Icon(
-                            painter = painterResource(R.drawable.cloud_done_24),
-                            contentDescription = null,
-                            tint = MaterialTheme.colors.primary,
-                        )
-                    } else {
-                        MIconButton(
-                            painter = painterResource(R.drawable.backup_icon_24),
-                            onClick = { uploadEntry(entry) },
-                            tint=Color.Red
-                        )
+                    when(entry.writeState){
+                        WriteState.OK->{
+                            Icon(
+                                painter = painterResource(R.drawable.cloud_done_24),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.primary,
+                            )
+                        }
+                        WriteState.WritePending->{
+                            MIconButton(
+                                painter = painterResource(R.drawable.backup_icon_24),
+                                onClick = { uploadEntry(entry) },
+                                tint=Color.Red
+                            )
+                        }
                     }
                 }
             }

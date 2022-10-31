@@ -28,7 +28,8 @@ data class TagContainerImp @Inject constructor(
 
 
     override fun loadFromDbAndOverwrite(): TagContainer {
-        return this.copy(m = tagDao.getAll().associateBy { it.id })
+        val m = tagDao.getAll().associateBy { it.id }
+        return this.copy(m = m)
     }
 
     override suspend fun susLoadFromDbAndOverWrite(): TagContainer {
@@ -82,16 +83,26 @@ data class TagContainerImp @Inject constructor(
         return this.copy(m = m2)
     }
 
-    override suspend fun uploadThePendings():TagContainer{
-        val targets = this.m.filter { (id,tag)->tag.writeState == WriteState.WritePending }.map { it.value }
+    override suspend fun uploadThePendings(): TagContainer {
+        val targets = this.m.filter { (id, tag) -> tag.writeState == WriteState.WritePending }
+            .map { it.value }
 
         val rt = firestoreHelper.writeMultiTags(targets.map { it.toDbTag() })
             .mapBoth(
                 success = {
-                    val newCont = targets.map { it.setWriteState(WriteState.OK) }.fold(this){
-                        acc: TagContainerImp, tag: Tag -> acc.replace(tag)
-                    }
-                    newCont
+                    val newCont = targets.map { it.setWriteState(WriteState.OK) }
+                        .fold(this) { acc: TagContainerImp, tag: Tag ->
+                            acc.replace(tag)
+                        }
+                    val dbRs = tagDao.insertOrUpdateRs(newCont.allTags.map { it.toDbTag() })
+                    dbRs.mapBoth(
+                        success = {
+                            newCont
+                                  },
+                        failure = {
+                            this
+                        }
+                    )
                 },
                 failure = {
                     this
@@ -99,49 +110,19 @@ data class TagContainerImp @Inject constructor(
             )
         return rt
     }
+
     override suspend fun addTagAndWriteToDb(tag: Tag): TagContainer {
-        val rt: TagContainer = tagDao.insertRs(tag.toDbTag()).mapBoth(
+        val rt: TagContainer = tagDao.insertOrUpdateRs(listOf(tag.toDbTag())).mapBoth(
             success = {
                 val tag2 = tag.setWriteState(WriteState.WritePending)
                 val afterDbCont = this.copy(m = m + (tag2.tagId to tag2))
                 afterDbCont
-                // try pushing to fire store
-//                firestoreHelper.writeTag(tag2).mapBoth(
-//                    success = {
-//                        val tag3 = tag2.setWriteState(WriteState.OK)
-//                        val afterFSCont = afterDbCont.replace(tag3)
-//                        afterFSCont
-//                    },
-//                    failure = {
-//                        afterDbCont
-//                    }
-//                )
             },
             failure = {
                 this
             }
         )
         return rt
-//        when(insertDbRs){
-//            is Ok->{
-//                val tag2 = tag.setWriteState(WriteState.WritePending)
-//                val afterDbCont = this.copy(m=m + (tag2.tagId to tag2))
-//                // try pushing to fire store
-//                val ftRs=firestoreHelper.writeTag(tag2)
-//                when(ftRs){
-//                    is Ok->{
-//                        val tag3 = tag2.setWriteState(WriteState.OK)
-//                        val afterFSCont = afterDbCont.replace(tag3)
-//                        return afterFSCont
-//                    }
-//                    is Err->{
-//                        return afterDbCont
-//                    }
-//                }
-//            }
-//            is Err ->{
-//                return this
-//            }
     }
 }
 

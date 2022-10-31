@@ -14,7 +14,8 @@ interface Tag {
             return this
         }else{
             return DbTag(
-                id = tagId, name = name, isUploadedInternal = if(isUploaded) 1 else 0
+                id = tagId, name = name, isUploadedInternal = if(isUploaded) 1 else 0,
+                state = this.writeState.name
             )
         }
     }

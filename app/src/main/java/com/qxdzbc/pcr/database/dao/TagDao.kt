@@ -18,25 +18,34 @@ import com.qxdzbc.pcr.err.ErrorReport
 interface TagDao {
     @Query("SELECT * FROM ${DbTag.tableName}")
     @Transaction
-    fun getTagWithEntries():List<DbTagWithEntries>
+    fun getTagWithEntries(): List<DbTagWithEntries>
 
     @Query("SELECT * FROM ${DbTag.tableName}")
-    fun getAll():List<DbTag>
+    fun getAll(): List<DbTag>
 
     @Insert
     fun insertVA(vararg tags: DbTag)
 
-    fun insertRs(vararg tags: DbTag):Rs<Unit,ErrorReport>{
-        try{
+    fun insertRs(vararg tags: DbTag): Rs<Unit, ErrorReport> {
+        try {
             insertVA(*tags)
             return Ok(Unit)
-        }catch (e:Throwable){
+        } catch (e: Throwable) {
             return DbErrors.UnableToWriteTagToDb.report().toErr()
         }
     }
 
     @Insert
-    fun insert(tags:List<DbTag>)
+    fun insert(tags: List<DbTag>)
+
+    fun insertMultiRs(tags: List<DbTag>): Rs<Unit, ErrorReport> {
+        try {
+            insert(tags)
+            return Ok(Unit)
+        } catch (e: Throwable) {
+            return DbErrors.UnableToWriteTagToDb.report().toErr()
+        }
+    }
 
     @Delete
     fun delete(tag: DbTag)
@@ -45,26 +54,35 @@ interface TagDao {
     fun updateTag(tag: DbTag)
 
     @Update
-    fun updateTags(tag:List<DbTag>)
+    fun updateTags(tag: List<DbTag>)
 
     /**
      * Process a list of [DbTag]. Insert the new tag, and update the old tag having the same id as the new ones.
      */
     @Transaction
-    fun insertOrUpdate(tags:List<DbTag>){
-        if(tags.isNotEmpty()){
+    fun insertOrUpdate(tags: List<DbTag>) {
+        if (tags.isNotEmpty()) {
             val oldTagMap = getAll().associateBy { it.tagId }
 
             val insertTargets = tags.filter { it.tagId !in oldTagMap.keys }
 
-            val updateTargets = run{
+            val updateTargets = run {
                 val ids = oldTagMap.map { it.key }.toSet()
                 tags.filter {
-                    it.tagId in ids && it.name!= oldTagMap[it.tagId]?.name
+                    it.tagId in ids /*&& it.name != oldTagMap[it.tagId]?.name*/
                 }
             }
             updateTags(updateTargets.map { it.toDbTag() })
             insert(insertTargets.map { it.toDbTag() })
+        }
+    }
+
+    fun insertOrUpdateRs(tags: List<DbTag>): Rs<Unit, ErrorReport> {
+        try {
+            insertOrUpdate(tags)
+            return Ok(Unit)
+        } catch (e: Throwable) {
+            return DbErrors.UnableToWriteTagToDb.report().toErr()
         }
     }
 }
