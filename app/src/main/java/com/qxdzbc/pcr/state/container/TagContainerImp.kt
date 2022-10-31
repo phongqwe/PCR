@@ -2,6 +2,7 @@ package com.qxdzbc.pcr.state.container
 
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.map
+import com.github.michaelbull.result.mapBoth
 import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.database.DbErrors
@@ -10,6 +11,7 @@ import com.qxdzbc.pcr.di.DefaultTagMap
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.FirestoreHelper
 import com.qxdzbc.pcr.state.model.Tag
+import com.qxdzbc.pcr.state.model.WriteState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,9 +26,6 @@ data class TagContainerImp @Inject constructor(
     override val allTags: List<Tag>
         get() = m.values.toList()
 
-    override fun removeAll(): TagContainer {
-        return this.copy(m= emptyMap())
-    }
 
     override fun loadFromDbAndOverwrite(): TagContainer {
         return this.copy(m = tagDao.getAll().associateBy { it.id })
@@ -76,4 +75,73 @@ data class TagContainerImp @Inject constructor(
         } ?: tCont
         return rt
     }
+
+    private fun replace(tag: Tag): TagContainerImp {
+        val m2 = m.toMutableMap()
+        m2[tag.tagId] = tag
+        return this.copy(m = m2)
+    }
+
+    override suspend fun uploadThePendings():TagContainer{
+        val targets = this.m.filter { (id,tag)->tag.writeState == WriteState.WritePending }.map { it.value }
+
+        val rt = firestoreHelper.writeMultiTags(targets.map { it.toDbTag() })
+            .mapBoth(
+                success = {
+                    val newCont = targets.map { it.setWriteState(WriteState.OK) }.fold(this){
+                        acc: TagContainerImp, tag: Tag -> acc.replace(tag)
+                    }
+                    newCont
+                },
+                failure = {
+                    this
+                }
+            )
+        return rt
+    }
+    override suspend fun addTagAndWriteToDb(tag: Tag): TagContainer {
+        val rt: TagContainer = tagDao.insertRs(tag.toDbTag()).mapBoth(
+            success = {
+                val tag2 = tag.setWriteState(WriteState.WritePending)
+                val afterDbCont = this.copy(m = m + (tag2.tagId to tag2))
+                afterDbCont
+                // try pushing to fire store
+//                firestoreHelper.writeTag(tag2).mapBoth(
+//                    success = {
+//                        val tag3 = tag2.setWriteState(WriteState.OK)
+//                        val afterFSCont = afterDbCont.replace(tag3)
+//                        afterFSCont
+//                    },
+//                    failure = {
+//                        afterDbCont
+//                    }
+//                )
+            },
+            failure = {
+                this
+            }
+        )
+        return rt
+//        when(insertDbRs){
+//            is Ok->{
+//                val tag2 = tag.setWriteState(WriteState.WritePending)
+//                val afterDbCont = this.copy(m=m + (tag2.tagId to tag2))
+//                // try pushing to fire store
+//                val ftRs=firestoreHelper.writeTag(tag2)
+//                when(ftRs){
+//                    is Ok->{
+//                        val tag3 = tag2.setWriteState(WriteState.OK)
+//                        val afterFSCont = afterDbCont.replace(tag3)
+//                        return afterFSCont
+//                    }
+//                    is Err->{
+//                        return afterDbCont
+//                    }
+//                }
+//            }
+//            is Err ->{
+//                return this
+//            }
+    }
 }
+

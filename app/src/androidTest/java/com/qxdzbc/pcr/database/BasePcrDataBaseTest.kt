@@ -46,7 +46,7 @@ abstract class BasePcrDataBaseTest {
     }
 
     fun insertTestData() {
-        tagDao.insert(*tags.toTypedArray())
+        tagDao.insertVA(*tags.toTypedArray())
         entryDao.insert(*entries.toTypedArray())
         tagAssDao.insert(*tagAsignments.toTypedArray())
     }

@@ -6,9 +6,6 @@ import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.model.Tag
 
 data class MockTagContainer(val m: Map<String, Tag> = emptyMap()): AbsTagContainer(m){
-    override fun removeAll(): TagContainer {
-        return this.copy(m=emptyMap())
-    }
 
     override fun loadFromDbAndOverwrite(): TagContainer {
         return this
@@ -35,6 +32,14 @@ data class MockTagContainer(val m: Map<String, Tag> = emptyMap()): AbsTagContain
     }
 
     override suspend fun initLoad(userId: String?): TagContainer {
+        return this
+    }
+
+    override suspend fun addTagAndWriteToDb(tag: Tag): TagContainer {
+        return this.copy(m=m+(tag.tagId to tag))
+    }
+
+    override suspend fun uploadThePendings(): TagContainer {
         return this
     }
 }

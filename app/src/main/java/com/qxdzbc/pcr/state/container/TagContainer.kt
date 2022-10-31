@@ -2,13 +2,13 @@ package com.qxdzbc.pcr.state.container
 
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
-import com.qxdzbc.pcr.firestore.TagDoc
 import com.qxdzbc.pcr.state.model.Tag
+import com.qxdzbc.pcr.state.model.WriteState
 
 interface TagContainer: Map<String, Tag> {
     val allTags:List<Tag>
 
-    fun removeAll():TagContainer
+    val allValidTags get()=allTags.filter { it.writeState!=WriteState.DeletePending }
 
     fun loadFromDbAndOverwrite(): TagContainer
     suspend fun susLoadFromDbAndOverWrite(): TagContainer
@@ -24,4 +24,14 @@ interface TagContainer: Map<String, Tag> {
     suspend fun writeToFirestore(userId:String):Rs<Unit, ErrorReport>
 
     suspend fun initLoad(userId:String?):TagContainer
+
+    /**
+     * Add tag and write to db
+     */
+    suspend fun addTagAndWriteToDb(tag: Tag): TagContainer
+
+    /**
+     * upload all the WritePending tags to firestore
+     */
+    suspend fun uploadThePendings(): TagContainer
 }

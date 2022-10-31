@@ -8,4 +8,8 @@ object ManageTagScreenActionDoNothing : ManageTagScreenAction {
 
     override suspend fun delete(tag: Tag) {
     }
+
+    override suspend fun addTag(tag: Tag) {
+
+    }
 }

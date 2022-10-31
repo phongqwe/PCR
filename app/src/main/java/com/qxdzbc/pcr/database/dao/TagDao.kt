@@ -6,8 +6,13 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.github.michaelbull.result.Ok
+import com.qxdzbc.pcr.common.ResultUtils.toErr
+import com.qxdzbc.pcr.common.Rs
+import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.database.model.DbTagWithEntries
+import com.qxdzbc.pcr.err.ErrorReport
 
 @Dao
 interface TagDao {
@@ -19,7 +24,16 @@ interface TagDao {
     fun getAll():List<DbTag>
 
     @Insert
-    fun insert(vararg tags: DbTag)
+    fun insertVA(vararg tags: DbTag)
+
+    fun insertRs(vararg tags: DbTag):Rs<Unit,ErrorReport>{
+        try{
+            insertVA(*tags)
+            return Ok(Unit)
+        }catch (e:Throwable){
+            return DbErrors.UnableToWriteTagToDb.report().toErr()
+        }
+    }
 
     @Insert
     fun insert(tags:List<DbTag>)

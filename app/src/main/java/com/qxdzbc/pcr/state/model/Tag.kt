@@ -7,6 +7,8 @@ interface Tag {
     val tagId:String
     val name:String
     val isUploaded:Boolean
+    val writeState:WriteState
+    fun setWriteState(i:WriteState):Tag
     fun toDbTag():DbTag{
         if(this is DbTag){
             return this

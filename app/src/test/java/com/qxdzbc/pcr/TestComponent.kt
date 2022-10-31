@@ -7,8 +7,10 @@ import com.qxdzbc.pcr.di.DefaultObjModule
 import com.qxdzbc.pcr.di.UserMs
 import com.qxdzbc.pcr.di.state.StateModule
 import com.qxdzbc.pcr.di.action.ActionModule
+import com.qxdzbc.pcr.di.state.TagContMs
 import com.qxdzbc.pcr.firestore.FirestoreHelper
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
+import com.qxdzbc.pcr.state.container.TagContainer
 import dagger.Component
 import dagger.hilt.migration.DisableInstallInCheck
 import javax.inject.Singleton
@@ -30,4 +32,6 @@ interface TestComponent {
     fun firestoreHelper(): FirestoreHelper
     @UserMs
     fun userMs(): Ms<FirebaseUserWrapper>
+    @TagContMs
+    fun tagContainerMs(): Ms<TagContainer>
 }

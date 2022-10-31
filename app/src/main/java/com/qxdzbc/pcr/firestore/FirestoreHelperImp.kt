@@ -17,9 +17,11 @@ import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.di.state.HasNetworkConnectionSt
+import com.qxdzbc.pcr.di.state.UserSt
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.EntryDoc.Companion.entriesColPath
 import com.qxdzbc.pcr.firestore.TagDoc.Companion.tagColPath
+import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.WriteState
 import com.qxdzbc.pcr.state.model.Tag
@@ -29,10 +31,13 @@ import javax.inject.Inject
 class FirestoreHelperImp @Inject constructor(
     @HasNetworkConnectionSt
     val hasNetworkConnectionSt: St<@JvmSuppressWildcards Boolean>,
+    @UserSt
+    val userSt: St<@JvmSuppressWildcards FirebaseUserWrapper?>
 ) : FirestoreHelper {
 
     val db = FirebaseFirestore.getInstance()
     val dbRoot = "users"
+    val userId get() = userSt.value?.uid
 
     override suspend fun writeTag(userId: String, tag: TagDoc): Rs<Unit, ErrorReport> {
         val rt = runWhenHaveNetwork {
@@ -51,6 +56,15 @@ class FirestoreHelperImp @Inject constructor(
         return this.writeTag(userId, tag.toTagDoc())
     }
 
+    override suspend fun writeTag(tag: Tag): Rs<Unit, ErrorReport> {
+        val rt = runWhenHaveNetwork {
+            runWhenLoggedIn {
+                writeTag(it, tag)
+            }
+        }
+        return rt
+    }
+
     private val hasNetworkConnection by hasNetworkConnectionSt
 
     private suspend fun <T> runWhenHaveNetwork(f: suspend () -> Rs<T, ErrorReport>): Rs<T, ErrorReport> {
@@ -60,6 +74,14 @@ class FirestoreHelperImp @Inject constructor(
             return FirestoreErrors.NoNetwork.report().toErr()
         }
     }
+
+    private suspend fun <T> runWhenLoggedIn(f: suspend (userId: String) -> Rs<T, ErrorReport>): Rs<T, ErrorReport> {
+        val rt = userId?.let {
+            f(it)
+        } ?: FirestoreErrors.InvalidUser.report("not logged in").toErr()
+        return rt
+    }
+
 
     override suspend fun writeMultiTags(userId: String, tags: List<Tag>): Rs<Unit, ErrorReport> {
         val rt = runWhenHaveNetwork {
@@ -74,6 +96,16 @@ class FirestoreHelperImp @Inject constructor(
                 Ok(Unit)
             } else {
                 FirestoreErrors.UnableToWriteMultiTag.report().toErr()
+            }
+        }
+        return rt
+    }
+
+
+    override suspend fun writeMultiTags(tags: List<Tag>): Rs<Unit, ErrorReport> {
+        val rt = runWhenHaveNetwork {
+            runWhenLoggedIn {
+                writeMultiTags(it, tags)
             }
         }
         return rt

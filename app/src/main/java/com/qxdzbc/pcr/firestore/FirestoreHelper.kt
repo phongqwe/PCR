@@ -8,8 +8,10 @@ import com.qxdzbc.pcr.state.model.Tag
 interface FirestoreHelper {
     suspend fun writeTag(userId: String, tag: TagDoc): Rs<Unit, ErrorReport>
     suspend fun writeTag(userId: String,tag:Tag): Rs<Unit, ErrorReport>
+    suspend fun writeTag(tag:Tag): Rs<Unit, ErrorReport>
 
     suspend fun writeMultiTags(userId: String,tags:List<Tag>):Rs<Unit, ErrorReport>
+    suspend fun writeMultiTags(tags:List<Tag>):Rs<Unit, ErrorReport>
 
     suspend fun removeTag(userId: String,tag: TagDoc):Rs<Unit,ErrorReport>
     suspend fun removeTag(userId: String,tag: Tag):Rs<Unit,ErrorReport>

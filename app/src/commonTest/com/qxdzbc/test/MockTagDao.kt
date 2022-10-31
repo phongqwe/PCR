@@ -22,7 +22,7 @@ open class MockTagDao(
     }
 
     @Throws(Exception::class)
-    override fun insert(vararg tags: DbTag) {
+    override fun insertVA(vararg tags: DbTag) {
 
     }
 

@@ -16,13 +16,14 @@ import com.qxdzbc.pcr.state.model.Tag
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 const val manageTagScreenNavTag = "manageTagScreenNavTag"
 
 @Composable
 fun ManageTagScreen(
     action: ManageTagScreenAction,
-    globalScope: CoroutineScope,
+    executionScope: CoroutineScope,
     tags: List<Tag>,
     back: () -> Unit,
 ) {
@@ -40,16 +41,16 @@ fun ManageTagScreen(
         },
         floatingActionButton = {
             MFloatButton {
-                // TODO add tag
                 isCreateTagDialogOpen=true
             }
         }
     ) { pd ->
-        var isEditTagNameDialogOpen: Boolean by remember { ms(false) }
 
+        var isEditTagNameDialogOpen: Boolean by remember { ms(false) }
         var selectedTag: Tag? by remember { ms(null) }
+
         MBox(modifier = Modifier.padding(pd)) {
-            LazyColumn() {
+            LazyColumn {
                 this.items(
                     items = tags,
                     key = { tag -> tag.tagId }
@@ -58,13 +59,12 @@ fun ManageTagScreen(
                         .padding(horizontal = 10.dp)
                         .padding(top = 10.dp)){
                         TagView(tag = tag, delete = {
-                            globalScope.launch {
+                            executionScope.launch {
                                 action.delete(tag)
                             }
                         }, edit = {
                             selectedTag = tag
                             isEditTagNameDialogOpen = true
-
                         })
                     }
                 }
@@ -77,7 +77,7 @@ fun ManageTagScreen(
                             isEditTagNameDialogOpen = false
                         },
                         onDone = { oldTag, newTag ->
-                            globalScope.launch {
+                            executionScope.launch {
                                 action.edit(oldTag, newTag)
                             }
                         }
@@ -86,12 +86,14 @@ fun ManageTagScreen(
             }
             if(isCreateTagDialogOpen){
                 EditTagDialog(
-                    oldTag = DbTag("",""),
+                    oldTag = DbTag(UUID.randomUUID().toString(),""),
                     onDismiss = {
                         isCreateTagDialogOpen = false
                     },
                     onDone = { _, newTag ->
-
+                        executionScope.launch {
+                            action.addTag(newTag)
+                        }
                     }
                 )
             }
@@ -102,7 +104,7 @@ fun ManageTagScreen(
 @Preview
 @Composable
 fun PreviewManageTagScreen() {
-    ManageTagScreen(action = ManageTagScreenAction.forPreview, globalScope =GlobalScope, tags = listOf(
+    ManageTagScreen(action = ManageTagScreenAction.forPreview, executionScope =GlobalScope, tags = listOf(
         DbTag("t1","tag 1"),
         DbTag("t2","tag 2"),
     )) {

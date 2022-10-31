@@ -22,6 +22,8 @@ import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenActionImp
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenActionImp
+import com.qxdzbc.pcr.screen.manage_tag_screen.ManageTagScreenAction
+import com.qxdzbc.pcr.screen.manage_tag_screen.ManageTagScreenActionImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -31,6 +33,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface ActionModule {
+
+    @Binds
+    @Singleton
+    fun ManageTagScreenAction(i: ManageTagScreenActionImp):ManageTagScreenAction
 
     @Binds
     @Singleton

@@ -25,7 +25,15 @@ open class MockFirestoreHelper constructor(
         return Ok(Unit)
     }
 
+    override suspend fun writeTag(tag: Tag): Rs<Unit, ErrorReport> {
+        return Ok(Unit)
+    }
+
     override suspend fun writeMultiTags(userId: String, tags: List<Tag>): Rs<Unit, ErrorReport> {
+        return Ok(Unit)
+    }
+
+    override suspend fun writeMultiTags(tags: List<Tag>): Rs<Unit, ErrorReport> {
         return Ok(Unit)
     }
 

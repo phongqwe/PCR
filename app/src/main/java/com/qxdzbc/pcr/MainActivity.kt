@@ -32,6 +32,7 @@ import com.qxdzbc.pcr.screen.main_screen.MainScreen
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState.Companion.mainScreenNavTag
 import com.qxdzbc.pcr.screen.manage_tag_screen.ManageTagScreen
+import com.qxdzbc.pcr.screen.manage_tag_screen.ManageTagScreenAction
 import com.qxdzbc.pcr.screen.manage_tag_screen.manageTagScreenNavTag
 import com.qxdzbc.pcr.state.app.AppState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper.Companion.toWrapper
@@ -67,6 +68,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var createEntryScreenAction: CreateEntryScreenAction
+
+    @Inject
+    lateinit var manageTagScreenAction:ManageTagScreenAction
 
     @Inject
     @ErrorContInCreateEntryScreenMs
@@ -142,11 +146,14 @@ class MainActivity : ComponentActivity() {
                             })
                     }
                     composable(manageTagScreenNavTag){
-//                        ManageTagScreen(
-//                            back = {
-//                                onBackPressed()
-//                            }
-//                        )
+                        ManageTagScreen(
+                            tags = appState.tagContainerMs.value.allValidTags,
+                            executionScope = lifecycleScope,
+                            action=manageTagScreenAction,
+                            back = {
+                                onBackPressed()
+                            }
+                        )
                     }
                 }
                 toMainIfPossible()
