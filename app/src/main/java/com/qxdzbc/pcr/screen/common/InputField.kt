@@ -22,9 +22,11 @@ fun InputField(
     modifier: Modifier = Modifier,
     isNumber: Boolean=false,
     value: String = "",
-    onValueChange: (String) -> Unit
+    isError: Boolean = false,
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
+        isError=isError,
         modifier = modifier,
         value = value,
         onValueChange = onValueChange,

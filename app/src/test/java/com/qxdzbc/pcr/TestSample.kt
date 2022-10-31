@@ -4,9 +4,8 @@ import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.database.model.DbTagAssignment
-import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.state.app.MockFirebaseUserWrapper
-import com.qxdzbc.pcr.state.model.EntryState
+import com.qxdzbc.pcr.state.model.WriteState
 import java.util.*
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -18,7 +17,7 @@ class TestSample {
             money = Random.nextInt(100..200).toDouble(),
             detail = "entry $it",
             dateTime = Date().time,
-            state = EntryState.WritePending.name,
+            state = WriteState.WritePending.name,
         )
     }
     val tags = (1..10).map {

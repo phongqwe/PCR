@@ -18,7 +18,5 @@ interface CreateEntryAction {
         isCost:Boolean
     ): Rs<Unit, ErrorReport>
 
-    suspend fun addEntryAndWriteToDbAndAttemptFirebase(
-        entry:Entry
-    ): Rs<Unit, ErrorReport>
+    suspend fun addEntryAndWriteToDbAndAttemptFirebase(entry:Entry): Rs<Unit, ErrorReport>
 }

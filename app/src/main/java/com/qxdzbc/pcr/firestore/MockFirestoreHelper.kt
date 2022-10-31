@@ -1,11 +1,10 @@
 package com.qxdzbc.pcr.firestore
 
 import com.github.michaelbull.result.Ok
-import com.google.firebase.firestore.DocumentReference
 import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.model.Entry
-import com.qxdzbc.pcr.state.model.EntryState
+import com.qxdzbc.pcr.state.model.WriteState
 import com.qxdzbc.pcr.state.model.Tag
 import javax.inject.Inject
 
@@ -62,14 +61,14 @@ open class MockFirestoreHelper constructor(
     }
 
     override suspend fun writeEntry(userId: String, entry: Entry): Rs<Entry, ErrorReport> {
-        return Ok(entry.setIsUploaded(true).setState(EntryState.OK))
+        return Ok(entry.setIsUploaded(true).setWriteState(WriteState.OK))
     }
 
     override suspend fun writeMultiEntries(
         userId: String,
         entries: List<Entry>
     ): Rs<List<Entry>, ErrorReport> {
-        return Ok(entries.map{it.setIsUploaded(true).setState(EntryState.OK)})
+        return Ok(entries.map{it.setIsUploaded(true).setWriteState(WriteState.OK)})
     }
 
     override suspend fun removeEntry(userId: String, entryDoc: EntryDoc): Rs<Unit, ErrorReport> {

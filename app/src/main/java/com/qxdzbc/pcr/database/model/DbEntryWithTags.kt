@@ -1,16 +1,14 @@
 package com.qxdzbc.pcr.database.model
 
 import androidx.room.Embedded
-import androidx.room.Ignore
 import androidx.room.Junction
 import androidx.room.Relation
 import com.qxdzbc.pcr.common.CommonUtils.toInt
 import com.qxdzbc.pcr.state.model.Entry
-import com.qxdzbc.pcr.state.model.EntryState
-import com.qxdzbc.pcr.state.model.EntryState.Companion.toEntryState
+import com.qxdzbc.pcr.state.model.WriteState
+import com.qxdzbc.pcr.state.model.WriteState.Companion.toWriteState
 import com.qxdzbc.pcr.state.model.Tag
 import com.qxdzbc.pcr.util.DateUtils
-import java.text.SimpleDateFormat
 import java.util.*
 
 data class DbEntryWithTags(
@@ -34,10 +32,10 @@ data class DbEntryWithTags(
     override val dateTime: Date get() = Date(entry.dateTime)
     override val isUploaded: Boolean
         get() = entry.isUploaded > 0
-    override val state: EntryState
-        get() = entry.state.toEntryState()!!
+    override val writeState: WriteState
+        get() = entry.state.toWriteState()!!
 
-    override fun setState(i: EntryState): Entry {
+    override fun setWriteState(i: WriteState): Entry {
         return this.copy(entry=this.entry.copy(state=i.name))
     }
 

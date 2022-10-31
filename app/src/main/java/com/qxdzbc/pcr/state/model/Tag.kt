@@ -23,5 +23,7 @@ interface Tag {
             name = name
         )
     }
+
+    fun setName(newTagName: String): Tag
 }
 

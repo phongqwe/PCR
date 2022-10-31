@@ -32,4 +32,8 @@ object MainScreenActionDoNothing : MainScreenAction {
     override suspend fun uploadEntry(entry: Entry): Rs<Unit, ErrorReport> {
         return Ok(Unit)
     }
+
+    override suspend fun removeEntry(e: Entry) {
+
+    }
 }

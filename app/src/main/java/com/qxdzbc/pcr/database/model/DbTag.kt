@@ -44,4 +44,8 @@ data class DbTag(
     override fun toDbTag(): DbTag {
         return this
     }
+
+    override fun setName(newTagName: String): DbTag {
+        return this.copy(name=newTagName)
+    }
 }

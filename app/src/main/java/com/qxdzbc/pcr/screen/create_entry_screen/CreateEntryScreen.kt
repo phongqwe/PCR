@@ -1,17 +1,14 @@
-package com.qxdzbc.pcr.screen.create_entry
+package com.qxdzbc.pcr.screen.create_entry_screen
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.qxdzbc.pcr.R
 import com.qxdzbc.pcr.common.CommonUtils.toInt
 import com.qxdzbc.pcr.common.MBox
@@ -35,7 +31,7 @@ import com.qxdzbc.pcr.screen.common.*
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.DateType
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.MDatePickerDialog
 import com.qxdzbc.pcr.state.model.Entry
-import com.qxdzbc.pcr.state.model.EntryState
+import com.qxdzbc.pcr.state.model.WriteState
 import com.qxdzbc.pcr.state.model.Tag
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import com.qxdzbc.pcr.util.DateUtils
@@ -75,12 +71,9 @@ fun CreateEntryScreen(
     Scaffold(
         topBar = {
             PCRTopAppBar {
-                Row(verticalAlignment=Alignment.CenterVertically) {
-                    MIconButton(
-                        imageVector = Icons.Default.ArrowBack,
-                        onClick = back
-                    )
-                    Text("Create new entry", fontSize=MaterialTheme.typography.h6.fontSize, fontWeight=MaterialTheme.typography.h6.fontWeight, color=MaterialTheme.colors.onPrimary)
+                MRow {
+                    ScreenBackButton(back)
+                    ScreenTitleText("Create new entry")
                 }
             }
         }
@@ -139,7 +132,7 @@ fun CreateEntryScreen(
                 InputField(
                     title = "Detail",
                     value = detail ?: "",
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     detail = it
                 }
@@ -191,7 +184,7 @@ fun CreateEntryScreen(
                                 dateTime = date.time,
                                 isUploaded = false.toInt(),
                                 isCost = isCost.toInt(),
-                                state = EntryState.WritePending.name,
+                                state = WriteState.WritePending.name,
                             ),
                             tags = selectedTagsMs.value.map { it.toDbTag() }
                         )

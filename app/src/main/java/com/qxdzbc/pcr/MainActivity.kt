@@ -22,21 +22,22 @@ import com.qxdzbc.pcr.di.state.AppStateMs
 import com.qxdzbc.pcr.di.state.ErrorContInCreateEntryScreenMs
 import com.qxdzbc.pcr.err.ErrorContainer
 import com.qxdzbc.pcr.err.ErrorRouter
-import com.qxdzbc.pcr.screen.create_entry.CreateEntryScreen
-import com.qxdzbc.pcr.screen.create_entry.CreateEntryScreenAction
-import com.qxdzbc.pcr.screen.create_entry.createEntryScreenNavTag
+import com.qxdzbc.pcr.screen.create_entry_screen.CreateEntryScreen
+import com.qxdzbc.pcr.screen.create_entry_screen.CreateEntryScreenAction
+import com.qxdzbc.pcr.screen.create_entry_screen.createEntryScreenNavTag
 import com.qxdzbc.pcr.screen.front_screen.FrontScreen
 import com.qxdzbc.pcr.screen.front_screen.FrontScreenAction
 import com.qxdzbc.pcr.screen.front_screen.state.FrontScreenState.Companion.frontScreenNavTag
 import com.qxdzbc.pcr.screen.main_screen.MainScreen
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState.Companion.mainScreenNavTag
+import com.qxdzbc.pcr.screen.manage_tag_screen.ManageTagScreen
+import com.qxdzbc.pcr.screen.manage_tag_screen.manageTagScreenNavTag
 import com.qxdzbc.pcr.state.app.AppState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper.Companion.toWrapper
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import com.qxdzbc.pcr.util.FireAuthUtils.hasUser
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -109,6 +110,9 @@ class MainActivity : ComponentActivity() {
                             action = mainAction,
                             toEntryCreateScreen = {
                                 navController.navigate(createEntryScreenNavTag)
+                            },
+                            toManageTagScreen = {
+                                navController.navigate(manageTagScreenNavTag)
                             }
                         )
                         BackHandler(true) {
@@ -129,13 +133,20 @@ class MainActivity : ComponentActivity() {
                             errorCont=errorContInCreateEntryScreenMs.value,
                             currentTags = appState.tagContainerMs.value.allTags,
                             onOk = {
-                                lifecycleScope.launch(Dispatchers.Default) {
+                                lifecycleScope.launch {
                                     createEntryAction.addEntryAndWriteToDbAndAttemptFirebase(it)
                                 }
                             },
                             back = {
                                 onBackPressed()
                             })
+                    }
+                    composable(manageTagScreenNavTag){
+//                        ManageTagScreen(
+//                            back = {
+//                                onBackPressed()
+//                            }
+//                        )
                     }
                 }
                 toMainIfPossible()

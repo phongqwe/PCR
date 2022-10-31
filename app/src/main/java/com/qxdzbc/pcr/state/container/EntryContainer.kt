@@ -4,7 +4,7 @@ import com.qxdzbc.pcr.common.Rs
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.state.container.filter.EntryFilter
 import com.qxdzbc.pcr.state.model.Entry
-import com.qxdzbc.pcr.state.model.EntryState
+import com.qxdzbc.pcr.state.model.WriteState
 import com.qxdzbc.pcr.state.model.Tag
 import java.util.*
 
@@ -41,15 +41,15 @@ interface EntryContainer : Map<String, Entry> {
     suspend fun initLoad(userId: String?): EntryContainer
 
     fun filterEntries(filter: EntryFilter): List<Entry> {
+        val avaliableEntries = allEntries.filter { it.writeState!=WriteState.DeletePending }
         if(filter.canBeUsed()){
-            val rt= allEntries.filter {
-                val c1 = it.state!=EntryState.DeletePending
+            val rt= avaliableEntries.filter {
                 val c2 = filter.match(it)
-                c1 && c2
+                c2
             }
             return rt
         }else{
-            return allEntries
+            return avaliableEntries
         }
     }
 

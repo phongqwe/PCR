@@ -15,8 +15,8 @@ interface Entry {
     val tags: List<Tag>
 
     val isUploaded: Boolean
-    val state:EntryState
-    fun setState(i:EntryState):Entry
+    val writeState:WriteState
+    fun setWriteState(i:WriteState):Entry
 
     val isCost:Boolean
 

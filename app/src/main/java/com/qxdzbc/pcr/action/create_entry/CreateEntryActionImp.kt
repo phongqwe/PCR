@@ -12,6 +12,8 @@ import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.state.container.EntryContainer
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -41,30 +43,30 @@ class CreateEntryActionImp @Inject constructor(
     }
 
     override suspend fun addEntryAndWriteToDbAndAttemptFirebase(entry: Entry): Rs<Unit, ErrorReport> {
-        val rs = ecMs.value.addEntryAndWriteToDb(entry)
-//        val userId = userSt.value?.uid
-        val userId = userSt.value?.uid
-        rs.onSuccess {
-            ecMs.value = it
-        }
-        if (userId != null) {
-            val rs2 = rs.flatMap {
-                it.writeUnUploadedToFirestore(userId)
+        val rt= withContext(Dispatchers.Default){
+            val rs = ecMs.value.addEntryAndWriteToDb(entry)
+            val userId = userSt.value?.uid
+            rs.onSuccess {
+                ecMs.value = it
             }
-            errorRouter.reportToCreateEntryScreenIfNeed(rs2)
-            return rs2
-                .onSuccess {
-                    val r2=it.writeToDb()
-                    if(r2 is Ok){
-                        ecMs.value =it
-                    }
+            if (userId != null) {
+                val rs2 = rs.flatMap {ec->
+                    ec.writeUnUploadedToFirestore(userId)
                 }
-                .map { }
-        } else {
-            return rs
-                .map { }
+                errorRouter.reportToCreateEntryScreenIfNeed(rs2)
+                 rs2
+                    .onSuccess {ec->
+                        val r2=ec.writeToDb()
+                        if(r2 is Ok){
+                            ecMs.value =ec
+                        }
+                    }
+                    .map { }
+            } else {
+                 rs
+                    .map { }
+            }
         }
-//        return rs
-//            .map { }
+        return rt
     }
 }

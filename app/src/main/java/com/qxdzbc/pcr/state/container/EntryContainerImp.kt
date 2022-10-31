@@ -17,7 +17,7 @@ import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.FirestoreHelper
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.state.model.Entry
-import com.qxdzbc.pcr.state.model.EntryState
+import com.qxdzbc.pcr.state.model.WriteState
 import com.qxdzbc.pcr.state.model.Tag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -71,24 +71,6 @@ data class EntryContainerImp @Inject constructor(
     }
 
     override fun writeToDb(): Rs<Unit, ErrorReport> {
-//        try {
-//            entryDao.insertOrUpdate(
-//                this.allEntries.map { it.toDbEntry() }
-//            )
-//            tagDao.insertOrUpdate(
-//                this.allEntries
-//                    .flatMap { it.tags }
-//                    .distinct()
-//                    .map { it.toDbTag() }
-//            )
-//            tagAssignmentDao.insertAndDeleteByEntryId(
-//                this.allEntries.flatMap { it.toDbTagAssignments() }
-//            )
-//            return Unit.toOk()
-//        } catch (e: Throwable) {
-//            val msg = "Unable to write entries in entry container into the db"
-//            return DbErrors.UnableToWriteEntryToDb.report(msg).toErr()
-//        }
 
         val msg = "Unable to write entries in entry container into the db"
         val q = DbErrors.UnableToWriteEntryToDb.report(msg).toErr()
@@ -201,7 +183,7 @@ data class EntryContainerImp @Inject constructor(
                 dateTime = date.time,
                 isUploaded = 0,
                 isCost = if (isCost) 1 else 0,
-                state = EntryState.WritePending.name,
+                state = WriteState.WritePending.name,
             ),
             tags = tags.map { it.toDbTag() }
         )
@@ -220,7 +202,7 @@ data class EntryContainerImp @Inject constructor(
 
     override suspend fun removeEntry(entry: Entry): EntryContainer {
         val u = userId
-        val newE = entry.setState(EntryState.DeletePending)
+        val newE = entry.setWriteState(WriteState.DeletePending)
         val afterMarkingCont = this.addOrReplaceAndWriteToDb(newE).component1() ?: this
         if (u != null) {
             val frs = firestoreHelper.removeEntry(u, newE.id)

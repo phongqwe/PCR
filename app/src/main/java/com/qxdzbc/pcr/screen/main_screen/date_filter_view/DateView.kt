@@ -26,7 +26,7 @@ fun DateView(
         val fromDate: Date? = entryFilter.fromDate
         val toDate: Date? = entryFilter.toDate
         Text(
-            text = fromDate?.let { DateUtils.displayDateFormat.format(it) } ?: "<<From>>",
+            text = fromDate?.let { DateUtils.displayDateFormat.format(it) } ?: "<<Date>>",
             modifier = Modifier.clickable {
                 fromDateClick()
             },
@@ -37,7 +37,7 @@ fun DateView(
         Text(text = " to ")
 
         Text(
-            text = toDate?.let { DateUtils.displayDateFormat.format(it) } ?: "<<To>>",
+            text = toDate?.let { DateUtils.displayDateFormat.format(it) } ?: "<<Date>>",
             modifier = Modifier.clickable {
                 toDateClick()
             },

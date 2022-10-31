@@ -15,7 +15,7 @@ import com.qxdzbc.pcr.common.StateUtils.ms
 import com.qxdzbc.pcr.err.OtherErrors
 import com.qxdzbc.pcr.firestore.FirestoreHelper
 import com.qxdzbc.pcr.state.app.MockFirebaseUserWrapper
-import com.qxdzbc.pcr.state.model.EntryState
+import com.qxdzbc.pcr.state.model.WriteState
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -71,7 +71,7 @@ class EntryContainerImpTest {
             val c3 = rs
             val e = c3[target.id]
             assertNotNull(e)
-            assertEquals(EntryState.DeletePending,e!!.state)
+            assertEquals(WriteState.DeletePending,e!!.writeState)
         }
         fun unableToRemoveFromFireStore(){
             val mockFirestoreHelper = mock<FirestoreHelper>{q->
@@ -87,13 +87,13 @@ class EntryContainerImpTest {
             val c3 = rs
             val e = c3[target.id]
             assertNotNull(e)
-            assertEquals(EntryState.DeletePending,e!!.state)
+            assertEquals(WriteState.DeletePending,e!!.writeState)
         }
 
         fun `removed from fireStored but unable to remove from db`(){
             val mockFirestoreHelper = mock<EntryDao>{q->
                 onBlocking {
-                    deleteRs(target.setState(EntryState.DeletePending).toDbEntry())
+                    deleteRs(target.setWriteState(WriteState.DeletePending).toDbEntry())
                 } doReturn OtherErrors.CommonErr.report().toErr()
             }
 
@@ -102,7 +102,7 @@ class EntryContainerImpTest {
                 c2.removeEntry(target)
             }
             val e = rs[target.id]
-            assertEquals(EntryState.DeletePending,e!!.state)
+            assertEquals(WriteState.DeletePending,e!!.writeState)
         }
 
         okCase()

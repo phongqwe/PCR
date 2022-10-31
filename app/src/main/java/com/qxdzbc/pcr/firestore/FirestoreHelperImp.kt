@@ -9,7 +9,6 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
-import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.common.ResultUtils.toErr
 import com.qxdzbc.pcr.common.ResultUtils.toOk
 import com.qxdzbc.pcr.common.Rs
@@ -17,13 +16,12 @@ import com.qxdzbc.pcr.common.St
 import com.qxdzbc.pcr.database.model.DbEntry
 import com.qxdzbc.pcr.database.model.DbEntryWithTags
 import com.qxdzbc.pcr.database.model.DbTag
-import com.qxdzbc.pcr.di.state.HasNetworkConnectionMs
 import com.qxdzbc.pcr.di.state.HasNetworkConnectionSt
 import com.qxdzbc.pcr.err.ErrorReport
 import com.qxdzbc.pcr.firestore.EntryDoc.Companion.entriesColPath
 import com.qxdzbc.pcr.firestore.TagDoc.Companion.tagColPath
 import com.qxdzbc.pcr.state.model.Entry
-import com.qxdzbc.pcr.state.model.EntryState
+import com.qxdzbc.pcr.state.model.WriteState
 import com.qxdzbc.pcr.state.model.Tag
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -151,7 +149,7 @@ class FirestoreHelperImp @Inject constructor(
         val tagColRef = tagColRef(userId)
         val e = entry.toEntryDoc(tagColRef)
         val rt = this.writeEntry(userId, e).map {
-            entry.setIsUploaded(true).setState(EntryState.OK)
+            entry.setIsUploaded(true).setWriteState(WriteState.OK)
         }
         return rt
     }
@@ -169,7 +167,7 @@ class FirestoreHelperImp @Inject constructor(
         }
         task.await()
         if (task.isSuccessful) {
-            return Ok(entries.map { it.setIsUploaded(true).setState(EntryState.OK) })
+            return Ok(entries.map { it.setIsUploaded(true).setWriteState(WriteState.OK) })
         } else {
             return FirestoreErrors.UnableToWriteMultiEntry.report().toErr()
         }
