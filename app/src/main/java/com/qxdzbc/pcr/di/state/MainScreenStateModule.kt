@@ -22,12 +22,26 @@ import javax.inject.Singleton
 
 @Module
 @DisableInstallInCheck
-interface MainStateModule {
+interface MainScreenStateModule {
 
     @Binds
     fun MainState(i:MainScreenStateImp):MainScreenState
 
     companion object{
+
+        @IsMainScreenLoadingMs
+        @Provides
+        @Singleton
+        fun isMainScreenLoadingMs():Ms<Boolean>{
+            return ms(false)
+        }
+        @IsMainScreenLoadingSt
+        @Provides
+        @Singleton
+        fun isMainScreenLoadingSt(@IsMainScreenLoadingMs i:Ms<Boolean>):St<Boolean>{
+            return i
+        }
+
         @Provides
         @Singleton
         @MainScreenFilterMs

@@ -4,6 +4,23 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention
+annotation class IsMainScreenLoadingSt
+
+@Qualifier
+@Retention
+annotation class IsMainScreenLoadingMs
+
+@Qualifier
+@Retention
+annotation class IsTagScreenLoadingSt
+
+@Qualifier
+@Retention
+annotation class IsTagScreenLoadingMs
+
+
+@Qualifier
+@Retention
 annotation class MainScreenFilterSt
 
 @Qualifier

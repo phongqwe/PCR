@@ -130,8 +130,6 @@ fun MainScreen(
                     }
                 }
 
-
-
                 LazyColumn(
                     modifier =
                     Modifier

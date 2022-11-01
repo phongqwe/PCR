@@ -27,6 +27,8 @@ interface AppStateModule {
     fun ErrorReporter(i: ErrorRouterImp): ErrorRouter
 
     companion object {
+
+
         @UserMs
         @Provides
         @Singleton

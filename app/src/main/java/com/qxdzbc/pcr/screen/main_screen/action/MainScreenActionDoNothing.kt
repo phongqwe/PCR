@@ -40,4 +40,12 @@ object MainScreenActionDoNothing : MainScreenAction {
     override fun logout() {
 
     }
+
+    override fun setMainScreenLoadingState(i: Boolean) {
+
+    }
+
+    override fun setTagScreenLoadingState(i: Boolean) {
+
+    }
 }

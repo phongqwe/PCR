@@ -8,7 +8,8 @@ import dagger.hilt.components.SingletonComponent
 @Module(
     includes = [
         DefaultObjModule::class, AppStateModule::class,
-        MainStateModule::class, FrontStateModule::class
+        MainScreenStateModule::class, FrontStateModule::class,
+        TagScreenStateModule::class
     ]
 )
 @InstallIn(SingletonComponent::class)

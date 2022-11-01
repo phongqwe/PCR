@@ -12,6 +12,8 @@ import com.qxdzbc.pcr.action.remove_err.RemoveErrAction
 import com.qxdzbc.pcr.action.remove_err.RemoveErrFromCreateEntryScreen
 import com.qxdzbc.pcr.action.remove_err.RemoveErrFromFrontScreen
 import com.qxdzbc.pcr.action.remove_err.RemoveErrFromMainScreen
+import com.qxdzbc.pcr.action.switch_loading_state.SwitchLoadingStateAction
+import com.qxdzbc.pcr.action.switch_loading_state.SwitchLoadingStateActionImp
 import com.qxdzbc.pcr.action.switch_theme.SwitchThemeAction
 import com.qxdzbc.pcr.action.switch_theme.SwitchThemeActionImp
 import com.qxdzbc.pcr.action.update_user.UpdateUserAction
@@ -35,6 +37,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface ActionModule {
+    @Binds
+    @Singleton
+    fun SwitchLoadingStateActionImp(i: SwitchLoadingStateActionImp): SwitchLoadingStateAction
+
     @Binds
     @Singleton
     fun LogoutAction(i: LogoutActionImp): LogoutAction
