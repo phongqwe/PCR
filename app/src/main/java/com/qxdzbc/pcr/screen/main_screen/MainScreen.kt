@@ -12,7 +12,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -56,7 +58,10 @@ fun MainScreen(
         scaffoldState = scaffoldState,
         topBar = {
             PCRTopAppBar {
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     MIconButton(
                         imageVector = Icons.Default.Menu,
                         onClick = {
@@ -66,19 +71,31 @@ fun MainScreen(
                         },
                         modifier = Modifier
                     )
-                    MBox(modifier = Modifier.background(MaterialTheme.colors.surface).weight(1.0f).padding(horizontal=10.dp)) {
-                        BasicTextField(value = state.mainScreenFilter.text ?: "", onValueChange = {
-                            val newFilter = if (it.isEmpty()) {
-                                state.mainScreenFilter.copy(text = null)
-                            } else {
-                                state.mainScreenFilter.copy(text = it)
-                            }
-                            action.filter(newFilter)
-                        },modifier=Modifier.fillMaxWidth().padding(vertical=3.dp))
+                    MBox(
+                        modifier = Modifier
+                            .background(MaterialTheme.colors.surface)
+                            .weight(1.0f)
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        BasicTextField(
+                            value = state.mainScreenFilter.text ?: "", onValueChange = {
+                                val newFilter = if (it.isEmpty()) {
+                                    state.mainScreenFilter.copy(text = null)
+                                } else {
+                                    state.mainScreenFilter.copy(text = it)
+                                }
+                                action.filter(newFilter)
+                            }, modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 3.dp),
+                            cursorBrush = SolidColor(MaterialTheme.colors.onSurface),
+                            textStyle = TextStyle.Default.copy(color=MaterialTheme.colors.onSurface)
+                        )
                     }
                     MIconButton(
                         painter = painterResource(id = R.drawable.sell_24),
-                        onClick = {},modifier = Modifier)
+                        onClick = {}, modifier = Modifier
+                    )
                 }
 
 
