@@ -118,6 +118,9 @@ class MainActivity : ComponentActivity() {
                             toManageTagScreen = {
                                 navController.navigate(manageTagScreenNavTag)
                             },
+                            toFrontScreen = {
+                                navController.navigate(frontScreenNavTag)
+                            },
                             executionScope = lifecycleScope
                         )
                         BackHandler(true) {

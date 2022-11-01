@@ -42,7 +42,18 @@ class App : Application(){
     private fun configFirebaseAuthListener(){
         appStateMs.value.userMs.value = FirebaseAuth.getInstance().currentUser?.toWrapper()
         FirebaseAuth.getInstance().addAuthStateListener {
-            appStateMs.value.userMs.value = it.currentUser?.toWrapper()
+            val cu = it.currentUser
+            appStateMs.value.userMs.value = cu?.toWrapper()
+            if(cu==null){
+                MainScope().launch(Dispatchers.Default) {
+                    pcrDb.deleteEverything()
+                }
+            }else{
+                MainScope().launch(Dispatchers.Default) {
+                    pcrDb.deleteEverything()
+                    appStateMs.value.initLoadData()
+                }
+            }
         }
     }
 

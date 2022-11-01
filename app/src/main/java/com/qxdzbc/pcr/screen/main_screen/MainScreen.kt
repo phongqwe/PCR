@@ -28,6 +28,7 @@ import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -39,12 +40,14 @@ fun MainScreen(
     action: MainScreenAction,
     toEntryCreateScreen: () -> Unit,
     toManageTagScreen:()->Unit,
+    toFrontScreen:()->Unit,
     executionScope:CoroutineScope = rememberCoroutineScope()
 ) {
     val scaffoldState = rememberScaffoldState()
     val userId: String? = state.userSt.value?.uid
     var isFromDatePickerOpen: Boolean by remember { ms(false) }
     var isToDatePickerOpen: Boolean by remember { ms(false) }
+    val localCrScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -54,7 +57,7 @@ fun MainScreen(
                     MIconButton(
                         imageVector = Icons.Default.Menu,
                         onClick = {
-                            executionScope.launch {
+                            localCrScope.launch() {
                                 scaffoldState.drawerState.open()
                             }
                         },
@@ -70,40 +73,31 @@ fun MainScreen(
         drawerContent = {
             UserInfo(state.userSt.value ?: FirebaseUserWrapper.forPreview)
             ClickableDrawerItem("Manage tags") {
-                executionScope.launch {
+                localCrScope.launch {
                     scaffoldState.drawerState.close()
                 }
                 toManageTagScreen()
             }
             DrawerItem {
                 ThemeSwitcher(isDark = state.isDark, switchTheme = {
-                    executionScope.launch {
+                    localCrScope.launch {
                         scaffoldState.drawerState.close()
                         action.switchTheme(it)
                     }
                 })
             }
-            ClickableDrawerItem("TODO: logout") {
-                executionScope.launch {
+            ClickableDrawerItem("Logout") {
+                localCrScope.launch {
                     scaffoldState.drawerState.close()
                 }
+                action.logout()
+                toFrontScreen()
             }
         },
         floatingActionButton = {
             MFloatButton(
                 onClick=toEntryCreateScreen
             )
-//            FloatingActionButton(
-//                onClick = { toEntryCreateScreen() },
-//                elevation = FloatingActionButtonDefaults.elevation(10.dp),
-//                backgroundColor = MaterialTheme.colors.primary
-//            ) {
-//                Icon(
-//                    Icons.Filled.Add,
-//                    "",
-//                    tint = MaterialTheme.colors.onPrimary
-//                )
-//            }
         }
     ) { contentPadding ->
         MBox(
@@ -222,7 +216,8 @@ fun previewMainScreen() {
             state = MainScreenState.forPreview,
             action = MainScreenAction.forPreview,
             toEntryCreateScreen = {},
-            toManageTagScreen = {}
+            toManageTagScreen = {},
+            toFrontScreen = {},
         )
     }
 }

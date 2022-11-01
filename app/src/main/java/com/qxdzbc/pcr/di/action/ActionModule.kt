@@ -1,5 +1,7 @@
 package com.qxdzbc.pcr.di.action
 
+import com.qxdzbc.pcr.action.log_out.LogoutAction
+import com.qxdzbc.pcr.action.log_out.LogoutActionImp
 import com.qxdzbc.pcr.action.create_entry.CreateEntryAction
 import com.qxdzbc.pcr.action.create_entry.CreateEntryActionImp
 import com.qxdzbc.pcr.action.filter_entry.FilterEntryOnMainScreenAction
@@ -33,34 +35,37 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface ActionModule {
+    @Binds
+    @Singleton
+    fun LogoutAction(i: LogoutActionImp): LogoutAction
 
     @Binds
     @Singleton
-    fun ManageTagScreenAction(i: ManageTagScreenActionImp):ManageTagScreenAction
+    fun ManageTagScreenAction(i: ManageTagScreenActionImp): ManageTagScreenAction
 
     @Binds
     @Singleton
-    fun RemoveEntryAction(i:RemoveEntryActionImp):RemoveEntryAction
+    fun RemoveEntryAction(i: RemoveEntryActionImp): RemoveEntryAction
 
     @Binds
     @Singleton
-    fun UploadEntryAction(i:UploadEntryActionImp): UploadEntryAction
+    fun UploadEntryAction(i: UploadEntryActionImp): UploadEntryAction
 
     @Binds
     @Singleton
-    fun CreateEntryScreenAction(i:CreateEntryScreenActionImp):CreateEntryScreenAction
+    fun CreateEntryScreenAction(i: CreateEntryScreenActionImp): CreateEntryScreenAction
 
     @Binds
     @Singleton
-    fun CreateEntryAction(i: CreateEntryActionImp):CreateEntryAction
+    fun CreateEntryAction(i: CreateEntryActionImp): CreateEntryAction
 
     @Binds
     @Singleton
-    fun FilterEntryOnMainScreenAction(i: FilterEntryOnMainScreenActionImp):FilterEntryOnMainScreenAction
+    fun FilterEntryOnMainScreenAction(i: FilterEntryOnMainScreenActionImp): FilterEntryOnMainScreenAction
 
     @Binds
     @Singleton
-    fun MainScreenAction(i:MainScreenActionImp): MainScreenAction
+    fun MainScreenAction(i: MainScreenActionImp): MainScreenAction
 
     @Binds
     @Singleton

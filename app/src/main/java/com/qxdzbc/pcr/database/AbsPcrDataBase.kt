@@ -15,5 +15,9 @@ abstract class AbsPcrDataBase : RoomDatabase(),PcrDatabase{
     companion object{
         const val dbName = "PcrDatabase"
     }
+
+    override fun deleteEverything() {
+        this.clearAllTables()
+    }
 }
 

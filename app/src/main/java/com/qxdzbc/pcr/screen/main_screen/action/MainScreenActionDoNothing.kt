@@ -36,4 +36,8 @@ object MainScreenActionDoNothing : MainScreenAction {
     override suspend fun removeEntry(e: Entry) {
 
     }
+
+    override fun logout() {
+
+    }
 }

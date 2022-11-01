@@ -8,4 +8,5 @@ interface PcrDatabase{
     val entryDao: EntryDao
     val tagDao: TagDao
     val tagAssignmentDao: TagAssignmentDao
+    fun deleteEverything()
 }
