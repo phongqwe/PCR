@@ -26,7 +26,8 @@ interface MainScreenState {
                 userSt = ms(FirebaseUserWrapper.forPreview),
                 entryContainerSt = ms(MockEntryContainer.random()),
                 tagContainerSt = ms(MockTagContainer()),
-                mainScreenFilterSt = ms(EntryFilter.forPreview())
+                mainScreenFilterSt = ms(EntryFilter.forPreview()),
+                isLoadingSt = ms(false)
             )
         }
         const val mainScreenNavTag = "MainScreen_NavTag"

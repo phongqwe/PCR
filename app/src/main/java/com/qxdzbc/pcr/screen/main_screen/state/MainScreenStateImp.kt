@@ -26,6 +26,7 @@ class MainScreenStateImp @Inject constructor(
     override val tagContainerSt: St<@JvmSuppressWildcards TagContainer>,
     @MainScreenFilterSt
     val mainScreenFilterSt: St<@JvmSuppressWildcards EntryFilter>,
+    @IsMainScreenLoadingSt
     private val isLoadingSt:St<@JvmSuppressWildcards Boolean>
 ) : MainScreenState {
     override val errorContainerSt: St<ErrorContainer>

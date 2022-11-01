@@ -1,8 +1,10 @@
 package com.qxdzbc.pcr.screen.main_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -10,9 +12,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.qxdzbc.pcr.R
 import com.qxdzbc.pcr.common.MBox
 import com.qxdzbc.pcr.common.StateUtils.ms
 import com.qxdzbc.pcr.screen.common.MFloatButton
@@ -39,9 +43,9 @@ fun MainScreen(
     state: MainScreenState,
     action: MainScreenAction,
     toEntryCreateScreen: () -> Unit,
-    toManageTagScreen:()->Unit,
-    toFrontScreen:()->Unit,
-    executionScope:CoroutineScope = rememberCoroutineScope()
+    toManageTagScreen: () -> Unit,
+    toFrontScreen: () -> Unit,
+    executionScope: CoroutineScope = rememberCoroutineScope()
 ) {
     val scaffoldState = rememberScaffoldState()
     val userId: String? = state.userSt.value?.uid
@@ -53,7 +57,7 @@ fun MainScreen(
         topBar = {
             PCRTopAppBar {
                 ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-                    val (menuRef) = createRefs()
+                    val (menuRef, searchRef,tagFilterRef) = createRefs()
                     MIconButton(
                         imageVector = Icons.Default.Menu,
                         onClick = {
@@ -67,6 +71,30 @@ fun MainScreen(
                             bottom.linkTo(parent.bottom)
                         }
                     )
+                    MBox(modifier = Modifier.constrainAs(searchRef) {
+                        start.linkTo(menuRef.end)
+                        end.linkTo(tagFilterRef.start)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }.background(MaterialTheme.colors.surface)) {
+                        BasicTextField(value = state.mainScreenFilter.text ?: "", onValueChange = {
+                            val newFilter = if (it.isEmpty()) {
+                                state.mainScreenFilter.copy(text = null)
+                            } else {
+                                state.mainScreenFilter.copy(text = it)
+                            }
+                            action.filter(newFilter)
+                        },)
+                    }
+                    MIconButton(
+                        painter = painterResource(id = R.drawable.sell_24),
+                        onClick = {
+
+                        },modifier = Modifier.constrainAs(tagFilterRef) {
+                            end.linkTo(parent.end)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        })
                 }
             }
         },
@@ -96,7 +124,7 @@ fun MainScreen(
         },
         floatingActionButton = {
             MFloatButton(
-                onClick=toEntryCreateScreen
+                onClick = toEntryCreateScreen
             )
         }
     ) { contentPadding ->
@@ -138,13 +166,14 @@ fun MainScreen(
                     val shownEntries =
                         state.entryContainerSt.value.filterEntries(state.mainScreenFilter)
                     items(
-                        items=shownEntries,
-                        key ={e->e.id},
+                        items = shownEntries,
+                        key = { e -> e.id },
                         itemContent = { entry ->
                             val dismissState = rememberDismissState(
                                 confirmStateChange = {
                                     if (it == DismissValue.DismissedToEnd ||
-                                        it == DismissValue.DismissedToStart) {
+                                        it == DismissValue.DismissedToStart
+                                    ) {
                                         executionScope.launch {
                                             action.removeEntry(entry)
                                         }
