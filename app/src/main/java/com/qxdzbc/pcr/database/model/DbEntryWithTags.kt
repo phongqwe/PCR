@@ -80,6 +80,10 @@ data class DbEntryWithTags(
         }
     }
 
+    override fun setTags(newTags: List<Tag>): Entry {
+        return this.copy(tags = newTags.map { it.toDbTag() })
+    }
+
     override val displayDate: String
         get() = DateUtils.displayDateFormat.format(this.dateTime)
     override val displayMoney: String

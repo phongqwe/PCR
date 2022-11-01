@@ -77,7 +77,7 @@ data class TagContainerImp @Inject constructor(
         return rt
     }
 
-    private fun replace(tag: Tag): TagContainerImp {
+    private fun bluntReplace(tag: Tag): TagContainerImp {
         val m2 = m.toMutableMap()
         m2[tag.tagId] = tag
         return this.copy(m = m2)
@@ -92,13 +92,13 @@ data class TagContainerImp @Inject constructor(
                 success = {
                     val newCont = targets.map { it.setWriteState(WriteState.OK) }
                         .fold(this) { acc: TagContainerImp, tag: Tag ->
-                            acc.replace(tag)
+                            acc.bluntReplace(tag)
                         }
                     val dbRs = tagDao.insertOrUpdateRs(newCont.allTags.map { it.toDbTag() })
                     dbRs.mapBoth(
                         success = {
                             newCont
-                                  },
+                        },
                         failure = {
                             this
                         }
@@ -110,8 +110,63 @@ data class TagContainerImp @Inject constructor(
             )
         return rt
     }
+    private fun replaceAndWriteToDbRs(tag:Tag):Rs<TagContainerImp,ErrorReport>{
+        val replacedCont = this.bluntReplace(tag)
+        val rt = replacedCont.writeToDb().map {
+            replacedCont
+        }
+        return rt
+    }
+    override suspend fun deleteAndWriteToDb(tag: Tag): TagContainer {
+        val markedTag = tag.setWriteState(WriteState.DeletePending)
+        val afterMarkingContRs = this.replaceAndWriteToDbRs(tag.setWriteState(WriteState.DeletePending))
+        val rt = afterMarkingContRs.mapBoth(
+            success = {afterMarkingCont->
+                tagDao.deleteRs(markedTag).mapBoth(
+                    success = {
+                        afterMarkingCont.bluntRemoveTag(markedTag)
+                    },
+                    failure = {
+                        afterMarkingCont
+                    }
+                )
+            },
+            failure = {
+                this
+            }
+        )
+        return rt
+    }
+
+    override fun bluntRemoveTag(tag: Tag): TagContainerImp {
+        return this.copy(m = m - tag.tagId)
+    }
+
+    override suspend fun deleteThePendings(): TagContainer {
+        val targets = this.allTags.filter { it.writeState == WriteState.DeletePending }
+        val rt = firestoreHelper.removeMultiTag(targets).mapBoth(
+            success = {
+                tagDao.deleteMultiRs(targets.map { it.toDbTag() }).mapBoth(
+                    success = {
+                        val afterDbCont = targets.fold(this) { acc, ttag ->
+                            acc.bluntRemoveTag(ttag)
+                        }
+                        afterDbCont
+                    },
+                    failure = {
+                        this //reflect the state of the db
+                    }
+                )
+            },
+            failure = {
+                this
+            },
+        )
+        return rt
+    }
 
     override suspend fun addTagAndWriteToDb(tag: Tag): TagContainer {
+        val o = this
         val rt: TagContainer = tagDao.insertOrUpdateRs(listOf(tag.toDbTag())).mapBoth(
             success = {
                 val tag2 = tag.setWriteState(WriteState.WritePending)
@@ -119,7 +174,7 @@ data class TagContainerImp @Inject constructor(
                 afterDbCont
             },
             failure = {
-                this
+                o
             }
         )
         return rt

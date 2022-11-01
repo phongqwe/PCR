@@ -16,6 +16,8 @@ interface FirestoreHelper {
     suspend fun removeTag(userId: String,tag: TagDoc):Rs<Unit,ErrorReport>
     suspend fun removeTag(userId: String,tag: Tag):Rs<Unit,ErrorReport>
     suspend fun removeTag(userId: String,tagId:String):Rs<Unit,ErrorReport>
+    suspend fun removeTag(tag:Tag):Rs<Unit,ErrorReport>
+    suspend fun removeMultiTag(tags:List<Tag>):Rs<Unit,ErrorReport>
 
     suspend fun readAllTags(userId: String):Rs<List<TagDoc>,ErrorReport>
     suspend fun readAllTagsToModel(userId: String):Rs<List<Tag>,ErrorReport>
@@ -37,6 +39,7 @@ interface FirestoreHelper {
     suspend fun removeEntry(userId: String, entryDoc: EntryDoc): Rs<Unit, ErrorReport>
     suspend fun removeEntry(userId: String, entry: Entry): Rs<Unit, ErrorReport>
     suspend fun removeEntry(userId: String, entryId: String): Rs<Unit, ErrorReport>
+    suspend fun removeMultiEntries(entries:List<Entry>): Rs<Unit, ErrorReport>
 
     suspend fun readAllEntries(userId: String):Rs<List<EntryDoc>,ErrorReport>
     suspend fun readAllEntriesToModel(userId: String):Rs<List<Entry>,ErrorReport>

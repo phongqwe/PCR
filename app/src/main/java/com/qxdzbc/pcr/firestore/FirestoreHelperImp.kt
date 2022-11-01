@@ -137,6 +137,37 @@ class FirestoreHelperImp @Inject constructor(
         return rt
     }
 
+    override suspend fun removeTag(tag: Tag): Rs<Unit, ErrorReport> {
+        val rt = runWhenHaveNetwork {
+            runWhenLoggedIn {userId->
+                removeTag(userId,tag)
+            }
+        }
+        return rt
+    }
+
+    override suspend fun removeMultiTag(tags: List<Tag>): Rs<Unit, ErrorReport> {
+        val rt = runWhenHaveNetwork {
+            runWhenLoggedIn {userId->
+                val task=db.runTransaction {
+                    for (tag in tags){
+                        tagDocRef(userId, tag.tagId).delete()
+                    }
+                }
+                task.await()
+                if (task.isSuccessful) {
+                    Ok(Unit)
+                } else {
+                    FirestoreErrors
+                        .UnableToDeleteTag
+                        .report("Unable to delete multiple tags.")
+                        .toErr()
+                }
+            }
+        }
+        return rt
+    }
+
     override suspend fun readAllTags(userId: String): Rs<List<TagDoc>, ErrorReport> {
         val rt = runWhenHaveNetwork {
             val task = tagColRef(userId).get()
@@ -222,6 +253,26 @@ class FirestoreHelperImp @Inject constructor(
             } else {
                 FirestoreErrors.UnableToDeleteTag.report("Unable to delete entry ${entryId}")
                     .toErr()
+            }
+        }
+        return rt
+    }
+
+    override suspend fun removeMultiEntries(entries: List<Entry>): Rs<Unit, ErrorReport> {
+        val rt = runWhenHaveNetwork {
+            runWhenLoggedIn { userId->
+                val task = db.runBatch {
+                    for(e in entries){
+                        entryDocRef(userId,e.id).delete()
+                    }
+                }
+                task.await()
+                if (task.isSuccessful) {
+                    Ok(Unit)
+                } else {
+                    FirestoreErrors.UnableToDeleteEntry.report("Unable to delete multiple entries")
+                        .toErr()
+                }
             }
         }
         return rt

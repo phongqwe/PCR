@@ -48,6 +48,8 @@ interface Entry {
         )
     }
 
+    fun setTags(newTags: List<Tag>):Entry
+
     val displayDate:String
     val displayMoney:String
 }

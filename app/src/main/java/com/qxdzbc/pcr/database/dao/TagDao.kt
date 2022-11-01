@@ -13,6 +13,7 @@ import com.qxdzbc.pcr.database.DbErrors
 import com.qxdzbc.pcr.database.model.DbTag
 import com.qxdzbc.pcr.database.model.DbTagWithEntries
 import com.qxdzbc.pcr.err.ErrorReport
+import com.qxdzbc.pcr.state.model.Tag
 
 @Dao
 interface TagDao {
@@ -50,6 +51,29 @@ interface TagDao {
     @Delete
     fun delete(tag: DbTag)
 
+    fun deleteRs(tag:Tag): Rs<Unit, ErrorReport> {
+        try {
+            delete(tag.toDbTag())
+            return Ok(Unit)
+        } catch (e: Throwable) {
+            return DbErrors.UnableToDeleteEntryFromDb.report().toErr()
+        }
+    }
+
+    @Transaction
+    fun deleteMultiRs(tags:List<Tag>): Rs<Unit, ErrorReport> {
+        try {
+            tags.forEach {
+                delete(it.toDbTag())
+            }
+            return Ok(Unit)
+        } catch (e: Throwable) {
+            return DbErrors.UnableToDeleteEntryFromDb.report().toErr()
+        }
+    }
+
+
+
     @Update
     fun updateTag(tag: DbTag)
 
@@ -69,7 +93,7 @@ interface TagDao {
             val updateTargets = run {
                 val ids = oldTagMap.map { it.key }.toSet()
                 tags.filter {
-                    it.tagId in ids /*&& it.name != oldTagMap[it.tagId]?.name*/
+                    it.tagId in ids
                 }
             }
             updateTags(updateTargets.map { it.toDbTag() })

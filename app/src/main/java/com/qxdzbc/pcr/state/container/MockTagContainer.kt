@@ -42,4 +42,16 @@ data class MockTagContainer(val m: Map<String, Tag> = emptyMap()): AbsTagContain
     override suspend fun uploadThePendings(): TagContainer {
         return this
     }
+
+    override suspend fun deleteAndWriteToDb(tag: Tag): TagContainer {
+        return this
+    }
+
+    override suspend fun deleteThePendings(): TagContainer {
+        return this
+    }
+
+    override fun bluntRemoveTag(tag: Tag): TagContainer {
+        return this
+    }
 }

@@ -34,4 +34,7 @@ interface TagContainer: Map<String, Tag> {
      * upload all the WritePending tags to firestore
      */
     suspend fun uploadThePendings(): TagContainer
+    suspend fun deleteAndWriteToDb(tag: Tag): TagContainer
+    suspend fun deleteThePendings(): TagContainer
+    fun bluntRemoveTag(tag: Tag): TagContainer
 }

@@ -49,6 +49,14 @@ open class MockFirestoreHelper constructor(
         return Ok(Unit)
     }
 
+    override suspend fun removeTag(tag: Tag): Rs<Unit, ErrorReport> {
+        return Ok(Unit)
+    }
+
+    override suspend fun removeMultiTag(tags: List<Tag>): Rs<Unit, ErrorReport> {
+        return Ok(Unit)
+    }
+
     override suspend fun readAllTags(userId: String): Rs<List<TagDoc>, ErrorReport> {
         return Ok(tags.map { it.toTagDoc() })
     }
@@ -91,8 +99,11 @@ open class MockFirestoreHelper constructor(
         return Ok(Unit)
     }
 
+    override suspend fun removeMultiEntries(entries: List<Entry>): Rs<Unit, ErrorReport> {
+        return Ok(Unit)
+    }
+
     override suspend fun readAllEntries(userId: String): Rs<List<EntryDoc>, ErrorReport> {
-        // TODO problematic
         return Ok(emptyList())
     }
 

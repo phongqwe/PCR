@@ -19,6 +19,7 @@ import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.WriteState
 import com.qxdzbc.pcr.state.model.Tag
+import com.qxdzbc.pcr.util.Utils.runWhenLoggedIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -129,18 +130,34 @@ data class EntryContainerImp @Inject constructor(
 
     override suspend fun writeUnUploadedToFirestore(userId: String): Rs<EntryContainer, ErrorReport> {
         val all = allEntries
-        val targetEntries = allEntries.filter { !it.isUploaded }
-        val rt = firestoreHelper.writeMultiEntries(userId, targetEntries).map {
-            val uploadedEntries = it.associateBy { it.id }
+        val targetEntries = allEntries.filter { it.writeState == WriteState.WritePending }
+        val rt = firestoreHelper.writeMultiEntries(userId, targetEntries).flatMap {
+            val uploadedEntriesMap = it.associateBy { it.id }
+            // replace old entries with uploaded entries
             val allNewEntries = all.map { oldEntry ->
-                if (oldEntry.id in uploadedEntries) {
-                    uploadedEntries[oldEntry.id]!!
+                if (oldEntry.id in uploadedEntriesMap) {
+                    uploadedEntriesMap[oldEntry.id]!!
                 } else {
                     oldEntry
                 }
             }
-            setAll(allNewEntries)
+            val newCont1 = setAll(allNewEntries)
+            val newCont2 = newCont1.writeToDb().map {
+                newCont1
+            }
+            newCont2
         }
+        return rt
+    }
+
+
+    override suspend fun writeUnUploadedToFirestore(): EntryContainer {
+        val rt = userSt.runWhenLoggedIn { userId ->
+            writeUnUploadedToFirestore(userId)
+        }.mapBoth(
+            success = { it },
+            failure = { this }
+        )
         return rt
     }
 
@@ -199,6 +216,18 @@ data class EntryContainerImp @Inject constructor(
         return rt
     }
 
+    override fun addOrReplaceAndWriteToDb(entries: List<Entry>): EntryContainer {
+        val mm = m.toMutableMap()
+        for (entry in entries) {
+            mm[entry.id] = entry
+        }
+        val nc = this.copy(m = mm)
+        val rt = nc.writeToDb().mapBoth(
+            success = { nc },
+            failure = { this }
+        )
+        return rt
+    }
 
     override suspend fun removeEntry(entry: Entry): EntryContainer {
         val u = userId

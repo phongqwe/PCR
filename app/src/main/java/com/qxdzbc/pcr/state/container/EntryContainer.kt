@@ -34,6 +34,7 @@ interface EntryContainer : Map<String, Entry> {
      * Only write un-uploaded entries to the firestore. Return a new entry container holding updated entries.
      */
     suspend fun writeUnUploadedToFirestore(userId: String): Rs<EntryContainer, ErrorReport>
+    suspend fun writeUnUploadedToFirestore(): EntryContainer
 
     /**
      * First load from db. Only if data load from db is empty, then attempt to load from Firestore. If loading from Firestore cause error, silently discard the error, and return the container loaded from db.
@@ -66,6 +67,7 @@ interface EntryContainer : Map<String, Entry> {
     ):Rs<EntryContainer, ErrorReport>
 
     fun addOrReplaceAndWriteToDb(entry:Entry): Rs<EntryContainer, ErrorReport>
+    fun addOrReplaceAndWriteToDb(entries:List<Entry>): EntryContainer
 
     /**
      * Mark target entry as DeletePending, store them to db.
