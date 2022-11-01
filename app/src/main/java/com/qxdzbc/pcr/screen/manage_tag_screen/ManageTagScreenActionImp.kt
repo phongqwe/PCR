@@ -1,8 +1,6 @@
 package com.qxdzbc.pcr.screen.manage_tag_screen
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapBoth
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.di.state.EntryContMs
@@ -51,7 +49,7 @@ class ManageTagScreenActionImp @Inject constructor(
                 }
                 val ec2 = ec.addOrReplaceAndWriteToDb(newEntries)
                 ecMs.value = ec2
-                val ec3 = ec2.writeUnUploadedToFirestore()
+                val ec3 = ec2.writePendingToFirestore()
                 ecMs.value = ec3
             }
         }
@@ -59,7 +57,6 @@ class ManageTagScreenActionImp @Inject constructor(
 
     override suspend fun delete(tag: Tag) {
         runOnDefaultDispatcher {
-
             val n = tc.deleteAndWriteToDb(tag)
             tcMs.value = n
             val n2 = n.deleteThePendings()
@@ -75,7 +72,7 @@ class ManageTagScreenActionImp @Inject constructor(
             }
             val ec2 = ec.addOrReplaceAndWriteToDb(newEntries)
             ecMs.value = ec2
-            val ec3 = ec2.writeUnUploadedToFirestore()
+            val ec3 = ec2.writePendingToFirestore()
             ecMs.value = ec3
         }
     }

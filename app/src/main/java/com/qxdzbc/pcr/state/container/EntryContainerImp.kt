@@ -128,7 +128,7 @@ data class EntryContainerImp @Inject constructor(
         }
     }
 
-    override suspend fun writeUnUploadedToFirestore(userId: String): Rs<EntryContainer, ErrorReport> {
+    override suspend fun writePendingToFirestore(userId: String): Rs<EntryContainer, ErrorReport> {
         val all = allEntries
         val targetEntries = allEntries.filter { it.writeState == WriteState.WritePending }
         val rt = firestoreHelper.writeMultiEntries(userId, targetEntries).flatMap {
@@ -151,9 +151,9 @@ data class EntryContainerImp @Inject constructor(
     }
 
 
-    override suspend fun writeUnUploadedToFirestore(): EntryContainer {
+    override suspend fun writePendingToFirestore(): EntryContainer {
         val rt = userSt.runWhenLoggedIn { userId ->
-            writeUnUploadedToFirestore(userId)
+            writePendingToFirestore(userId)
         }.mapBoth(
             success = { it },
             failure = { this }

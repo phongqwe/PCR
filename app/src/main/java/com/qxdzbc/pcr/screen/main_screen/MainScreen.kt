@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,6 +27,7 @@ import com.qxdzbc.pcr.screen.main_screen.entry_view.EntryView
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
 import com.qxdzbc.pcr.ui.theme.PCRTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -39,8 +39,8 @@ fun MainScreen(
     action: MainScreenAction,
     toEntryCreateScreen: () -> Unit,
     toManageTagScreen:()->Unit,
+    executionScope:CoroutineScope = rememberCoroutineScope()
 ) {
-    val crScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val userId: String? = state.userSt.value?.uid
     var isFromDatePickerOpen: Boolean by remember { ms(false) }
@@ -54,7 +54,7 @@ fun MainScreen(
                     MIconButton(
                         imageVector = Icons.Default.Menu,
                         onClick = {
-                            crScope.launch {
+                            executionScope.launch {
                                 scaffoldState.drawerState.open()
                             }
                         },
@@ -70,21 +70,21 @@ fun MainScreen(
         drawerContent = {
             UserInfo(state.userSt.value ?: FirebaseUserWrapper.forPreview)
             ClickableDrawerItem("Manage tags") {
-                crScope.launch {
+                executionScope.launch {
                     scaffoldState.drawerState.close()
                 }
                 toManageTagScreen()
             }
             DrawerItem {
                 ThemeSwitcher(isDark = state.isDark, switchTheme = {
-                    crScope.launch {
+                    executionScope.launch {
                         scaffoldState.drawerState.close()
                         action.switchTheme(it)
                     }
                 })
             }
             ClickableDrawerItem("TODO: logout") {
-                crScope.launch {
+                executionScope.launch {
                     scaffoldState.drawerState.close()
                 }
             }
@@ -153,7 +153,7 @@ fun MainScreen(
                                 confirmStateChange = {
                                     if (it == DismissValue.DismissedToEnd ||
                                         it == DismissValue.DismissedToStart) {
-                                        crScope.launch {
+                                        executionScope.launch {
                                             action.removeEntry(entry)
                                         }
                                         true
@@ -170,7 +170,7 @@ fun MainScreen(
                                 EntryView(
                                     entry = entry,
                                     uploadEntry = {
-                                        crScope.launch {
+                                        executionScope.launch {
                                             action.uploadEntry(it)
                                         }
                                     })

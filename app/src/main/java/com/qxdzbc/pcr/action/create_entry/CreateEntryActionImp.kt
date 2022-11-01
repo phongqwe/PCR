@@ -51,7 +51,7 @@ class CreateEntryActionImp @Inject constructor(
             }
             if (userId != null) {
                 val rs2 = rs.flatMap {ec->
-                    ec.writeUnUploadedToFirestore(userId)
+                    ec.writePendingToFirestore(userId)
                 }
                 errorRouter.reportToCreateEntryScreenIfNeed(rs2)
                  rs2

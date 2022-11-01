@@ -117,7 +117,8 @@ class MainActivity : ComponentActivity() {
                             },
                             toManageTagScreen = {
                                 navController.navigate(manageTagScreenNavTag)
-                            }
+                            },
+                            executionScope = lifecycleScope
                         )
                         BackHandler(true) {
                             if (hasUser()) {

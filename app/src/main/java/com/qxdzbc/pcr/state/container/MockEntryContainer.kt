@@ -48,11 +48,11 @@ data class MockEntryContainer(val m: Map<String, Entry> = emptyMap()) : AbsEntry
         return Ok(this)
     }
 
-    override suspend fun writeUnUploadedToFirestore(userId: String): Rs<EntryContainer, ErrorReport> {
+    override suspend fun writePendingToFirestore(userId: String): Rs<EntryContainer, ErrorReport> {
         return Ok(this)
     }
 
-    override suspend fun writeUnUploadedToFirestore(): EntryContainer {
+    override suspend fun writePendingToFirestore(): EntryContainer {
         return this
     }
 

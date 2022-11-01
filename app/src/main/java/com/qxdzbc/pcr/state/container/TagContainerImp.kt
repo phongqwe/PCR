@@ -120,12 +120,13 @@ data class TagContainerImp @Inject constructor(
     override suspend fun deleteAndWriteToDb(tag: Tag): TagContainer {
         return withContext(Dispatchers.Default){
             val markedTag = tag.setWriteState(WriteState.DeletePending)
-            val afterMarkingContRs = replaceAndWriteToDbRs(tag.setWriteState(WriteState.DeletePending))
+            val afterMarkingContRs = replaceAndWriteToDbRs(markedTag)
             val rt = afterMarkingContRs.mapBoth(
                 success = {afterMarkingCont->
                     tagDao.deleteRs(markedTag).mapBoth(
                         success = {
-                            afterMarkingCont.bluntRemoveTag(markedTag)
+//                            afterMarkingCont.bluntRemoveTag(markedTag)
+                            afterMarkingCont
                         },
                         failure = {
                             afterMarkingCont
