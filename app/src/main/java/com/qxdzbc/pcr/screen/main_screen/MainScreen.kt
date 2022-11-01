@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -46,7 +47,6 @@ fun MainScreen(
     executionScope: CoroutineScope = rememberCoroutineScope()
 ) {
     val scaffoldState = rememberScaffoldState()
-    val userId: String? = state.userSt.value?.uid
     var isFromDatePickerOpen: Boolean by remember { ms(false) }
     var isToDatePickerOpen: Boolean by remember { ms(false) }
     val localCrScope = rememberCoroutineScope()
@@ -75,6 +75,7 @@ fun MainScreen(
                             .weight(1.0f)
                             .padding(horizontal = 10.dp)
                     ) {
+
                         BasicTextField(
                             value = state.mainScreenFilter.text ?: "", onValueChange = {
                                 val newFilter = if (it.isEmpty()) {
@@ -89,6 +90,13 @@ fun MainScreen(
                             cursorBrush = SolidColor(MaterialTheme.colors.onSurface),
                             textStyle = TextStyle.Default.copy(color=MaterialTheme.colors.onSurface)
                         )
+                        if(state.mainScreenFilter.text.isNullOrEmpty().not()){
+                            MIconButton(imageVector = Icons.Default.Close, onClick = {
+                                val newFilter= state.mainScreenFilter.clearTextFilter()
+                                action.filter(newFilter)
+                            }, tint = MaterialTheme.colors.primary, modifier = Modifier.align(
+                                Alignment.CenterEnd).size(22.dp))
+                        }
                     }
                     MIconButton(
                         painter = painterResource(id = R.drawable.sell_24),
