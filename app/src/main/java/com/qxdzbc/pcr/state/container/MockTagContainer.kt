@@ -54,4 +54,8 @@ data class MockTagContainer(val m: Map<String, Tag> = emptyMap()): AbsTagContain
     override fun bluntRemoveTag(tag: Tag): TagContainer {
         return this
     }
+
+    override suspend fun replaceAndWriteToDbRs(tag: Tag): Rs<TagContainer, ErrorReport> {
+        return Ok(this)
+    }
 }

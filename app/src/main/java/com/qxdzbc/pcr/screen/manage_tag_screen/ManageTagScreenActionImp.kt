@@ -1,5 +1,9 @@
 package com.qxdzbc.pcr.screen.manage_tag_screen
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import com.github.michaelbull.result.map
+import com.github.michaelbull.result.mapBoth
 import com.qxdzbc.pcr.common.Ms
 import com.qxdzbc.pcr.di.state.EntryContMs
 import com.qxdzbc.pcr.di.state.TagContMs
@@ -15,30 +19,61 @@ class ManageTagScreenActionImp @Inject constructor(
     @TagContMs
     val tcMs: Ms<TagContainer>,
     @EntryContMs
-    val ecMs:Ms<EntryContainer>
+    val ecMs: Ms<EntryContainer>
 ) : ManageTagScreenAction {
+    val ec by ecMs
+    val tc by tcMs
     override suspend fun edit(oldTag: Tag, newTag: Tag) {
-//        TODO("Not yet implemented")
+        runOnDefaultDispatcher {
+            val newNewTag = newTag.setWriteState(WriteState.WritePending)
+            val tc2 = tc.replaceAndWriteToDbRs(newNewTag).mapBoth(
+                success = { it },
+                failure = { tc }
+            )
+            tcMs.value = tc2
+            val tc3 = tc2.uploadThePendings()
+            tcMs.value = tc3
+
+            tc3.get(newTag.tagId)?.also {nt->
+                // update related entries
+                val targetEntries = ec.allEntries.filter {
+                    it.tags.map { it.tagId }.contains(nt.tagId)
+                }
+                val newEntries = targetEntries.map {
+                    val newTags = it.tags.map { t ->
+                        if (t.tagId == nt.tagId) {
+                            nt
+                        } else {
+                            t
+                        }
+                    }
+                    it.setTags(newTags).setWriteState(WriteState.WritePending)
+                }
+                val ec2 = ec.addOrReplaceAndWriteToDb(newEntries)
+                ecMs.value = ec2
+                val ec3 = ec2.writeUnUploadedToFirestore()
+                ecMs.value = ec3
+            }
+        }
     }
 
     override suspend fun delete(tag: Tag) {
         runOnDefaultDispatcher {
 
-            val n = tcMs.value.deleteAndWriteToDb(tag)
+            val n = tc.deleteAndWriteToDb(tag)
             tcMs.value = n
             val n2 = n.deleteThePendings()
             tcMs.value = n2
 
-            // remove tag from entries
-            val ec=ecMs.value
+            // remove tag from entries and update entry container
             val targetEntries = ec.allEntries.filter {
                 it.tags.map { it.tagId }.contains(tag.tagId)
             }
-            val newEntries=targetEntries.map {
-                val newTags = it.tags.filter { it.tagId!=tag.tagId }
+            val newEntries = targetEntries.map {
+                val newTags = it.tags.filter { it.tagId != tag.tagId }
                 it.setTags(newTags).setWriteState(WriteState.WritePending)
             }
-            val ec2 = ecMs.value.addOrReplaceAndWriteToDb(newEntries)
+            val ec2 = ec.addOrReplaceAndWriteToDb(newEntries)
             ecMs.value = ec2
             val ec3 = ec2.writeUnUploadedToFirestore()
             ecMs.value = ec3
@@ -53,9 +88,9 @@ class ManageTagScreenActionImp @Inject constructor(
 
     override suspend fun addTag(tag: Tag) {
         withContext(Dispatchers.Default) {
-            val newCont = tcMs.value.addTagAndWriteToDb(tag)
+            val newCont = tc.addTagAndWriteToDb(tag)
             tcMs.value = newCont
-            tcMs.value = tcMs.value.uploadThePendings()
+            tcMs.value = tc.uploadThePendings()
         }
     }
 }

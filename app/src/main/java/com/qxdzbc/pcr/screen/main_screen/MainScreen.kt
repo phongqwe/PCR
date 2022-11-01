@@ -70,6 +70,9 @@ fun MainScreen(
         drawerContent = {
             UserInfo(state.userSt.value ?: FirebaseUserWrapper.forPreview)
             ClickableDrawerItem("Manage tags") {
+                crScope.launch {
+                    scaffoldState.drawerState.close()
+                }
                 toManageTagScreen()
             }
             DrawerItem {
@@ -80,7 +83,11 @@ fun MainScreen(
                     }
                 })
             }
-            ClickableDrawerItem("TODO: logout") {}
+            ClickableDrawerItem("TODO: logout") {
+                crScope.launch {
+                    scaffoldState.drawerState.close()
+                }
+            }
         },
         floatingActionButton = {
             MFloatButton(

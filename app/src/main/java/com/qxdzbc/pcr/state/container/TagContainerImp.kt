@@ -110,7 +110,7 @@ data class TagContainerImp @Inject constructor(
             )
         return rt
     }
-    private fun replaceAndWriteToDbRs(tag:Tag):Rs<TagContainerImp,ErrorReport>{
+    override suspend fun replaceAndWriteToDbRs(tag:Tag):Rs<TagContainerImp,ErrorReport>{
         val replacedCont = this.bluntReplace(tag)
         val rt = replacedCont.writeToDb().map {
             replacedCont
@@ -118,24 +118,28 @@ data class TagContainerImp @Inject constructor(
         return rt
     }
     override suspend fun deleteAndWriteToDb(tag: Tag): TagContainer {
-        val markedTag = tag.setWriteState(WriteState.DeletePending)
-        val afterMarkingContRs = this.replaceAndWriteToDbRs(tag.setWriteState(WriteState.DeletePending))
-        val rt = afterMarkingContRs.mapBoth(
-            success = {afterMarkingCont->
-                tagDao.deleteRs(markedTag).mapBoth(
-                    success = {
-                        afterMarkingCont.bluntRemoveTag(markedTag)
-                    },
-                    failure = {
-                        afterMarkingCont
-                    }
-                )
-            },
-            failure = {
-                this
-            }
-        )
-        return rt
+        return withContext(Dispatchers.Default){
+            val markedTag = tag.setWriteState(WriteState.DeletePending)
+            val afterMarkingContRs = replaceAndWriteToDbRs(tag.setWriteState(WriteState.DeletePending))
+            val rt = afterMarkingContRs.mapBoth(
+                success = {afterMarkingCont->
+                    tagDao.deleteRs(markedTag).mapBoth(
+                        success = {
+                            afterMarkingCont.bluntRemoveTag(markedTag)
+                        },
+                        failure = {
+                            afterMarkingCont
+                        }
+                    )
+                },
+                failure = {
+                    this@TagContainerImp
+                }
+            )
+            rt
+        }
+
+
     }
 
     override fun bluntRemoveTag(tag: Tag): TagContainerImp {

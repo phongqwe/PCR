@@ -37,4 +37,5 @@ interface TagContainer: Map<String, Tag> {
     suspend fun deleteAndWriteToDb(tag: Tag): TagContainer
     suspend fun deleteThePendings(): TagContainer
     fun bluntRemoveTag(tag: Tag): TagContainer
+    suspend fun replaceAndWriteToDbRs(tag: Tag): Rs<TagContainer, ErrorReport>
 }
