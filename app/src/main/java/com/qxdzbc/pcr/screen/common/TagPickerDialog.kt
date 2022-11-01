@@ -19,11 +19,11 @@ import com.qxdzbc.pcr.state.model.Tag
 @Composable
 fun TagPickerDialog(
     tags: List<Tag>,
-    initSelectedList: List<Tag>,
+    initSelectedTags: List<Tag>,
     onDone: (selectedTag: List<Tag>) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var selectedTags: List<Tag> by remember { ms(initSelectedList) }
+    var selectedTags: List<Tag> by remember { ms(initSelectedTags) }
 
     AlertDialog(onDismissRequest = { onDismiss() },
         confirmButton = {
@@ -32,6 +32,15 @@ fun TagPickerDialog(
                 onDismiss()
             }) {
                 Text("Ok")
+            }
+        },
+        dismissButton = {
+            Button(onClick = {
+                selectedTags = emptyList()
+//                onDone(selectedTags)
+//                onDismiss()
+            }) {
+                Text("Clear all")
             }
         },
         text = {
@@ -50,14 +59,12 @@ fun TagPickerDialog(
                     .fillMaxWidth()
             ) {
                 this.items(tags) { tag ->
-                    var isSelected by remember { ms(tag in selectedTags) }
+                    val isSelected = tag in selectedTags
                     MRow(modifier = Modifier.clickable {
-                        isSelected = !isSelected
-                        onSelectTag(isSelected,tag)
+                        onSelectTag(!isSelected,tag)
                     }) {
                         MCheckbox(checked = isSelected, onCheckedChange = {
-                            isSelected = it
-                            onSelectTag(isSelected,tag)
+                            onSelectTag(it,tag)
                         })
                         Text(tag.name)
                     }
@@ -76,7 +83,7 @@ fun PreviewTagPicker() {
     TagPickerDialog(
         tags = tags,
         onDone = {},
-        initSelectedList = emptyList(),
+        initSelectedTags = emptyList(),
         onDismiss = {},
     )
 }

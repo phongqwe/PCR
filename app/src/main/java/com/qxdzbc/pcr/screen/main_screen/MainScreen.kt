@@ -17,14 +17,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.qxdzbc.pcr.R
 import com.qxdzbc.pcr.common.MBox
 import com.qxdzbc.pcr.common.StateUtils.ms
-import com.qxdzbc.pcr.screen.common.MFloatButton
-import com.qxdzbc.pcr.screen.common.MIconButton
-import com.qxdzbc.pcr.screen.common.PCRTopAppBar
-import com.qxdzbc.pcr.screen.common.ThemeSwitcher
+import com.qxdzbc.pcr.screen.common.*
 import com.qxdzbc.pcr.screen.main_screen.action.MainScreenAction
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.DateType
 import com.qxdzbc.pcr.screen.main_screen.date_filter_view.DateView
@@ -32,9 +28,9 @@ import com.qxdzbc.pcr.screen.main_screen.date_filter_view.MDatePickerDialog
 import com.qxdzbc.pcr.screen.main_screen.entry_view.EntryView
 import com.qxdzbc.pcr.screen.main_screen.state.MainScreenState
 import com.qxdzbc.pcr.state.app.FirebaseUserWrapper
+import com.qxdzbc.pcr.state.model.Tag
 import com.qxdzbc.pcr.ui.theme.PCRTheme
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -54,6 +50,8 @@ fun MainScreen(
     var isFromDatePickerOpen: Boolean by remember { ms(false) }
     var isToDatePickerOpen: Boolean by remember { ms(false) }
     val localCrScope = rememberCoroutineScope()
+    var isTagSelectionDialogOpen:Boolean by remember { ms(false) }
+    var selectedTagsForFilter:List<Tag> by remember { ms(emptyList()) }
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -94,51 +92,11 @@ fun MainScreen(
                     }
                     MIconButton(
                         painter = painterResource(id = R.drawable.sell_24),
-                        onClick = {}, modifier = Modifier
+                        onClick = {
+                            isTagSelectionDialogOpen = true
+                        }
                     )
                 }
-
-
-//                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-//                    val (menuRef, searchRef,tagFilterRef) = createRefs()
-//                    MIconButton(
-//                        imageVector = Icons.Default.Menu,
-//                        onClick = {
-//                            localCrScope.launch() {
-//                                scaffoldState.drawerState.open()
-//                            }
-//                        },
-//                        modifier = Modifier.constrainAs(menuRef) {
-//                            start.linkTo(parent.start)
-//                            top.linkTo(parent.top)
-//                            bottom.linkTo(parent.bottom)
-//                        }
-//                    )
-//                    MBox(modifier = Modifier.constrainAs(searchRef) {
-//                        start.linkTo(menuRef.end)
-//                        end.linkTo(tagFilterRef.start)
-//                        top.linkTo(parent.top)
-//                        bottom.linkTo(parent.bottom)
-//                    }.background(MaterialTheme.colors.surface)) {
-//                        BasicTextField(value = state.mainScreenFilter.text ?: "", onValueChange = {
-//                            val newFilter = if (it.isEmpty()) {
-//                                state.mainScreenFilter.copy(text = null)
-//                            } else {
-//                                state.mainScreenFilter.copy(text = it)
-//                            }
-//                            action.filter(newFilter)
-//                        },modifier=Modifier.fillMaxWidth())
-//                    }
-//                    MIconButton(
-//                        painter = painterResource(id = R.drawable.sell_24),
-//                        onClick = {
-//
-//                        },modifier = Modifier.constrainAs(tagFilterRef) {
-//                            end.linkTo(parent.end)
-//                            top.linkTo(parent.top)
-//                            bottom.linkTo(parent.bottom)
-//                        })
-//                }
             }
         },
         drawerContent = {
@@ -256,6 +214,20 @@ fun MainScreen(
                     },
                     onDismiss = {
                         isFromDatePickerOpen = false
+                    }
+                )
+            }
+            if(isTagSelectionDialogOpen){
+                TagPickerDialog(
+                    tags = state.tagContainerSt.value.allValidTags,
+                    initSelectedTags = selectedTagsForFilter,
+                    onDone = {selectedTags->
+                        val newFilter = state.mainScreenFilter.copy(tags=selectedTags)
+                        selectedTagsForFilter = selectedTags
+                        action.filter(newFilter)
+                    },
+                    onDismiss = {
+                        isTagSelectionDialogOpen = false
                     }
                 )
             }

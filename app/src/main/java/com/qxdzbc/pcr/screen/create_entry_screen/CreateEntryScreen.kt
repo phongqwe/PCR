@@ -212,7 +212,7 @@ fun CreateEntryScreen(
             if (isTagSelectDialogOpen) {
                 TagPickerDialog(
                     tags = currentTags,
-                    initSelectedList = selectedTagsMs.value,
+                    initSelectedTags = selectedTagsMs.value,
                     onDone = {
                         selectedTagsMs.value = it
                     },
