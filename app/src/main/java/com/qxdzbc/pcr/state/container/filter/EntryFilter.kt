@@ -1,15 +1,12 @@
 package com.qxdzbc.pcr.state.container.filter
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import com.qxdzbc.pcr.state.model.Entry
 import com.qxdzbc.pcr.state.model.Tag
 import com.qxdzbc.pcr.util.DateUtils
-import java.util.Date
+import java.util.*
 
 data class EntryFilter(
     val fromDate: Date?,
@@ -35,19 +32,24 @@ data class EntryFilter(
     }
 
     fun canBeUsed(): Boolean {
-        return fromDate != null && toDate != null
+        val c1= fromDate != null && toDate != null
+        val c2 = text!=null
+        val c3 = tags.isNotEmpty()
+        return c1 || c2 || c3
     }
 
-    private val datePeriod = if (canBeUsed()) fromDate!!.time..toDate!!.time else null
+
+
+    private val datePeriod = if (fromDate != null && toDate != null) fromDate.time..toDate.time else null
     fun match(entry: Entry): Boolean {
-        if (datePeriod != null) {
-            val dateMatch = entry.dateTime.time in datePeriod
-            val textMatch = text?.let { entry.detail?.contains(it) } ?: true
-            val containAllTag = if (tags.isEmpty()) true else entry.tags.containsAll(tags)
-            return dateMatch && textMatch && containAllTag
+        val dateMatch = if (datePeriod != null) {
+             entry.dateTime.time in datePeriod
         } else {
-            return true
+             true
         }
+        val textMatch = text?.let { entry.detail?.lowercase()?.contains(it.lowercase()) } ?: true
+        val containAllTag = if (tags.isEmpty()) true else entry.tags.containsAll(tags)
+        return dateMatch && textMatch && containAllTag
     }
 
     companion object {
