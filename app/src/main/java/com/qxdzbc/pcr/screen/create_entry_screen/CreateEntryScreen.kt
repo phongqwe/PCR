@@ -49,7 +49,7 @@ fun CreateEntryScreen(
     modifier: Modifier = Modifier,
 ) {
     var detail: String? by remember { ms(null) }
-    var moneyStr: String by remember { ms("0.0") }
+    var moneyStr: String by remember { ms("") }
     var date: Date by remember { ms(Date()) }
     var isDatePickerOpen by remember { ms(false) }
     var isTagSelectDialogOpen by remember { ms(false) }
@@ -156,7 +156,8 @@ fun CreateEntryScreen(
                                 .padding(start = 10.dp, end = 5.dp),
                             onCloseTag = {
                                 selectedTagsMs.value = selectedTagsMs.value - it
-                            }
+                            },
+                            allowCloseTag = true
                         )
                         IconButton(
                             onClick = {

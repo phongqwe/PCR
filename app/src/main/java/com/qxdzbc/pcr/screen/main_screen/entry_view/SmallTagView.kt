@@ -23,7 +23,8 @@ import com.qxdzbc.pcr.ui.theme.PCRTheme
 @Composable
 fun SmallTagView(
     tag: Tag,
-    onClose:()->Unit
+    onClose:()->Unit,
+    allowClose:Boolean,
 ) {
     Box(
         modifier = Modifier
@@ -41,21 +42,23 @@ fun SmallTagView(
             Text(
                 text = tag.name,
                 modifier = Modifier
-                    .padding(start = vp, top = hp, bottom = hp),
+                    .padding(start = vp, top = hp, bottom = hp, end =  if(!allowClose) vp else 0.dp),
                 fontSize = MaterialTheme.typography.body1.fontSize
             )
-            Box(modifier = Modifier.size(30.dp).clickable {
-                onClose()
-            }) {
-                Box(modifier = Modifier
-                    .size(16.dp)
-                    .align(Alignment.Center)) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.onSurface,
-                        modifier =Modifier.align(Alignment.Center)
-                    )
+            if(allowClose){
+                Box(modifier = Modifier.size(30.dp).clickable {
+                    onClose()
+                }) {
+                    Box(modifier = Modifier
+                        .size(16.dp)
+                        .align(Alignment.Center)) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.onSurface,
+                            modifier =Modifier.align(Alignment.Center)
+                        )
+                    }
                 }
             }
         }
@@ -68,7 +71,7 @@ fun SmallTagView(
 fun PreviewSmallTagView() {
     PCRTheme(darkTheme = true) {
         Surface() {
-            SmallTagView(tag = DbTag.random(), onClose = {})
+            SmallTagView(tag = DbTag.random(), onClose = {}, allowClose = true)
         }
     }
 }

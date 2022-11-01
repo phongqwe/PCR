@@ -24,7 +24,8 @@ fun TagListView(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     scrollState:ScrollState = rememberScrollState(),
-    ) {
+    allowCloseTag:Boolean = false,
+) {
     val spacerWidth = 6.dp
     LazyRow(
         state = lazyListState,
@@ -35,7 +36,7 @@ fun TagListView(
             Box(modifier = Modifier) {
                 SmallTagView(tag = tag,onClose={
                     onCloseTag(tag)
-                })
+                },allowClose = allowCloseTag)
             }
             if (i != tags.size - 1) {
                 Spacer(modifier = Modifier.width(spacerWidth))

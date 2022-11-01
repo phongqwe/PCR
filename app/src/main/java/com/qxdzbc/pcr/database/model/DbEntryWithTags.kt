@@ -36,7 +36,7 @@ data class DbEntryWithTags(
         get() = entry.state.toWriteState()!!
 
     override fun setWriteState(i: WriteState): Entry {
-        return this.copy(entry=this.entry.copy(state=i.name))
+        return this.copy(entry = this.entry.copy(state = i.name))
     }
 
     override val isCost: Boolean
@@ -52,7 +52,7 @@ data class DbEntryWithTags(
         return this.copy(
             entry = entry.copy(
                 money = money,
-                detail =detail,
+                detail = detail,
                 dateTime = dateTime.time,
                 isUploaded = 0,
                 isCost = isCost.toInt()
@@ -87,12 +87,12 @@ data class DbEntryWithTags(
     override val displayDate: String
         get() = DateUtils.displayDateFormat.format(this.dateTime)
     override val displayMoney: String
-        get(){
-            val rt = "$"+if(this.isCost){
+        get() {
+            val rt = if (this.isCost) {
                 "-"
-            }else{
-                ""
-            }+this.money.toString()
+            } else {
+                "+"
+            } + "$" +this.money.toString()
             return rt
         }
 
