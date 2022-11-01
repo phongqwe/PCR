@@ -56,27 +56,17 @@ fun MainScreen(
         scaffoldState = scaffoldState,
         topBar = {
             PCRTopAppBar {
-                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-                    val (menuRef, searchRef,tagFilterRef) = createRefs()
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     MIconButton(
                         imageVector = Icons.Default.Menu,
                         onClick = {
-                            localCrScope.launch() {
+                            localCrScope.launch {
                                 scaffoldState.drawerState.open()
                             }
                         },
-                        modifier = Modifier.constrainAs(menuRef) {
-                            start.linkTo(parent.start)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                        }
+                        modifier = Modifier
                     )
-                    MBox(modifier = Modifier.constrainAs(searchRef) {
-                        start.linkTo(menuRef.end)
-                        end.linkTo(tagFilterRef.start)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }.background(MaterialTheme.colors.surface)) {
+                    MBox(modifier = Modifier.background(MaterialTheme.colors.surface).weight(1.0f).padding(horizontal=10.dp)) {
                         BasicTextField(value = state.mainScreenFilter.text ?: "", onValueChange = {
                             val newFilter = if (it.isEmpty()) {
                                 state.mainScreenFilter.copy(text = null)
@@ -84,18 +74,54 @@ fun MainScreen(
                                 state.mainScreenFilter.copy(text = it)
                             }
                             action.filter(newFilter)
-                        },)
+                        },modifier=Modifier.fillMaxWidth().padding(vertical=3.dp))
                     }
                     MIconButton(
                         painter = painterResource(id = R.drawable.sell_24),
-                        onClick = {
-
-                        },modifier = Modifier.constrainAs(tagFilterRef) {
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                        })
+                        onClick = {},modifier = Modifier)
                 }
+
+
+//                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+//                    val (menuRef, searchRef,tagFilterRef) = createRefs()
+//                    MIconButton(
+//                        imageVector = Icons.Default.Menu,
+//                        onClick = {
+//                            localCrScope.launch() {
+//                                scaffoldState.drawerState.open()
+//                            }
+//                        },
+//                        modifier = Modifier.constrainAs(menuRef) {
+//                            start.linkTo(parent.start)
+//                            top.linkTo(parent.top)
+//                            bottom.linkTo(parent.bottom)
+//                        }
+//                    )
+//                    MBox(modifier = Modifier.constrainAs(searchRef) {
+//                        start.linkTo(menuRef.end)
+//                        end.linkTo(tagFilterRef.start)
+//                        top.linkTo(parent.top)
+//                        bottom.linkTo(parent.bottom)
+//                    }.background(MaterialTheme.colors.surface)) {
+//                        BasicTextField(value = state.mainScreenFilter.text ?: "", onValueChange = {
+//                            val newFilter = if (it.isEmpty()) {
+//                                state.mainScreenFilter.copy(text = null)
+//                            } else {
+//                                state.mainScreenFilter.copy(text = it)
+//                            }
+//                            action.filter(newFilter)
+//                        },modifier=Modifier.fillMaxWidth())
+//                    }
+//                    MIconButton(
+//                        painter = painterResource(id = R.drawable.sell_24),
+//                        onClick = {
+//
+//                        },modifier = Modifier.constrainAs(tagFilterRef) {
+//                            end.linkTo(parent.end)
+//                            top.linkTo(parent.top)
+//                            bottom.linkTo(parent.bottom)
+//                        })
+//                }
             }
         },
         drawerContent = {
