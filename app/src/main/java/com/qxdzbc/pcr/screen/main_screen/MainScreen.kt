@@ -154,7 +154,11 @@ fun MainScreen(
                                 isToDatePickerOpen = true
                             },
                             modifier = Modifier
-                                .align(Alignment.Center)
+                                .align(Alignment.Center),
+                            clearFilter = {
+                                val newFilter = state.mainScreenFilter.clearDateFilter()
+                                action.filter(newFilter)
+                            }
                         )
                     }
                 }

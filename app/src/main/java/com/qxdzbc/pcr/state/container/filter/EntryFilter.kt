@@ -40,7 +40,7 @@ data class EntryFilter(
 
 
 
-    private val datePeriod = if (fromDate != null && toDate != null) fromDate.time..toDate.time else null
+    val datePeriod = if (fromDate != null && toDate != null) fromDate.time..toDate.time else null
     fun match(entry: Entry): Boolean {
         val dateMatch = if (datePeriod != null) {
              entry.dateTime.time in datePeriod
